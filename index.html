@@ -5,18 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Tools — Compress PDF, Images, Video & Convert Formats Online</title>
 
-    <!-- pdf-lib for PDF processing -->
-    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js">
-    </script>
-    <!-- JSZip for bundling multiple downloads -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js">
-    </script>
-    <!-- FFmpeg.wasm import map -->
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script type="importmap">
         {
             "imports": {
-                "@ffmpeg/ffmpeg": "https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js",
-                "@ffmpeg/util": "https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js"
+                "@ffmpeg/ffmpeg": "https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js",
+                "@ffmpeg/util": "https://unpkg.com/@ffmpeg/util@0.12.1/dist/esm/index.js"
             }
         }
     </script>
@@ -41,13 +36,7 @@
             --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, Oxygen, Ubuntu, sans-serif;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: var(--font);
             background: var(--bg);
@@ -56,530 +45,126 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            -webkit-font-smoothing: antialiased;
             background-image: radial-gradient(ellipse at 50% 0%, rgba(229, 57, 53, 0.04) 0%, transparent 65%),
                 radial-gradient(ellipse at 80% 100%, rgba(229, 57, 53, 0.03) 0%, transparent 55%);
         }
-
         .header {
-            width: 100%;
-            padding: 20px 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: var(--card);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            width: 100%; padding: 20px 32px; display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
             backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.92);
         }
         .logo-icon {
-            width: 38px;
-            height: 38px;
-            background: var(--red);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(229, 57, 53, 0.3);
+            width: 38px; height: 38px; background: var(--red); border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(229,57,53,0.3);
         }
-        .logo-icon svg {
-            width: 20px;
-            height: 20px;
-            fill: #fff;
-        }
-        .logo-text {
-            font-size: 1.25rem;
-            font-weight: 700;
-            letter-spacing: -0.3px;
-            color: var(--text);
-        }
-        .logo-dot {
-            color: var(--red);
-        }
-
-        .main-container {
-            width: 100%;
-            max-width: 780px;
-            padding: 24px 20px 48px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .hero-section {
-            text-align: center;
-            padding: 8px 0 4px;
-        }
-        .hero-title {
-            font-size: 1.9rem;
-            font-weight: 800;
-            letter-spacing: -0.6px;
-            line-height: 1.2;
-            color: var(--text);
-            margin-bottom: 6px;
-        }
-        .hero-subtitle {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-            line-height: 1.5;
-        }
+        .logo-icon svg { width:20px; height:20px; fill:#fff; }
+        .logo-text { font-size:1.25rem; font-weight:700; letter-spacing:-0.3px; color:var(--text); }
+        .logo-dot { color:var(--red); }
+        .main-container { width:100%; max-width:780px; padding:24px 20px 48px; display:flex; flex-direction:column; gap:24px; }
+        .hero-section { text-align:center; padding:8px 0 4px; }
+        .hero-title { font-size:1.9rem; font-weight:800; letter-spacing:-0.6px; line-height:1.2; color:var(--text); margin-bottom:6px; }
+        .hero-subtitle { font-size:0.95rem; color:var(--text-secondary); font-weight:400; line-height:1.5; }
         .privacy-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #E8F5E9;
-            color: #2E7D32;
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 6px 14px;
-            border-radius: 50px;
-            margin-top: 8px;
-            letter-spacing: 0.1px;
+            display:inline-flex; align-items:center; gap:6px; background:#E8F5E9; color:#2E7D32;
+            font-size:0.8rem; font-weight:600; padding:6px 14px; border-radius:50px; margin-top:8px;
         }
-        .privacy-badge .shield-icon {
-            width: 16px;
-            height: 16px;
-        }
-
+        .privacy-badge .shield-icon { width:16px; height:16px; }
         .tabs-container {
-            display: flex;
-            background: var(--card);
-            border-radius: var(--radius);
-            padding: 6px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
-            gap: 4px;
-            flex-wrap: wrap;
+            display:flex; background:var(--card); border-radius:var(--radius); padding:6px;
+            box-shadow:var(--shadow-sm); border:1px solid var(--border); gap:4px; flex-wrap:wrap;
         }
         .tab-btn {
-            flex: 1;
-            min-width: 90px;
-            padding: 12px 8px;
-            border: none;
-            background: transparent;
-            border-radius: var(--radius-sm);
-            font-family: var(--font);
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: var(--transition);
-            color: var(--text-secondary);
-            letter-spacing: -0.1px;
+            flex:1; min-width:90px; padding:12px 8px; border:none; background:transparent;
+            border-radius:var(--radius-sm); font-family:var(--font); font-weight:600; font-size:0.8rem;
+            cursor:pointer; transition:var(--transition); color:var(--text-secondary); letter-spacing:-0.1px;
         }
-        .tab-btn.active {
-            background: var(--red);
-            color: #fff;
-            box-shadow: 0 2px 8px rgba(229, 57, 53, 0.3);
-        }
-        .tab-btn:hover:not(.active) {
-            background: #F5F5F5;
-            color: var(--text);
-        }
-
+        .tab-btn.active { background:var(--red); color:#fff; box-shadow:0 2px 8px rgba(229,57,53,0.3); }
+        .tab-btn:hover:not(.active) { background:#F5F5F5; color:var(--text); }
         .card {
-            background: var(--card);
-            border-radius: var(--radius-lg);
-            padding: 28px 24px;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
+            background:var(--card); border-radius:var(--radius-lg); padding:28px 24px;
+            box-shadow:var(--shadow-md); border:1px solid var(--border); transition:var(--transition);
+            display:flex; flex-direction:column; gap:18px;
         }
         .card.accent-border {
-            border: 2px dashed var(--border-dashed);
-            border-radius: var(--radius-lg);
-            transition: all var(--transition);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            border:2px dashed var(--border-dashed); border-radius:var(--radius-lg); transition:all var(--transition);
+            cursor:pointer; position:relative; overflow:hidden;
         }
-        .card.accent-border:hover {
-            border-color: var(--red);
-            background: #FFFBFB;
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-1px);
-        }
-        .card.accent-border.drag-over {
-            border-color: var(--red);
-            background: var(--red-light);
-            border-style: solid;
-            transform: scale(1.01);
-            box-shadow: 0 0 0 8px rgba(229, 57, 53, 0.06);
-        }
+        .card.accent-border:hover { border-color:var(--red); background:#FFFBFB; box-shadow:var(--shadow-lg); transform:translateY(-1px); }
+        .card.accent-border.drag-over { border-color:var(--red); background:var(--red-light); border-style:solid; transform:scale(1.01); }
         .drop-zone-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-            text-align: center;
-            pointer-events: none;
-            padding: 16px 0;
+            display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center;
+            pointer-events:none; padding:16px 0;
         }
-        .upload-icon-wrapper {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: #FFF5F5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-        .card.accent-border:hover .upload-icon-wrapper {
-            background: #FFEBEB;
-            transform: scale(1.05);
-        }
-        .upload-icon-wrapper svg {
-            width: 30px;
-            height: 30px;
-            stroke: var(--red);
-            fill: none;
-            stroke-width: 2;
-        }
-        .drop-zone-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        .drop-zone-subtitle {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        .browse-link {
-            color: var(--red);
-            font-weight: 600;
-            text-decoration: underline;
-            text-underline-offset: 2px;
-            pointer-events: auto;
-            cursor: pointer;
-        }
-        .browse-link:hover {
-            color: var(--red-dark);
-        }
-
-        .file-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 220px;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
-        .file-list-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #F8F9FC;
-            border-radius: var(--radius-sm);
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-        }
-        .file-list-item .file-icon {
-            width: 32px;
-            height: 32px;
-            background: #fff;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: var(--shadow-sm);
-        }
-        .file-list-item .file-icon svg {
-            width: 16px;
-            height: 16px;
-            fill: var(--red);
-        }
-        .file-list-item .file-details {
-            flex: 1;
-            min-width: 0;
-        }
-        .file-list-item .file-name {
-            font-weight: 600;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .file-list-item .file-size {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-        .file-list-item .remove-file-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #999;
-            padding: 4px;
-            border-radius: 50%;
-            transition: var(--transition);
-        }
-        .file-list-item .remove-file-btn:hover {
-            background: #e0e0e0;
-            color: #555;
-        }
-
-        .options-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+        .upload-icon-wrapper { width:64px; height:64px; border-radius:50%; background:#FFF5F5; display:flex; align-items:center; justify-content:center; }
+        .card.accent-border:hover .upload-icon-wrapper { background:#FFEBEB; transform:scale(1.05); }
+        .upload-icon-wrapper svg { width:30px; height:30px; stroke:var(--red); fill:none; stroke-width:2; }
+        .drop-zone-title { font-weight:700; font-size:1.1rem; }
+        .drop-zone-subtitle { font-size:0.85rem; color:var(--text-secondary); }
+        .browse-link { color:var(--red); font-weight:600; text-decoration:underline; text-underline-offset:2px; pointer-events:auto; cursor:pointer; }
+        .browse-link:hover { color:var(--red-dark); }
+        .file-list { display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto; padding-right:4px; }
+        .file-list-item { display:flex; align-items:center; gap:10px; background:#F8F9FC; border-radius:var(--radius-sm); padding:10px 12px; border:1px solid var(--border); }
+        .file-list-item .file-icon { width:32px; height:32px; background:#fff; border-radius:6px; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-sm); }
+        .file-list-item .file-icon svg { width:16px; height:16px; fill:var(--red); }
+        .file-list-item .file-details { flex:1; min-width:0; }
+        .file-list-item .file-name { font-weight:600; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .file-list-item .file-size { font-size:0.75rem; color:var(--text-secondary); }
+        .file-list-item .remove-file-btn { background:none; border:none; cursor:pointer; color:#999; padding:4px; border-radius:50%; }
+        .file-list-item .remove-file-btn:hover { background:#e0e0e0; color:#555; }
+        .options-row { display:flex; gap:10px; flex-wrap:wrap; }
         .option-btn {
-            flex: 1;
-            min-width: 90px;
-            padding: 10px 12px;
-            border-radius: var(--radius-sm);
-            border: 2px solid var(--border);
-            background: #fff;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.8rem;
-            transition: var(--transition);
-            text-align: center;
-            color: var(--text);
+            flex:1; min-width:90px; padding:10px 12px; border-radius:var(--radius-sm); border:2px solid var(--border);
+            background:#fff; cursor:pointer; font-weight:600; font-size:0.8rem; transition:var(--transition); text-align:center; color:var(--text);
         }
-        .option-btn.active {
-            border-color: var(--red);
-            background: #FFF5F5;
-            color: var(--red);
-            box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.08);
-        }
-        .option-label {
-            display: block;
-            font-size: 0.85rem;
-        }
-        .option-hint {
-            display: block;
-            font-size: 0.7rem;
-            font-weight: 400;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-        .option-btn.active .option-hint {
-            color: #E57373;
-        }
-
+        .option-btn.active { border-color:var(--red); background:#FFF5F5; color:var(--red); box-shadow:0 0 0 3px rgba(229,57,53,0.08); }
+        .option-label { display:block; font-size:0.85rem; }
+        .option-hint { display:block; font-size:0.7rem; font-weight:400; color:var(--text-secondary); margin-top:2px; }
+        .option-btn.active .option-hint { color:#E57373; }
         .compress-btn {
-            width: 100%;
-            padding: 15px 24px;
-            background: var(--red);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: var(--transition);
-            box-shadow: 0 4px 16px rgba(229, 57, 53, 0.3);
+            width:100%; padding:15px 24px; background:var(--red); color:#fff; border:none; border-radius:var(--radius);
+            font-size:1rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+            transition:var(--transition); box-shadow:0 4px 16px rgba(229,57,53,0.3);
         }
-        .compress-btn:hover:not(:disabled) {
-            background: var(--red-dark);
-            box-shadow: 0 6px 22px rgba(229, 57, 53, 0.4);
-            transform: translateY(-1px);
-        }
-        .compress-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            box-shadow: none;
-            transform: none;
-        }
+        .compress-btn:hover:not(:disabled) { background:var(--red-dark); box-shadow:0 6px 22px rgba(229,57,53,0.4); }
+        .compress-btn:disabled { background:#ccc; cursor:not-allowed; }
+        .processing-card { display:none; flex-direction:column; align-items:center; gap:16px; padding:32px 20px; animation:fadeSlideIn 0.3s ease; }
+        .processing-card.visible { display:flex; }
+        .spinner { width:44px; height:44px; border:4px solid #FEE; border-top-color:var(--red); border-radius:50%; animation:spin 0.7s linear infinite; }
+        .processing-text { font-weight:600; color:var(--text-secondary); font-size:0.9rem; }
+        
+        /* New Progress Bar Styles */
+        .progress-bar-bg { width: 100%; max-width: 320px; height: 10px; background: #E0E0E0; border-radius: 10px; overflow: hidden; display: none; }
+        .progress-bar-fill { width: 0%; height: 100%; background: var(--red); transition: width 0.2s ease-out; }
 
-        .processing-card {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            padding: 32px 20px;
-            animation: fadeSlideIn 0.3s ease;
-        }
-        .processing-card.visible {
-            display: flex;
-        }
-        .spinner {
-            width: 44px;
-            height: 44px;
-            border: 4px solid #FEE;
-            border-top-color: var(--red);
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-        .processing-text {
-            font-weight: 600;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .results-card {
-            display: none;
-            flex-direction: column;
-            gap: 16px;
-            animation: fadeSlideIn 0.4s ease;
-        }
-        .results-card.visible {
-            display: flex;
-        }
-        .result-items {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .result-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            background: #F8F9FA;
-            border-radius: var(--radius-sm);
-            padding: 12px 14px;
-            flex-wrap: wrap;
-        }
-        .result-item .file-summary {
-            flex: 1;
-            min-width: 0;
-            font-size: 0.85rem;
-        }
-        .result-item .file-summary .result-name {
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .result-item .file-summary .result-sizes {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-        .result-item .download-single {
-            background: none;
-            border: 1.5px solid var(--border);
-            padding: 6px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.75rem;
-            transition: var(--transition);
-            color: var(--text);
-            white-space: nowrap;
-        }
-        .result-item .download-single:hover {
-            border-color: var(--red);
-            color: var(--red);
-            background: #FFF5F5;
-        }
-        .download-all-btn {
-            width: 100%;
-            padding: 12px 20px;
-            background: #1A1A1A;
-            color: #fff;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 0.9rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: var(--transition);
-        }
-        .download-all-btn:hover {
-            background: #333;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .reset-link {
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-weight: 500;
-        }
-        .reset-link:hover {
-            color: var(--red);
-        }
-
-        .slider-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .slider-container input[type="range"] {
-            flex: 1;
-            min-width: 120px;
-            accent-color: var(--red);
-        }
-        .slider-value {
-            font-weight: 600;
-            width: 60px;
-            text-align: right;
-            font-size: 0.9rem;
-        }
-        select {
-            padding: 10px 12px;
-            border-radius: var(--radius-sm);
-            border: 2px solid var(--border);
-            font-family: var(--font);
-            font-weight: 500;
-            background: #fff;
-        }
-        select:focus {
-            border-color: var(--red);
-            outline: none;
-        }
-
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-        }
-        .checkbox-container input[type="checkbox"] {
-            accent-color: var(--red);
-            width: 18px;
-            height: 18px;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 16px 20px 24px;
-            color: var(--text-secondary);
-            font-size: 0.78rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            justify-content: center;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 600px) {
-            .hero-title { font-size: 1.5rem; }
-            .card { padding: 20px 16px; }
-        }
+        .results-card { display:none; flex-direction:column; gap:16px; animation:fadeSlideIn 0.4s ease; }
+        .results-card.visible { display:flex; }
+        .result-items { display:flex; flex-direction:column; gap:10px; }
+        .result-item { display:flex; align-items:center; justify-content:space-between; gap:12px; background:#F8F9FA; border-radius:var(--radius-sm); padding:12px 14px; flex-wrap:wrap; }
+        .result-item .file-summary { flex:1; min-width:0; font-size:0.85rem; }
+        .result-item .file-summary .result-name { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .result-item .file-summary .result-sizes { font-size:0.75rem; color:var(--text-secondary); }
+        .result-item .download-single { background:none; border:1.5px solid var(--border); padding:6px 10px; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.75rem; transition:var(--transition); color:var(--text); white-space:nowrap; }
+        .result-item .download-single:hover { border-color:var(--red); color:var(--red); background:#FFF5F5; }
+        .download-all-btn { width:100%; padding:12px 20px; background:#1A1A1A; color:#fff; border:none; border-radius:var(--radius); font-size:0.9rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .download-all-btn:hover { background:#333; }
+        .reset-link { text-align:center; font-size:0.85rem; color:var(--text-secondary); cursor:pointer; font-weight:500; }
+        .reset-link:hover { color:var(--red); }
+        .slider-container { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+        .slider-container input[type="range"] { flex:1; min-width:120px; accent-color:var(--red); }
+        .slider-value { font-weight:600; width:60px; text-align:right; font-size:0.9rem; }
+        select { padding:10px 12px; border-radius:var(--radius-sm); border:2px solid var(--border); font-family:var(--font); font-weight:500; background:#fff; }
+        select:focus { border-color:var(--red); outline:none; }
+        .checkbox-container { display:flex; align-items:center; gap:8px; font-size:0.9rem; }
+        .checkbox-container input[type="checkbox"] { accent-color:var(--red); width:18px; height:18px; }
+        .footer { text-align:center; padding:16px 20px 24px; color:var(--text-secondary); font-size:0.78rem; display:flex; flex-wrap:wrap; gap:16px; justify-content:center; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        @keyframes fadeSlideIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+        @media (max-width:600px) { .hero-title { font-size:1.5rem; } .card { padding:20px 16px; } }
     </style>
 </head>
 <body>
-
     <header class="header">
-        <div class="logo-icon">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM8 13h8v2H8v-2zm0 4h8v2H8v-2zm0-8h3v2H8V9z"/></svg>
-        </div>
+        <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM8 13h8v2H8v-2zm0 4h8v2H8v-2zm0-8h3v2H8V9z"/></svg></div>
         <span class="logo-text">File<span class="logo-dot">.</span>Tools</span>
     </header>
 
@@ -600,13 +185,10 @@
             <button class="tab-btn" data-tab="video">🎬 Video (TikTok HD)</button>
         </div>
 
-        <!-- PDF Compressor Tab -->
         <div class="tab-panel" id="pdfTab">
             <div class="card accent-border" id="dropZone">
                 <div class="drop-zone-content">
-                    <div class="upload-icon-wrapper">
-                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-                    </div>
+                    <div class="upload-icon-wrapper"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
                     <div>
                         <div class="drop-zone-title">Drop PDFs here (max 5)</div>
                         <div class="drop-zone-subtitle">or <span class="browse-link" id="browseLink">browse</span></div>
@@ -621,40 +203,40 @@
             <div class="card" id="actionCard" style="display:none;">
                 <div style="font-weight:700;">Compression Level</div>
                 <div class="options-row" id="optionsRow">
-                    <button class="option-btn" data-level="basic"><span class="option-label">Basic</span><span class="option-hint">Faster</span></button>
-                    <button class="option-btn active" data-level="recommended"><span class="option-label">Recommended</span><span class="option-hint">Balanced</span></button>
-                    <button class="option-btn" data-level="maximum"><span class="option-label">Maximum</span><span class="option-hint">Smallest</span></button>
+                    <button class="option-btn" data-level="basic"><span class="option-label">Basic</span></button>
+                    <button class="option-btn active" data-level="recommended"><span class="option-label">Recommended</span></button>
+                    <button class="option-btn" data-level="maximum"><span class="option-label">Maximum</span></button>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="optimizeImagesCheckbox">
+                    <label for="optimizeImagesCheckbox">Optimize embedded JPEGs</label>
+                </div>
+                <div id="imageQualityRow" style="display:none; justify-content:space-between; align-items:center;">
+                    <span>Image quality</span>
+                    <div class="slider-container">
+                        <input type="range" id="pdfImageQualitySlider" min="10" max="100" value="75" step="5">
+                        <span class="slider-value" id="pdfImageQualityValue">75%</span>
+                    </div>
                 </div>
                 <div class="checkbox-container">
                     <input type="checkbox" id="keepPdfNameCheckbox">
-                    <label for="keepPdfNameCheckbox">Keep original filename (no "_compressed" suffix)</label>
+                    <label for="keepPdfNameCheckbox">Keep original filename</label>
                 </div>
-                <button class="compress-btn" id="compressBtn">
-                    <span class="btn-icon"><svg viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg></span> Compress All PDFs
-                </button>
+                <button class="compress-btn" id="compressBtn">Compress All PDFs</button>
             </div>
-            <div class="card processing-card" id="processingCard">
-                <div class="spinner"></div>
-                <div class="processing-text" id="processingText">Compressing PDFs…</div>
-            </div>
+            <div class="card processing-card" id="processingCard"><div class="spinner"></div><div class="processing-text" id="processingText">Compressing PDFs…</div></div>
             <div class="card results-card" id="resultsCard">
                 <div style="font-weight:700;text-align:center;">✅ Compression Complete</div>
                 <div class="result-items" id="pdfResultItems"></div>
-                <button class="download-all-btn" id="pdfDownloadAllBtn" style="display:none;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                    Download All as ZIP
-                </button>
-                <span class="reset-link" id="resetLink">Compress more files</span>
+                <button class="download-all-btn" id="pdfDownloadAllBtn" style="display:none;">Download All as ZIP</button>
+                <span class="reset-link" id="resetLink">Compress more</span>
             </div>
         </div>
 
-        <!-- Image Compressor Tab -->
         <div class="tab-panel" id="imageCompressTab" style="display:none;">
             <div class="card accent-border" id="imgCompressDropZone">
                 <div class="drop-zone-content">
-                    <div class="upload-icon-wrapper">
-                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                    </div>
+                    <div class="upload-icon-wrapper"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
                     <div>
                         <div class="drop-zone-title">Drop images here (max 5)</div>
                         <div class="drop-zone-subtitle">or <span class="browse-link" id="imgCompressBrowseLink">browse</span></div>
@@ -668,35 +250,26 @@
             </div>
             <div class="card" id="imgCompressActionCard" style="display:none;">
                 <div style="font-weight:700;">Settings</div>
-                <div style="display:flex; flex-direction:column; gap:12px;">
-                    <div style="display:flex; justify-content:space-between;"><span>Quality</span>
-                        <div class="slider-container"><input type="range" id="imgQualitySlider" min="10" max="100" value="75" step="5"><span class="slider-value" id="imgQualityValue">75%</span></div>
-                    </div>
-                    <div style="display:flex; justify-content:space-between;"><span>Scale</span>
-                        <div class="slider-container"><input type="range" id="imgScaleSlider" min="10" max="100" value="100" step="5"><span class="slider-value" id="imgScaleValue">100%</span></div>
-                    </div>
-                    <div style="display:flex; justify-content:space-between;"><span>Format</span>
-                        <select id="imgCompressFormat"><option value="original">Same as original</option><option value="jpeg">JPEG</option><option value="png">PNG</option><option value="webp">WebP</option></select>
-                    </div>
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                    <div style="display:flex;justify-content:space-between;"><span>Quality</span><div class="slider-container"><input type="range" id="imgQualitySlider" min="10" max="100" value="75"><span class="slider-value" id="imgQualityValue">75%</span></div></div>
+                    <div style="display:flex;justify-content:space-between;"><span>Scale</span><div class="slider-container"><input type="range" id="imgScaleSlider" min="10" max="100" value="100"><span class="slider-value" id="imgScaleValue">100%</span></div></div>
+                    <div style="display:flex;justify-content:space-between;"><span>Format</span><select id="imgCompressFormat"><option value="original">Same as original</option><option value="jpeg">JPEG</option><option value="png">PNG</option><option value="webp">WebP</option></select></div>
                 </div>
-                <button class="compress-btn" id="imgCompressBtn"><span class="btn-icon"><svg viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg></span> Compress All</button>
+                <button class="compress-btn" id="imgCompressBtn">Compress All</button>
             </div>
-            <div class="card processing-card" id="imgCompressProcessingCard"><div class="spinner"></div><div class="processing-text">Compressing images…</div></div>
+            <div class="card processing-card" id="imgCompressProcessingCard"><div class="spinner"></div><div class="processing-text" id="imgCompressProcessingText">Compressing images…</div></div>
             <div class="card results-card" id="imgCompressResultsCard">
-                <div style="font-weight:700;text-align:center;">✅ Images Compressed</div>
+                <div style="font-weight:700;">✅ Images Compressed</div>
                 <div class="result-items" id="imgCompressResultItems"></div>
                 <button class="download-all-btn" id="imgCompressDownloadAllBtn" style="display:none;">Download All as ZIP</button>
                 <span class="reset-link" id="imgCompressResetLink">Compress more</span>
             </div>
         </div>
 
-        <!-- Image Converter Tab -->
         <div class="tab-panel" id="imageConvertTab" style="display:none;">
             <div class="card accent-border" id="imgConvertDropZone">
                 <div class="drop-zone-content">
-                    <div class="upload-icon-wrapper">
-                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><polyline points="21 15 16 10 5 21"/></svg>
-                    </div>
+                    <div class="upload-icon-wrapper"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><polyline points="21 15 16 10 5 21"/></svg></div>
                     <div>
                         <div class="drop-zone-title">Drop images (max 5)</div>
                         <div class="drop-zone-subtitle">or <span class="browse-link" id="imgConvertBrowseLink">browse</span></div>
@@ -710,33 +283,26 @@
             </div>
             <div class="card" id="imgConvertActionCard" style="display:none;">
                 <div style="font-weight:700;">Target Format</div>
-                <div style="display:flex; justify-content:space-between;"><span>Convert to</span>
-                    <select id="imgConvertTargetFormat"><option value="jpeg">JPEG</option><option value="png">PNG</option><option value="webp">WebP</option></select>
-                </div>
-                <div style="display:flex; justify-content:space-between;"><span>Quality</span>
-                    <div class="slider-container"><input type="range" id="imgConvertQualitySlider" min="10" max="100" value="85" step="5"><span class="slider-value" id="imgConvertQualityValue">85%</span></div>
-                </div>
+                <div style="display:flex;justify-content:space-between;"><span>Convert to</span><select id="imgConvertTargetFormat"><option value="jpeg">JPEG</option><option value="png">PNG</option><option value="webp">WebP</option></select></div>
+                <div style="display:flex;justify-content:space-between;"><span>Quality</span><div class="slider-container"><input type="range" id="imgConvertQualitySlider" min="10" max="100" value="85"><span class="slider-value" id="imgConvertQualityValue">85%</span></div></div>
                 <button class="compress-btn" id="imgConvertBtn">Convert All</button>
             </div>
-            <div class="card processing-card" id="imgConvertProcessingCard"><div class="spinner"></div><div class="processing-text">Converting…</div></div>
+            <div class="card processing-card" id="imgConvertProcessingCard"><div class="spinner"></div><div class="processing-text" id="imgConvertProcessingText">Converting…</div></div>
             <div class="card results-card" id="imgConvertResultsCard">
-                <div style="font-weight:700;text-align:center;">✅ Conversion Complete</div>
+                <div style="font-weight:700;">✅ Conversion Complete</div>
                 <div class="result-items" id="imgConvertResultItems"></div>
                 <button class="download-all-btn" id="imgConvertDownloadAllBtn" style="display:none;">Download All as ZIP</button>
                 <span class="reset-link" id="imgConvertResetLink">Convert more</span>
             </div>
         </div>
 
-        <!-- Video Compressor Tab (TikTok HD) -->
         <div class="tab-panel" id="videoTab" style="display:none;">
             <div class="card accent-border" id="videoDropZone">
                 <div class="drop-zone-content">
-                    <div class="upload-icon-wrapper">
-                        <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-                    </div>
+                    <div class="upload-icon-wrapper"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
                     <div>
                         <div class="drop-zone-title">Drop video (max 1)</div>
-                        <div class="drop-zone-subtitle">or <span class="browse-link" id="videoBrowseLink">browse</span> · MP4, MOV, etc.</div>
+                        <div class="drop-zone-subtitle">or <span class="browse-link" id="videoBrowseLink">browse</span></div>
                     </div>
                 </div>
                 <input type="file" id="videoFileInput" accept="video/*" hidden>
@@ -747,30 +313,26 @@
             </div>
             <div class="card" id="videoActionCard" style="display:none;">
                 <div style="font-weight:700;">TikTok HD Settings</div>
-                <div style="background:#f0f4f8; padding:12px; border-radius:10px; font-size:0.9rem; display:flex; flex-direction:column; gap:6px;">
-                    <span>🎯 Resolution: <strong>1080 x 1920</strong> (Full HD portrait)</span>
-                    <span>🎞️ Frame rate: <strong>30 fps</strong></span>
-                    <span>🎛️ Bitrate: <strong id="videoBitrateDisplay">12 Mbps</strong></span>
+                <div style="background:#f0f4f8;padding:12px;border-radius:10px;">
+                    <div>🎯 1080x1920 · 30fps</div>
+                    <div>🎛️ Bitrate: <strong id="videoBitrateDisplay">12 Mbps</strong></div>
                 </div>
-                <div style="display:flex; justify-content:space-between;">
-                    <span>Bitrate (Mbps)</span>
-                    <div class="slider-container">
-                        <input type="range" id="videoBitrateSlider" min="8" max="15" value="12" step="0.5">
-                        <span class="slider-value" id="videoBitrateValue">12 Mbps</span>
-                    </div>
-                </div>
-                <button class="compress-btn" id="videoCompressBtn">
-                    <span class="btn-icon"><svg viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg></span> Compress for TikTok
-                </button>
+                <div style="display:flex;justify-content:space-between;"><span>Bitrate (Mbps)</span><div class="slider-container"><input type="range" id="videoBitrateSlider" min="8" max="15" value="12" step="0.5"><span class="slider-value" id="videoBitrateValue">12 Mbps</span></div></div>
+                <button class="compress-btn" id="videoCompressBtn">Compress for TikTok</button>
             </div>
+            
             <div class="card processing-card" id="videoProcessingCard">
                 <div class="spinner"></div>
-                <div class="processing-text" id="videoProcessingText">Initializing FFmpeg…</div>
+                <div class="processing-text" id="videoProcessingText">Initializing…</div>
+                <div class="progress-bar-bg" id="videoProgressBg">
+                    <div class="progress-bar-fill" id="videoProgressBar"></div>
+                </div>
             </div>
+
             <div class="card results-card" id="videoResultsCard">
-                <div style="font-weight:700;text-align:center;">✅ Video Processed</div>
+                <div style="font-weight:700;">✅ Video Processed</div>
                 <div class="result-items" id="videoResultItems"></div>
-                <span class="reset-link" id="videoResetLink">Process another video</span>
+                <span class="reset-link" id="videoResetLink">Process another</span>
             </div>
         </div>
     </main>
@@ -785,7 +347,7 @@
         import { FFmpeg } from '@ffmpeg/ffmpeg';
         import { fetchFile, toBlobURL } from '@ffmpeg/util';
 
-        // ── Tab switching ────────────────
+        // Tab switching
         const tabs = document.querySelectorAll('.tab-btn');
         const panels = {
             pdf: document.getElementById('pdfTab'),
@@ -797,206 +359,220 @@
             btn.addEventListener('click', () => {
                 tabs.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                Object.entries(panels).forEach(([id, panel]) => {
-                    panel.style.display = id === btn.dataset.tab ? '' : 'none';
-                });
+                Object.entries(panels).forEach(([id, panel]) => panel.style.display = id === btn.dataset.tab ? '' : 'none');
             });
         });
 
-        // ── Utilities ────────────────────
-        function formatBytes(bytes) {
-            if (bytes === 0) return '0 B';
-            const k = 1024;
-            const sizes = ['B', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-        }
-        function showElement(el) { el.style.display = ''; el.classList.add('visible'); }
-        function hideElement(el) { el.style.display = 'none'; el.classList.remove('visible'); }
+        // Helpers
+        const formatBytes = (b) => {
+            if (b === 0) return '0 B';
+            const k = 1024, s = ['B','KB','MB','GB'];
+            const i = Math.floor(Math.log(b) / Math.log(k));
+            return parseFloat((b / Math.pow(k, i)).toFixed(1)) + ' ' + s[i];
+        };
+        const show = el => { el.style.display = ''; el.classList.add('visible'); };
+        const hide = el => { el.style.display = 'none'; el.classList.remove('visible'); };
 
-        // ── Multi-file tool (shared logic) ──
-        function createMultiFileTool(config) {
+        // Generic multi‑file tool
+        function createMultiFileTool(cfg) {
             const {
-                dropZoneId, fileInputId, browseLinkId, fileListCardId, fileListContainerId,
-                fileCountSpanId, actionCardId, compressBtnId, processingCardId, processingTextId,
-                resultsCardId, resultItemsId, downloadAllBtnId, resetLinkId, onProcess, getFileFilter,
-                maxFiles = 5
-            } = config;
-            const dropZone = document.getElementById(dropZoneId);
-            const fileInput = document.getElementById(fileInputId);
-            const browseLink = document.getElementById(browseLinkId);
-            const fileListCard = document.getElementById(fileListCardId);
-            const fileListContainer = document.getElementById(fileListContainerId);
-            const fileCountSpan = document.getElementById(fileCountSpanId);
-            const actionCard = document.getElementById(actionCardId);
-            const compressBtn = document.getElementById(compressBtnId);
-            const processingCard = document.getElementById(processingCardId);
-            const processingText = document.getElementById(processingTextId);
-            const resultsCard = document.getElementById(resultsCardId);
-            const resultItems = document.getElementById(resultItemsId);
-            const downloadAllBtn = document.getElementById(downloadAllBtnId);
-            const resetLink = document.getElementById(resetLinkId);
+                dzId, fiId, blId, flcId, flId, fcsId, acId, cbId, pcId, ptId, rcId, riId, daId, rlId,
+                onProcess, getFileFilter, maxFiles = 5
+            } = cfg;
+            const dz = document.getElementById(dzId), fi = document.getElementById(fiId), bl = document.getElementById(blId);
+            const flc = document.getElementById(flcId), fl = document.getElementById(flId), fcs = document.getElementById(fcsId);
+            const ac = document.getElementById(acId), cb = document.getElementById(cbId);
+            const pc = document.getElementById(pcId), pt = document.getElementById(ptId);
+            const rc = document.getElementById(rcId), ri = document.getElementById(riId), da = document.getElementById(daId), rl = document.getElementById(rlId);
 
-            let files = [];
-            let resultsList = [];
+            let files = [], results = [];
 
-            function renderFileList() {
-                fileListContainer.innerHTML = '';
-                files.forEach((file, idx) => {
-                    const item = document.createElement('div');
-                    item.className = 'file-list-item';
-                    item.innerHTML = `
-                        <div class="file-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/></svg></div>
-                        <div class="file-details">
-                            <div class="file-name">${file.name}</div>
-                            <div class="file-size">${formatBytes(file.size)}</div>
-                        </div>
-                        <button class="remove-file-btn" data-index="${idx}"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15" stroke="#fff" stroke-width="2"/><line x1="9" y1="9" x2="15" y2="15" stroke="#fff" stroke-width="2"/></svg></button>
-                    `;
-                    item.querySelector('.remove-file-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        files.splice(idx, 1);
-                        if (files.length === 0) resetUI();
-                        else { renderFileList(); fileCountSpan.textContent = files.length; }
+            function renderFiles() {
+                fl.innerHTML = '';
+                files.forEach((f, i) => {
+                    const d = document.createElement('div'); d.className = 'file-list-item';
+                    d.innerHTML = `<div class="file-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/></svg></div>
+                        <div class="file-details"><div class="file-name">${f.name}</div><div class="file-size">${formatBytes(f.size)}</div></div>
+                        <button class="remove-file-btn" data-index="${i}"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15" stroke="#fff" stroke-width="2"/><line x1="9" y1="9" x2="15" y2="15" stroke="#fff" stroke-width="2"/></svg></button>`;
+                    d.querySelector('.remove-file-btn').addEventListener('click', (e) => {
+                        e.stopPropagation(); files.splice(i,1);
+                        if (!files.length) reset(); else { renderFiles(); fcs.textContent = files.length; }
                     });
-                    fileListContainer.appendChild(item);
+                    fl.appendChild(d);
                 });
-                fileCountSpan.textContent = files.length;
+                fcs.textContent = files.length;
             }
 
-            function resetUI() {
-                files = []; resultsList = [];
-                hideElement(fileListCard); hideElement(actionCard); hideElement(processingCard); hideElement(resultsCard);
-                dropZone.style.display = ''; fileInput.value = '';
+            function reset() {
+                files = []; results = [];
+                hide(flc); hide(ac); hide(pc); hide(rc);
+                dz.style.display = ''; fi.value = '';
             }
 
-            function addFiles(newFiles) {
-                const filtered = Array.from(newFiles).filter(f => getFileFilter ? getFileFilter(f) : true);
+            function addFiles(nf) {
+                const filtered = Array.from(nf).filter(f => getFileFilter ? getFileFilter(f) : true);
                 if (!filtered.length) { alert('Invalid file type.'); return; }
-                const combined = files.concat(filtered).slice(0, maxFiles);
-                if (combined.length > maxFiles) alert(`Max ${maxFiles} file(s).`);
-                files = combined.slice(0, maxFiles);
+                files = files.concat(filtered).slice(0, maxFiles);
                 if (files.length) {
-                    hideElement(dropZone); hideElement(resultsCard); hideElement(processingCard);
-                    showElement(fileListCard); showElement(actionCard); renderFileList();
+                    hide(dz); hide(rc); hide(pc);
+                    show(flc); show(ac); renderFiles();
                 }
             }
 
-            dropZone.addEventListener('click', (e) => { if (e.target === browseLink) return; fileInput.click(); });
-            browseLink.addEventListener('click', (e) => { e.stopPropagation(); fileInput.click(); });
-            fileInput.addEventListener('change', () => { if (fileInput.files.length) addFiles(fileInput.files); fileInput.value = ''; });
-            ['dragenter','dragover','dragleave','drop'].forEach(evt => {
-                dropZone.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); });
-            });
-            dropZone.addEventListener('dragenter', () => dropZone.classList.add('drag-over'));
-            dropZone.addEventListener('dragover', () => dropZone.classList.add('drag-over'));
-            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-            dropZone.addEventListener('drop', () => { dropZone.classList.remove('drag-over'); if (event.dataTransfer.files.length) addFiles(event.dataTransfer.files); });
+            dz.addEventListener('click', e => { if (e.target === bl) return; fi.click(); });
+            bl.addEventListener('click', e => { e.stopPropagation(); fi.click(); });
+            fi.addEventListener('change', () => { if (fi.files.length) addFiles(fi.files); fi.value = ''; });
+            ['dragenter','dragover','dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
+            dz.addEventListener('dragenter', () => dz.classList.add('drag-over'));
+            dz.addEventListener('dragover', () => dz.classList.add('drag-over'));
+            dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+            dz.addEventListener('drop', (e) => { dz.classList.remove('drag-over'); if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
 
-            compressBtn.addEventListener('click', async () => {
+            cb.addEventListener('click', async () => {
                 if (!files.length) return;
-                hideElement(actionCard); hideElement(fileListCard); hideElement(resultsCard); hideElement(dropZone);
-                showElement(processingCard); compressBtn.disabled = true;
-                resultsList = [];
+                hide(ac); hide(flc); hide(rc); hide(dz);
+                show(pc); cb.disabled = true;
+                results = [];
                 try {
                     for (let i = 0; i < files.length; i++) {
-                        processingText.textContent = `Processing ${i+1}/${files.length}…`;
-                        const result = await onProcess(files[i], i);
-                        resultsList.push({
-                            name: result.name || files[i].name,
-                            blob: result.blob,
+                        pt.textContent = `Processing ${i+1}/${files.length}…`;
+                        const r = await onProcess(files[i], i);
+                        results.push({
+                            name: r.name || files[i].name,
+                            blob: r.blob,
                             originalSize: files[i].size,
-                            compressedSize: result.blob.size
+                            compressedSize: r.blob.size
                         });
                     }
-                    hideElement(processingCard); showElement(resultsCard);
-                    resultItems.innerHTML = '';
-                    resultsList.forEach((r, idx) => {
+                    hide(pc); show(rc);
+                    ri.innerHTML = '';
+                    results.forEach((r, idx) => {
                         const saved = r.originalSize - r.compressedSize;
                         const pct = r.originalSize ? Math.round((saved / r.originalSize) * 100) : 0;
-                        const item = document.createElement('div');
-                        item.className = 'result-item';
+                        const item = document.createElement('div'); item.className = 'result-item';
                         item.innerHTML = `
                             <div class="file-summary">
                                 <div class="result-name">${r.name}</div>
                                 <div class="result-sizes">${formatBytes(r.originalSize)} → ${formatBytes(r.compressedSize)} (${saved>=0?'-'+formatBytes(Math.abs(saved)):'+'+formatBytes(Math.abs(saved))} / ${saved>=0?pct+'%':'larger'})</div>
                             </div>
-                            <button class="download-single" data-index="${idx}">⬇ Download</button>
-                        `;
+                            <button class="download-single" data-index="${idx}">⬇ Download</button>`;
                         item.querySelector('.download-single').addEventListener('click', () => {
                             const url = URL.createObjectURL(r.blob);
-                            const a = document.createElement('a');
-                            a.href = url; a.download = r.name;
+                            const a = document.createElement('a'); a.href = url; a.download = r.name;
                             document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
                         });
-                        resultItems.appendChild(item);
+                        ri.appendChild(item);
                     });
-                    if (resultsList.length > 1) {
-                        downloadAllBtn.style.display = 'flex';
-                        downloadAllBtn.onclick = async () => {
+                    if (results.length > 1) {
+                        da.style.display = 'flex';
+                        da.onclick = async () => {
                             const zip = new JSZip();
-                            resultsList.forEach(r => zip.file(r.name, r.blob));
-                            const zipBlob = await zip.generateAsync({ type: 'blob' });
-                            const url = URL.createObjectURL(zipBlob);
+                            results.forEach(r => zip.file(r.name, r.blob));
+                            const blob = await zip.generateAsync({type:'blob'});
+                            const url = URL.createObjectURL(blob);
                             const a = document.createElement('a'); a.href = url; a.download = 'compressed_files.zip';
                             document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
                         };
-                    } else downloadAllBtn.style.display = 'none';
-                } catch (err) {
-                    alert('Error: ' + err.message); resetUI();
-                } finally { compressBtn.disabled = false; }
+                    } else da.style.display = 'none';
+                } catch (err) { alert('Error: ' + err.message); reset(); }
+                finally { cb.disabled = false; }
             });
-
-            resetLink.addEventListener('click', resetUI);
-            resetUI();
-            return { resetUI, addFiles };
+            rl.addEventListener('click', reset);
+            reset();
         }
 
-        // ── PDF Tool ──────────────────────
+        // ---------- PDF tool ----------
         createMultiFileTool({
-            dropZoneId: 'dropZone', fileInputId: 'fileInput', browseLinkId: 'browseLink',
-            fileListCardId: 'fileListCard', fileListContainerId: 'pdfFileList', fileCountSpanId: 'pdfFileCount',
-            actionCardId: 'actionCard', compressBtnId: 'compressBtn', processingCardId: 'processingCard',
-            processingTextId: 'processingText', resultsCardId: 'resultsCard', resultItemsId: 'pdfResultItems',
-            downloadAllBtnId: 'pdfDownloadAllBtn', resetLinkId: 'resetLink',
-            getFileFilter: f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'),
+            dzId:'dropZone', fiId:'fileInput', blId:'browseLink', flcId:'fileListCard', flId:'pdfFileList', fcsId:'pdfFileCount',
+            acId:'actionCard', cbId:'compressBtn', pcId:'processingCard', ptId:'processingText', rcId:'resultsCard', riId:'pdfResultItems',
+            daId:'pdfDownloadAllBtn', rlId:'resetLink',
+            getFileFilter: f => f.type==='application/pdf' || f.name.toLowerCase().endsWith('.pdf'),
             onProcess: async (file) => {
                 const arrayBuffer = await file.arrayBuffer();
                 const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer, { ignoreEncryption: true, updateMetadata: false });
-                const activeBtn = document.querySelector('#optionsRow .option-btn.active');
-                const level = activeBtn ? activeBtn.dataset.level : 'recommended';
+                const level = (document.querySelector('#optionsRow .option-btn.active')?.dataset.level) || 'recommended';
+                const optimize = document.getElementById('optimizeImagesCheckbox').checked;
+                const quality = parseInt(document.getElementById('pdfImageQualitySlider').value);
+
+                if (optimize) {
+                    const pages = pdfDoc.getPages();
+                    for (const page of pages) {
+                        const resources = page.node.Resources();
+                        if (!resources) continue;
+                        const xobj = resources.get('XObject');
+                        if (!xobj) continue;
+                        const keys = xobj.keys();
+                        for (const key of keys) {
+                            const xref = xobj.get(key);
+                            const obj = pdfDoc.context.lookup(xref);
+                            if (!obj || !obj.dict) continue;
+                            const subtype = obj.dict.get('Subtype');
+                            if (!subtype || subtype.name !== 'Image') continue;
+                            
+                            const filter = obj.dict.get('Filter');
+                            let isJpeg = false;
+                            
+                            if (filter) {
+                                const filterName = filter.name || (typeof filter.get === 'function' && filter.get(0)?.name);
+                                isJpeg = (filterName === 'DCTDecode');
+                            }
+                            
+                            if (!isJpeg) continue;
+                            try {
+                                const bytes = obj.contents;
+                                const blob = new Blob([bytes], { type: 'image/jpeg' });
+                                const img = await createImageBitmap(blob);
+                                const canvas = document.createElement('canvas');
+                                canvas.width = img.width; canvas.height = img.height;
+                                canvas.getContext('2d').drawImage(img, 0, 0);
+                                const newBlob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', quality/100));
+                                const newBytes = new Uint8Array(await newBlob.arrayBuffer());
+                                obj.contents = newBytes;
+                                obj.dict.set(PDFLib.PDFName.of('Filter'), PDFLib.PDFName.of('DCTDecode'));
+                                const dpKey = PDFLib.PDFName.of('DecodeParms');
+                                if (obj.dict.has(dpKey)) obj.dict.delete(dpKey);
+                            } catch (e) { console.warn('image skip', e); }
+                        }
+                    }
+                }
                 if (level === 'maximum') {
                     try { pdfDoc.setTitle(''); pdfDoc.setAuthor(''); pdfDoc.setSubject(''); pdfDoc.setKeywords([]); pdfDoc.setProducer(''); pdfDoc.setCreator(''); } catch(e){}
                 }
-                const compressed = await pdfDoc.save({ useObjectStreams: level !== 'basic', addDefaultPage: false });
-                const keepOriginal = document.getElementById('keepPdfNameCheckbox').checked;
-                const newName = keepOriginal ? file.name : file.name.replace(/\.pdf$/i, '') + '_compressed.pdf';
-                return { blob: new Blob([compressed], { type: 'application/pdf' }), name: newName };
+                const compressed = await pdfDoc.save({ useObjectStreams: level !== 'basic' });
+                const keep = document.getElementById('keepPdfNameCheckbox').checked;
+                const name = keep ? file.name : file.name.replace(/\.pdf$/i, '') + '_compressed.pdf';
+                return { blob: new Blob([compressed], { type: 'application/pdf' }), name };
             }
         });
-        document.getElementById('optionsRow').addEventListener('click', (e) => {
+
+        // PDF UI extras
+        document.getElementById('optionsRow').addEventListener('click', e => {
             const btn = e.target.closest('.option-btn');
             if (!btn) return;
             document.querySelectorAll('#optionsRow .option-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         });
+        const optChk = document.getElementById('optimizeImagesCheckbox');
+        const qualRow = document.getElementById('imageQualityRow');
+        optChk.addEventListener('change', () => qualRow.style.display = optChk.checked ? 'flex' : 'none');
+        document.getElementById('pdfImageQualitySlider').addEventListener('input', function() {
+            document.getElementById('pdfImageQualityValue').textContent = this.value + '%';
+        });
 
-        // ── Image Compressor Tool ─────────
+        // ---------- Image Compressor ----------
         createMultiFileTool({
-            dropZoneId: 'imgCompressDropZone', fileInputId: 'imgCompressFileInput', browseLinkId: 'imgCompressBrowseLink',
-            fileListCardId: 'imgCompressFileListCard', fileListContainerId: 'imgCompressFileList', fileCountSpanId: 'imgCompressFileCount',
-            actionCardId: 'imgCompressActionCard', compressBtnId: 'imgCompressBtn', processingCardId: 'imgCompressProcessingCard',
-            processingTextId: 'imgCompressProcessingText', resultsCardId: 'imgCompressResultsCard', resultItemsId: 'imgCompressResultItems',
-            downloadAllBtnId: 'imgCompressDownloadAllBtn', resetLinkId: 'imgCompressResetLink',
+            dzId:'imgCompressDropZone', fiId:'imgCompressFileInput', blId:'imgCompressBrowseLink', flcId:'imgCompressFileListCard', flId:'imgCompressFileList', fcsId:'imgCompressFileCount',
+            acId:'imgCompressActionCard', cbId:'imgCompressBtn', pcId:'imgCompressProcessingCard', ptId:'imgCompressProcessingText', rcId:'imgCompressResultsCard', riId:'imgCompressResultItems',
+            daId:'imgCompressDownloadAllBtn', rlId:'imgCompressResetLink',
             getFileFilter: f => f.type.startsWith('image/'),
             onProcess: async (file) => {
                 const quality = parseInt(document.getElementById('imgQualitySlider').value) / 100;
                 const scale = parseInt(document.getElementById('imgScaleSlider').value) / 100;
                 const format = document.getElementById('imgCompressFormat').value;
                 const img = await new Promise((res, rej) => {
-                    const reader = new FileReader();
-                    reader.onload = () => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = reader.result; };
-                    reader.onerror = rej; reader.readAsDataURL(file);
+                    const r = new FileReader();
+                    r.onload = () => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = r.result; };
+                    r.onerror = rej; r.readAsDataURL(file);
                 });
                 const canvas = document.createElement('canvas');
                 canvas.width = Math.round(img.width * scale); canvas.height = Math.round(img.height * scale);
@@ -1012,161 +588,154 @@
                 return { blob };
             }
         });
+        document.getElementById('imgQualitySlider').addEventListener('input', function() { document.getElementById('imgQualityValue').textContent = this.value + '%'; });
+        document.getElementById('imgScaleSlider').addEventListener('input', function() { document.getElementById('imgScaleValue').textContent = this.value + '%'; });
 
-        // ── Image Converter Tool ──────────
+        // ---------- Image Converter ----------
         createMultiFileTool({
-            dropZoneId: 'imgConvertDropZone', fileInputId: 'imgConvertFileInput', browseLinkId: 'imgConvertBrowseLink',
-            fileListCardId: 'imgConvertFileListCard', fileListContainerId: 'imgConvertFileList', fileCountSpanId: 'imgConvertFileCount',
-            actionCardId: 'imgConvertActionCard', compressBtnId: 'imgConvertBtn', processingCardId: 'imgConvertProcessingCard',
-            processingTextId: 'imgConvertProcessingText', resultsCardId: 'imgConvertResultsCard', resultItemsId: 'imgConvertResultItems',
-            downloadAllBtnId: 'imgConvertDownloadAllBtn', resetLinkId: 'imgConvertResetLink',
+            dzId:'imgConvertDropZone', fiId:'imgConvertFileInput', blId:'imgConvertBrowseLink', flcId:'imgConvertFileListCard', flId:'imgConvertFileList', fcsId:'imgConvertFileCount',
+            acId:'imgConvertActionCard', cbId:'imgConvertBtn', pcId:'imgConvertProcessingCard', ptId:'imgConvertProcessingText', rcId:'imgConvertResultsCard', riId:'imgConvertResultItems',
+            daId:'imgConvertDownloadAllBtn', rlId:'imgConvertResetLink',
             getFileFilter: f => f.type.startsWith('image/'),
             onProcess: async (file) => {
                 const target = document.getElementById('imgConvertTargetFormat').value;
                 const quality = parseInt(document.getElementById('imgConvertQualitySlider').value) / 100;
                 const img = await new Promise((res, rej) => {
-                    const reader = new FileReader();
-                    reader.onload = () => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = reader.result; };
-                    reader.onerror = rej; reader.readAsDataURL(file);
+                    const r = new FileReader();
+                    r.onload = () => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = r.result; };
+                    r.onerror = rej; r.readAsDataURL(file);
                 });
                 const canvas = document.createElement('canvas');
                 canvas.width = img.width; canvas.height = img.height;
                 canvas.getContext('2d').drawImage(img, 0, 0);
                 const mime = target === 'jpeg' ? 'image/jpeg' : target === 'webp' ? 'image/webp' : 'image/png';
                 const blob = await new Promise(res => canvas.toBlob(res, mime, quality));
-                const newExt = target === 'jpeg' ? 'jpg' : target;
-                const newName = file.name.replace(/\.[^/.]+$/, '') + '.' + newExt;
-                return { blob, name: newName };
+                const ext = target === 'jpeg' ? 'jpg' : target;
+                const name = file.name.replace(/\.[^/.]+$/, '') + '.' + ext;
+                return { blob, name };
             }
         });
+        document.getElementById('imgConvertQualitySlider').addEventListener('input', function() { document.getElementById('imgConvertQualityValue').textContent = this.value + '%'; });
 
-        // ── Video Tool (TikTok HD) ────────
-        const videoDropZone = document.getElementById('videoDropZone');
-        const videoFileInput = document.getElementById('videoFileInput');
-        const videoBrowseLink = document.getElementById('videoBrowseLink');
-        const videoFileListCard = document.getElementById('videoFileListCard');
-        const videoFileList = document.getElementById('videoFileList');
-        const videoActionCard = document.getElementById('videoActionCard');
-        const videoCompressBtn = document.getElementById('videoCompressBtn');
-        const videoProcessingCard = document.getElementById('videoProcessingCard');
-        const videoProcessingText = document.getElementById('videoProcessingText');
-        const videoResultsCard = document.getElementById('videoResultsCard');
-        const videoResultItems = document.getElementById('videoResultItems');
-        const videoResetLink = document.getElementById('videoResetLink');
-        const videoBitrateSlider = document.getElementById('videoBitrateSlider');
-        const videoBitrateValue = document.getElementById('videoBitrateValue');
-        const videoBitrateDisplay = document.getElementById('videoBitrateDisplay');
+        // ---------- Video (TikTok HD) ----------
+        const vdz = document.getElementById('videoDropZone'), vfi = document.getElementById('videoFileInput'), vbl = document.getElementById('videoBrowseLink');
+        const vflc = document.getElementById('videoFileListCard'), vfl = document.getElementById('videoFileList');
+        const vac = document.getElementById('videoActionCard'), vcb = document.getElementById('videoCompressBtn');
+        const vpc = document.getElementById('videoProcessingCard'), vpt = document.getElementById('videoProcessingText');
+        const vrc = document.getElementById('videoResultsCard'), vri = document.getElementById('videoResultItems'), vrl = document.getElementById('videoResetLink');
+        const vbs = document.getElementById('videoBitrateSlider'), vbv = document.getElementById('videoBitrateValue'), vbd = document.getElementById('videoBitrateDisplay');
 
-        let videoFile = null;
-        let videoResultBlob = null;
-
-        videoBitrateSlider.addEventListener('input', () => {
-            const val = videoBitrateSlider.value;
-            videoBitrateValue.textContent = val + ' Mbps';
-            videoBitrateDisplay.textContent = val + ' Mbps';
-        });
-
-        function resetVideoUI() {
-            videoFile = null; videoResultBlob = null;
-            hideElement(videoFileListCard); hideElement(videoActionCard); hideElement(videoProcessingCard); hideElement(videoResultsCard);
-            videoDropZone.style.display = ''; videoFileInput.value = '';
+        let videoFile = null, videoResult = null;
+        vbs.addEventListener('input', () => { vbv.textContent = vbs.value + ' Mbps'; vbd.textContent = vbs.value + ' Mbps'; });
+        function resetVideo() {
+            videoFile = videoResult = null;
+            hide(vflc); hide(vac); hide(vpc); hide(vrc);
+            vdz.style.display = ''; vfi.value = '';
         }
-
-        function showVideoFile(file) {
-            videoFile = file;
-            videoFileList.innerHTML = '';
-            const item = document.createElement('div');
-            item.className = 'file-list-item';
-            item.innerHTML = `
-                <div class="file-icon"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+        function showVideo(file) {
+            videoFile = file; vfl.innerHTML = '';
+            const d = document.createElement('div'); d.className = 'file-list-item';
+            d.innerHTML = `<div class="file-icon"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
                 <div class="file-details"><div class="file-name">${file.name}</div><div class="file-size">${formatBytes(file.size)}</div></div>
-                <button class="remove-file-btn" id="videoRemoveBtn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15" stroke="#fff" stroke-width="2"/><line x1="9" y1="9" x2="15" y2="15" stroke="#fff" stroke-width="2"/></svg></button>
-            `;
-            videoFileList.appendChild(item);
-            document.getElementById('videoRemoveBtn').addEventListener('click', resetVideoUI);
-            hideElement(videoDropZone); hideElement(videoResultsCard); hideElement(videoProcessingCard);
-            showElement(videoFileListCard); showElement(videoActionCard);
+                <button class="remove-file-btn" id="videoRemoveBtn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15" stroke="#fff" stroke-width="2"/><line x1="9" y1="9" x2="15" y2="15" stroke="#fff" stroke-width="2"/></svg></button>`;
+            vfl.appendChild(d);
+            document.getElementById('videoRemoveBtn').addEventListener('click', resetVideo);
+            hide(vdz); hide(vrc); hide(vpc); show(vflc); show(vac);
         }
-
-        videoDropZone.addEventListener('click', (e) => { if (e.target === videoBrowseLink) return; videoFileInput.click(); });
-        videoBrowseLink.addEventListener('click', (e) => { e.stopPropagation(); videoFileInput.click(); });
-        videoFileInput.addEventListener('change', () => { if (videoFileInput.files.length) showVideoFile(videoFileInput.files[0]); videoFileInput.value = ''; });
-        ['dragenter','dragover','dragleave','drop'].forEach(evt => {
-            videoDropZone.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); });
-        });
-        videoDropZone.addEventListener('dragenter', () => videoDropZone.classList.add('drag-over'));
-        videoDropZone.addEventListener('dragover', () => videoDropZone.classList.add('drag-over'));
-        videoDropZone.addEventListener('dragleave', () => videoDropZone.classList.remove('drag-over'));
-        videoDropZone.addEventListener('drop', () => { videoDropZone.classList.remove('drag-over'); if (event.dataTransfer.files.length) showVideoFile(event.dataTransfer.files[0]); });
+        vdz.addEventListener('click', e => { if (e.target === vbl) return; vfi.click(); });
+        vbl.addEventListener('click', e => { e.stopPropagation(); vfi.click(); });
+        vfi.addEventListener('change', () => { if (vfi.files.length) showVideo(vfi.files[0]); vfi.value = ''; });
+        ['dragenter','dragover','dragleave','drop'].forEach(ev => vdz.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
+        vdz.addEventListener('dragenter', () => vdz.classList.add('drag-over'));
+        vdz.addEventListener('dragover', () => vdz.classList.add('drag-over'));
+        vdz.addEventListener('dragleave', () => vdz.classList.remove('drag-over'));
+        vdz.addEventListener('drop', (e) => { vdz.classList.remove('drag-over'); if (e.dataTransfer.files.length) showVideo(e.dataTransfer.files[0]); });
 
         let ffmpeg = null;
         async function getFFmpeg() {
             if (ffmpeg) return ffmpeg;
             ffmpeg = new FFmpeg();
-            videoProcessingText.textContent = 'Loading FFmpeg engine…';
-            const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.6/dist/';
+            vpt.textContent = 'Loading FFmpeg engine…';
+            
+            const coreBaseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/';
+            const ffmpegBaseURL = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/';
+            
+            // Listen for progress and update the UI
+            ffmpeg.on('progress', ({ progress }) => {
+                const processingCard = document.getElementById('videoProcessingCard');
+                if (processingCard && processingCard.style.display !== 'none') {
+                    // Ensure the progress is between 0 and 1
+                    if (progress >= 0 && progress <= 1) {
+                        const pct = Math.round(progress * 100);
+                        document.getElementById('videoProcessingText').textContent = `Processing video… ${pct}%`;
+                        document.getElementById('videoProgressBar').style.width = `${pct}%`;
+                    }
+                }
+            });
+
             await ffmpeg.load({
-                coreURL: await toBlobURL(`${baseURL}ffmpeg-core.js`, 'text/javascript'),
-                wasmURL: await toBlobURL(`${baseURL}ffmpeg-core.wasm`, 'application/wasm'),
+                coreURL: await toBlobURL(`${coreBaseURL}ffmpeg-core.js`, 'text/javascript'),
+                wasmURL: await toBlobURL(`${coreBaseURL}ffmpeg-core.wasm`, 'application/wasm'),
+                classWorkerURL: await toBlobURL(`${ffmpegBaseURL}worker.js`, 'text/javascript')
             });
             return ffmpeg;
         }
 
-        videoCompressBtn.addEventListener('click', async () => {
+        vcb.addEventListener('click', async () => {
             if (!videoFile) return;
-            hideElement(videoActionCard); hideElement(videoFileListCard); hideElement(videoResultsCard); hideElement(videoDropZone);
-            showElement(videoProcessingCard); videoCompressBtn.disabled = true;
+            hide(vac); hide(vflc); hide(vrc); hide(vdz);
+            show(vpc); vcb.disabled = true;
+            
+            // Reset Progress Bar
+            document.getElementById('videoProgressBg').style.display = 'block';
+            document.getElementById('videoProgressBar').style.width = '0%';
+            vpt.textContent = 'Initializing…';
+
             try {
                 const ff = await getFFmpeg();
-                const bitrateMbps = parseFloat(videoBitrateSlider.value);
-                const bitrate = Math.round(bitrateMbps * 1000) + 'k'; // e.g., "12000k"
-                videoProcessingText.textContent = 'Processing video…';
-                const inputName = 'input.' + videoFile.name.split('.').pop();
-                const outputName = 'tiktok_hd.mp4';
-                await ff.writeFile(inputName, await fetchFile(videoFile));
-                // scale to 1080:1920, force 30 fps, set video bitrate, copy audio
+                const bitrate = Math.round(parseFloat(vbs.value) * 1000) + 'k';
+                vpt.textContent = 'Processing video… 0%';
+                
+                const input = 'input.' + videoFile.name.split('.').pop();
+                const output = 'tiktok_hd.mp4';
+                await ff.writeFile(input, await fetchFile(videoFile));
                 await ff.exec([
-                    '-i', inputName,
+                    '-i', input,
                     '-vf', 'scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2',
-                    '-r', '30',
-                    '-c:v', 'libx264',
-                    '-b:v', bitrate,
-                    '-preset', 'fast',
-                    '-c:a', 'aac',
-                    '-b:a', '128k',
-                    '-movflags', '+faststart',
-                    outputName
+                    '-r', '30', '-c:v', 'libx264', '-b:v', bitrate, '-preset', 'fast',
+                    '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', output
                 ]);
-                const data = await ff.readFile(outputName);
-                videoResultBlob = new Blob([data.buffer], { type: 'video/mp4' });
-                hideElement(videoProcessingCard); showElement(videoResultsCard);
-                videoResultItems.innerHTML = '';
-                const saved = videoFile.size - videoResultBlob.size;
+                const data = await ff.readFile(output);
+                videoResult = new Blob([data.buffer], { type: 'video/mp4' });
+                
+                hide(vpc); show(vrc);
+                document.getElementById('videoProgressBg').style.display = 'none'; // Hide progress bar after completion
+                vri.innerHTML = '';
+                
+                const saved = videoFile.size - videoResult.size;
                 const pct = Math.round((saved / videoFile.size) * 100);
-                const item = document.createElement('div');
-                item.className = 'result-item';
+                const item = document.createElement('div'); item.className = 'result-item';
                 item.innerHTML = `
                     <div class="file-summary">
-                        <div class="result-name">${outputName}</div>
-                        <div class="result-sizes">${formatBytes(videoFile.size)} → ${formatBytes(videoResultBlob.size)} (${saved>=0?'-'+formatBytes(saved):'+'+formatBytes(Math.abs(saved))} / ${saved>=0?pct+'%':'larger'})</div>
+                        <div class="result-name">${output}</div>
+                        <div class="result-sizes">${formatBytes(videoFile.size)} → ${formatBytes(videoResult.size)} (${saved>=0?'-'+formatBytes(saved):'+'+formatBytes(Math.abs(saved))} / ${saved>=0?pct+'%':'larger'})</div>
                     </div>
-                    <button class="download-single" id="videoDownloadBtn">⬇ Download</button>
-                `;
-                videoResultItems.appendChild(item);
+                    <button class="download-single" id="videoDownloadBtn">⬇ Download</button>`;
+                vri.appendChild(item);
                 document.getElementById('videoDownloadBtn').addEventListener('click', () => {
-                    const url = URL.createObjectURL(videoResultBlob);
+                    const url = URL.createObjectURL(videoResult);
                     const a = document.createElement('a'); a.href = url; a.download = 'tiktok_hd.mp4';
                     document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
                 });
-            } catch (err) {
-                alert('Video processing error: ' + err.message); resetVideoUI();
-            } finally { videoCompressBtn.disabled = false; }
+            } catch (err) { 
+                alert('Video error: ' + err.message); 
+                resetVideo(); 
+            } finally { 
+                vcb.disabled = false; 
+            }
         });
-
-        videoResetLink.addEventListener('click', resetVideoUI);
-        resetVideoUI();
-
-        console.log('🛡️ All tools ready — PDF, image, video compression & conversion (TikTok HD).');
+        vrl.addEventListener('click', resetVideo);
+        resetVideo();
     </script>
 </body>
 </html>
