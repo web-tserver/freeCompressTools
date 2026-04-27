@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Media Toolbox – Full Preview for All Tools</title>
+  <title>Media Toolbox – Playful & Private</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   
-  <!-- HyperOS 3.1 inspired theme -->
   <style>
     :root {
       --accent: #1677ff;
@@ -18,12 +18,7 @@
       --success: #10b981;
       --success-hover: #059669;
       --danger: #ef4444;
-      --danger-hover: #dc2626;
       --bg: #f0f2f5;
-      --card-bg: rgba(255,255,255,0.92);
-      --card-radius: 1.75rem;
-      --card-shadow: 0 8px 32px rgba(0,0,0,0.06);
-      --btn-radius: 9999px;
     }
 
     body {
@@ -31,7 +26,21 @@
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
 
-    /* Tabs */
+    /* ---------- Tab indicator ---------- */
+    #tabIndicator {
+      position: absolute;
+      bottom: 0;
+      height: 3px;
+      border-radius: 9999px;
+      background: var(--accent);
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease;
+      pointer-events: none;
+    }
+    #tabContainer {
+      position: relative;
+    }
+
+    /* Tab buttons */
     .tab-btn {
       border-radius: 9999px;
       transition: all 0.2s;
@@ -47,19 +56,21 @@
 
     /* Main cards */
     .tab-content > div:first-child {
-      background: var(--card-bg);
-      border-radius: var(--card-radius);
-      box-shadow: var(--card-shadow);
+      background: rgba(255,255,255,0.92);
+      border-radius: 1.75rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
       border: 1px solid rgba(0,0,0,0.04);
       backdrop-filter: blur(12px);
     }
 
-    /* Dropzones */
+    /* ---------- Dropzone animations ---------- */
     .hyperos-dropzone {
       background: white;
       border: 2px dashed #d1d5db;
       border-radius: 1.5rem;
-      transition: all 0.2s;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
     }
     .hyperos-dropzone:hover {
       border-color: var(--accent);
@@ -69,12 +80,58 @@
       border-color: var(--accent);
       background: rgba(22,119,255,0.04);
     }
+    /* Bounce on drop */
+    @keyframes dropPop {
+      0% { transform: scale(1.02); }
+      80% { transform: scale(0.98); }
+      100% { transform: scale(1); }
+    }
+    .drop-zone-bounce {
+      animation: dropPop 0.4s ease;
+    }
 
-    /* Buttons */
+    /* Empty‑state pulsing blob (inside dropzone) */
+    .dropzone-blob {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(22,119,255,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      top: -30px;
+      right: -40px;
+      animation: blobFloat 8s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    @keyframes blobFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-20px, 20px) scale(1.15); }
+    }
+
+    /* ---------- Progress shimmer ---------- */
+    .progress-fill {
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 30%, #a0c4ff 50%, var(--accent) 70%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite linear;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: 0 0; }
+    }
+
+    /* ---------- Download button bounce ---------- */
+    .bounce-for-celebration {
+      animation: downloadBounce 0.6s ease infinite;
+    }
+    @keyframes downloadBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* Buttons styling */
     .hyperos-btn-primary {
       background: var(--accent);
       color: white;
-      border-radius: var(--btn-radius);
+      border-radius: 9999px;
       transition: all 0.2s;
       border: none;
       cursor: pointer;
@@ -86,7 +143,7 @@
     .hyperos-btn-success {
       background: var(--success);
       color: white;
-      border-radius: var(--btn-radius);
+      border-radius: 9999px;
       transition: all 0.2s;
       border: none;
       cursor: pointer;
@@ -98,26 +155,11 @@
     .hyperos-btn-danger {
       background: var(--danger);
       color: white;
-      border-radius: var(--btn-radius);
+      border-radius: 9999px;
       transition: all 0.2s;
       border: none;
       cursor: pointer;
       font-weight: 500;
-    }
-    .hyperos-btn-danger:hover {
-      background: var(--danger-hover);
-    }
-
-    /* Misc */
-    .preview-thumb {
-      border-radius: 12px;
-    }
-    .control-panel {
-      background: #f9fafb;
-      border-radius: 1.25rem;
-    }
-    .progress-fill {
-      background: var(--accent);
     }
   </style>
 </head>
@@ -141,8 +183,8 @@
       <p class="text-gray-600 mt-2">PDF · Images · Merge · Split · Image to PDF — preview everything, runs entirely in your browser</p>
     </div>
 
-    <!-- Six Tabs (pills) -->
-    <div id="tabContainer" class="flex flex-wrap gap-3 mb-8 pb-2">
+    <!-- Six Tabs (pills) with sliding indicator -->
+    <div id="tabContainer" class="flex flex-wrap gap-3 mb-8 pb-2 relative">
       <button id="tabPdf" class="tab-btn px-5 py-2 font-semibold rounded-full transition">
         <i class="fas fa-file-pdf mr-1"></i> PDF Compressor
       </button>
@@ -161,12 +203,14 @@
       <button id="tabImg2Pdf" class="tab-btn px-5 py-2 font-semibold rounded-full transition">
         <i class="fas fa-file-image mr-1"></i> Image to PDF
       </button>
+      <div id="tabIndicator"></div>
     </div>
 
     <!-- ======================= 1) PDF COMPRESSOR ======================= -->
     <div id="pdfSection" class="tab-content">
       <div class="p-6 md:p-8">
-        <div id="pdfDropzone" class="hyperos-dropzone p-8 text-center cursor-pointer">
+        <div id="pdfDropzone" class="hyperos-dropzone p-8 text-center cursor-pointer relative">
+          <div class="dropzone-blob"></div>
           <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
           <p class="text-gray-700 font-medium">Drop PDF here or click</p>
           <p class="text-xs text-gray-400 mt-1">max 100 MB</p>
@@ -174,7 +218,7 @@
         </div>
 
         <div id="pdfPreviewArea" class="mt-4 hidden">
-          <div class="flex items-start gap-4 p-3 control-panel">
+          <div class="flex items-start gap-4 p-3 bg-gray-50 rounded-2xl">
             <canvas id="pdfThumbnail" width="80" height="110" class="border rounded bg-white shadow-sm"></canvas>
             <div>
               <p class="font-semibold" id="pdfPreviewName"></p>
@@ -185,7 +229,7 @@
         </div>
 
         <div id="pdfControlPanel" class="mt-4 hidden">
-          <div class="flex flex-wrap items-center justify-between gap-3 p-3 control-panel">
+          <div class="flex flex-wrap items-center justify-between gap-3 p-3 bg-gray-50 rounded-2xl">
             <div class="flex items-center gap-3 truncate"><i class="fas fa-file-pdf text-red-500 text-xl"></i><div><p id="pdfFileName" class="font-semibold truncate"></p><p id="pdfFileSize" class="text-xs text-gray-500"></p></div></div>
             <div class="flex flex-wrap items-center gap-2">
               <select id="pdfCompressionSelect" class="bg-white border rounded-lg px-3 py-1.5 text-sm">
@@ -212,7 +256,7 @@
               <div class="bg-green-50 p-4 rounded-xl"><p class="text-xs text-gray-500">compressed</p><p class="text-2xl font-bold" id="pdfCompSize">—</p><p id="pdfSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div>
             </div>
             <div class="mt-5 flex justify-center">
-              <button id="pdfDownloadBtn" class="hyperos-btn-success px-8 py-2 shadow-md"><i class="fas fa-download"></i> Download PDF</button>
+              <button id="pdfDownloadBtn" class="hyperos-btn-success px-8 py-2 shadow-md bounce-on-result"><i class="fas fa-download"></i> Download PDF</button>
             </div>
           </div>
         </div>
@@ -223,20 +267,21 @@
     <!-- ======================= 2) IMAGE COMPRESSOR ======================= -->
     <div id="imageCompressSection" class="tab-content hidden">
       <div class="p-6 md:p-8">
-        <div id="compDropzone" class="hyperos-dropzone p-8 text-center cursor-pointer">
+        <div id="compDropzone" class="hyperos-dropzone p-8 text-center cursor-pointer relative">
+          <div class="dropzone-blob"></div>
           <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
           <p class="text-gray-700 font-medium">Drop image here (JPEG, PNG, WEBP)</p>
           <p class="text-xs text-gray-400 mt-1">max 20 MB · preview shown instantly</p>
           <input type="file" id="compInput" accept="image/jpeg,image/png,image/webp" class="hidden">
         </div>
         <div id="compPreviewArea" class="mt-4 hidden">
-          <div class="flex items-start gap-4 p-3 control-panel">
+          <div class="flex items-start gap-4 p-3 bg-gray-50 rounded-2xl">
             <img id="compPreviewImg" class="w-24 h-24 object-cover rounded border" alt="preview">
             <div><p class="font-semibold" id="compPreviewName"></p><p class="text-sm text-gray-600" id="compPreviewSize"></p><p class="text-sm text-gray-600" id="compPreviewDim"></p></div>
           </div>
         </div>
         <div id="compControlPanel" class="mt-4 hidden">
-          <div class="flex flex-wrap items-center gap-3 p-3 control-panel mb-4">
+          <div class="flex flex-wrap items-center gap-3 p-3 bg-gray-50 rounded-2xl mb-4">
             <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">Compression %:</span><input type="range" id="compQuality" min="0.1" max="1.0" step="0.01" value="0.5" class="w-28"><span id="compQualityVal" class="text-xs w-10">50%</span></div>
             <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">Scale:</span><select id="compScale" class="text-xs border rounded px-2 py-1"><option value="1">100%</option><option value="0.75" selected>75%</option><option value="0.5">50%</option><option value="0.25">25%</option></select><button id="compApplyScale" class="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full">Apply</button></div>
             <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">Resize (px):</span><input type="number" id="compWidth" placeholder="width" class="w-16 text-xs border rounded px-1"><span class="text-xs">x</span><input type="number" id="compHeight" placeholder="height" class="w-16 text-xs border rounded px-1"><button id="compClearResize" class="text-xs text-red-500"><i class="fas fa-times-circle"></i></button></div>
@@ -244,7 +289,7 @@
             <button id="compProcessBtn" class="hyperos-btn-danger px-5 py-2 shadow-md flex items-center gap-2"><i class="fas fa-fire"></i> Aggressive Compress</button>
           </div>
           <div id="compProgressArea" class="mt-4 hidden"><div class="flex justify-between text-xs"><span>Compressing...</span><span id="compProgressPercent">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="compProgressFill" class="progress-fill h-2 rounded-full" style="width:0%"></div></div></div>
-          <div id="compResultPanel" class="mt-6 hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="bg-gray-50 p-4 rounded-xl"><p class="text-xs text-gray-500">original</p><p class="text-2xl font-bold" id="compOrigSize">—</p><img id="compPreviewOrig" class="mt-2 max-h-40 object-contain border rounded"></div><div class="bg-green-50 p-4 rounded-xl"><p class="text-xs text-gray-500">compressed</p><p class="text-2xl font-bold" id="compNewSize">—</p><img id="compPreviewNew" class="mt-2 max-h-40 object-contain border rounded"><p id="compSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div></div><div class="mt-5 flex justify-center"><button id="compDownloadBtn" class="hyperos-btn-success px-8 py-2 shadow-md"><i class="fas fa-download"></i> Download</button></div></div>
+          <div id="compResultPanel" class="mt-6 hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="bg-gray-50 p-4 rounded-xl"><p class="text-xs text-gray-500">original</p><p class="text-2xl font-bold" id="compOrigSize">—</p><img id="compPreviewOrig" class="mt-2 max-h-40 object-contain border rounded"></div><div class="bg-green-50 p-4 rounded-xl"><p class="text-xs text-gray-500">compressed</p><p class="text-2xl font-bold" id="compNewSize">—</p><img id="compPreviewNew" class="mt-2 max-h-40 object-contain border rounded"><p id="compSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div></div><div class="mt-5 flex justify-center"><button id="compDownloadBtn" class="hyperos-btn-success px-8 py-2 shadow-md bounce-on-result"><i class="fas fa-download"></i> Download</button></div></div>
         </div>
       </div>
     </div>
@@ -252,27 +297,28 @@
     <!-- ======================= 3) IMAGE CONVERTER ======================= -->
     <div id="imageConvertSection" class="tab-content hidden">
       <div class="p-6 md:p-8">
-        <div id="convDropzone" class="hyperos-dropzone p-8 text-center cursor-pointer">
+        <div id="convDropzone" class="hyperos-dropzone p-8 text-center cursor-pointer relative">
+          <div class="dropzone-blob"></div>
           <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
           <p class="text-gray-700 font-medium">Drop image here (JPEG, PNG, WEBP)</p>
           <p class="text-xs text-gray-400 mt-1">max 20 MB · preview shown instantly</p>
           <input type="file" id="convInput" accept="image/jpeg,image/png,image/webp" class="hidden">
         </div>
         <div id="convPreviewArea" class="mt-4 hidden">
-          <div class="flex items-start gap-4 p-3 control-panel">
+          <div class="flex items-start gap-4 p-3 bg-gray-50 rounded-2xl">
             <img id="convPreviewImg" class="w-24 h-24 object-cover rounded border" alt="preview">
             <div><p class="font-semibold" id="convPreviewName"></p><p class="text-sm text-gray-600" id="convPreviewSize"></p><p class="text-sm text-gray-600" id="convPreviewDim"></p></div>
           </div>
         </div>
         <div id="convControlPanel" class="mt-4 hidden">
-          <div class="flex flex-wrap items-center gap-3 p-3 control-panel mb-4">
+          <div class="flex flex-wrap items-center gap-3 p-3 bg-gray-50 rounded-2xl mb-4">
             <select id="convFormat" class="bg-white border rounded-lg px-3 py-1.5 text-sm"><option value="jpeg">JPEG</option><option value="png">PNG</option><option value="webp">WEBP</option></select>
             <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">Quality (JPEG/WEBP):</span><input type="range" id="convQuality" min="0.1" max="1.0" step="0.01" value="0.8" class="w-28"><span id="convQualityVal" class="text-xs w-10">80%</span></div>
             <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">Resize (px):</span><input type="number" id="convWidth" placeholder="width" class="w-16 text-xs border rounded px-1"><span class="text-xs">x</span><input type="number" id="convHeight" placeholder="height" class="w-16 text-xs border rounded px-1"><button id="convClearResize" class="text-xs text-red-500"><i class="fas fa-times-circle"></i></button></div>
             <button id="convProcessBtn" class="hyperos-btn-primary px-5 py-2 shadow-md flex items-center gap-2"><i class="fas fa-exchange-alt"></i> Convert</button>
           </div>
           <div id="convProgressArea" class="mt-4 hidden"><div class="flex justify-between text-xs"><span>Converting...</span><span id="convProgressPercent">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="convProgressFill" class="progress-fill h-2 rounded-full" style="width:0%"></div></div></div>
-          <div id="convResultPanel" class="mt-6 hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="bg-gray-50 p-4 rounded-xl"><p class="text-xs text-gray-500">original</p><p class="text-2xl font-bold" id="convOrigSize">—</p><img id="convPreviewOrig" class="mt-2 max-h-40 object-contain border rounded"></div><div class="bg-green-50 p-4 rounded-xl"><p class="text-xs text-gray-500">converted</p><p class="text-2xl font-bold" id="convNewSize">—</p><img id="convPreviewNew" class="mt-2 max-h-40 object-contain border rounded"><p id="convSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div></div><div class="mt-5 flex justify-center"><button id="convDownloadBtn" class="hyperos-btn-success px-8 py-2 shadow-md"><i class="fas fa-download"></i> Download Converted</button></div></div>
+          <div id="convResultPanel" class="mt-6 hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="bg-gray-50 p-4 rounded-xl"><p class="text-xs text-gray-500">original</p><p class="text-2xl font-bold" id="convOrigSize">—</p><img id="convPreviewOrig" class="mt-2 max-h-40 object-contain border rounded"></div><div class="bg-green-50 p-4 rounded-xl"><p class="text-xs text-gray-500">converted</p><p class="text-2xl font-bold" id="convNewSize">—</p><img id="convPreviewNew" class="mt-2 max-h-40 object-contain border rounded"><p id="convSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div></div><div class="mt-5 flex justify-center"><button id="convDownloadBtn" class="hyperos-btn-success px-8 py-2 shadow-md bounce-on-result"><i class="fas fa-download"></i> Download Converted</button></div></div>
         </div>
       </div>
     </div>
@@ -281,7 +327,8 @@
     <div id="mergeSection" class="tab-content hidden">
       <div class="p-6 md:p-8">
         <h3 class="text-xl font-bold text-gray-800 mb-4"><i class="fas fa-object-group text-blue-600 mr-2"></i>Merge PDFs</h3>
-        <div id="mergeDropzone" class="hyperos-dropzone p-8 text-center cursor-pointer">
+        <div id="mergeDropzone" class="hyperos-dropzone p-8 text-center cursor-pointer relative">
+          <div class="dropzone-blob"></div>
           <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
           <p class="text-gray-700 font-medium">Select multiple PDFs (order = upload order)</p>
           <p class="text-xs text-gray-400">max 10 files, each ≤ 50 MB</p>
@@ -296,13 +343,14 @@
     <div id="splitSection" class="tab-content hidden">
       <div class="p-6 md:p-8">
         <h3 class="text-xl font-bold text-gray-800 mb-4"><i class="fas fa-cut text-blue-600 mr-2"></i>Split PDF</h3>
-        <div id="splitDropzone" class="hyperos-dropzone p-8 text-center cursor-pointer">
+        <div id="splitDropzone" class="hyperos-dropzone p-8 text-center cursor-pointer relative">
+          <div class="dropzone-blob"></div>
           <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
           <p class="text-gray-700 font-medium">Select a PDF to split</p>
           <input type="file" id="splitInput" accept=".pdf" class="hidden">
         </div>
         <div id="splitPreview" class="mt-4 hidden">
-          <div class="flex items-start gap-4 p-3 control-panel">
+          <div class="flex items-start gap-4 p-3 bg-gray-50 rounded-2xl">
             <canvas id="splitThumbnail" width="80" height="110" class="border rounded bg-white shadow-sm"></canvas>
             <div><p class="font-semibold" id="splitFileName"></p><p class="text-sm text-gray-600" id="splitFileSize"></p><p class="text-sm text-gray-600" id="splitPageCount"></p></div>
           </div>
@@ -319,7 +367,8 @@
     <div id="img2pdfSection" class="tab-content hidden">
       <div class="p-6 md:p-8">
         <h3 class="text-xl font-bold text-gray-800 mb-4"><i class="fas fa-file-image text-blue-600 mr-2"></i>Image(s) to PDF</h3>
-        <div id="img2pdfDropzone" class="hyperos-dropzone p-8 text-center cursor-pointer">
+        <div id="img2pdfDropzone" class="hyperos-dropzone p-8 text-center cursor-pointer relative">
+          <div class="dropzone-blob"></div>
           <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
           <p class="text-gray-700 font-medium">Select one or more images (JPG, PNG, WEBP)</p>
           <p class="text-xs text-gray-400">each image becomes a separate page</p>
@@ -343,10 +392,50 @@
     <p class="text-xs mt-1">HyperOS 3.1 style · open‑source friendly</p>
   </footer>
 
-  <!-- ===== SCRIPTS (unchanged functionality) ===== -->
+  <!-- ===== SCRIPTS ===== -->
   <script>
+    // ---------- Tab Indicator animation ----------
+    const tabContainer = document.getElementById('tabContainer');
+    const indicator = document.getElementById('tabIndicator');
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    
+    function updateIndicator(activeBtn) {
+      const containerRect = tabContainer.getBoundingClientRect();
+      const btnRect = activeBtn.getBoundingClientRect();
+      const left = btnRect.left - containerRect.left;
+      const width = btnRect.width;
+      indicator.style.left = left + 'px';
+      indicator.style.width = width + 'px';
+    }
+
+    // ========== Dropzone bounce helper ==========
+    function addDropBounce(dropzone) {
+      dropzone.classList.add('drop-zone-bounce');
+      dropzone.addEventListener('animationend', () => {
+        dropzone.classList.remove('drop-zone-bounce');
+      }, {once: true});
+    }
+
+    // ========== Success celebration ==========
+    function celebrate() {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#1677ff', '#10b981', '#f59e0b', '#ef4444']
+      });
+    }
+
+    // ========== Add bounce class to download buttons when result appears ==========
+    function addBounceToDownloadBtns() {
+      document.querySelectorAll('.bounce-on-result').forEach(btn => {
+        btn.classList.add('bounce-for-celebration');
+        setTimeout(() => btn.classList.remove('bounce-for-celebration'), 2000);
+      });
+    }
+
     // ============================================================
-    // 1) PDF COMPRESSOR (with preview: thumbnail, page count)
+    // 1) PDF COMPRESSOR
     // ============================================================
     (function() {
       const dropzone = document.getElementById('pdfDropzone');
@@ -413,6 +502,7 @@
         fileSizeSpan.innerText = formatBytes(originalSize);
         compressBtn.disabled = false;
         compressedBuffer = null;
+        addDropBounce(dropzone);
         return true;
       }
       dropzone.addEventListener('click',()=>fileInput.click());
@@ -462,6 +552,8 @@
           origSizeVal.innerText=formatBytes(originalSize); compSizeVal.innerText=formatBytes(newSize);
           savingsText.innerHTML=`↓ saved ${formatBytes(saved)} (${percent.toFixed(1)}%)`;
           resultPanel.classList.remove('hidden'); downloadBtn.disabled=false; setProgress(100);
+          celebrate();
+          addBounceToDownloadBtns();
         } catch(err){ alert('Compression failed: '+err.message+'\nTry Light mode for text PDFs.'); progressArea.classList.add('hidden'); }
         finally{ compressBtn.disabled=false; compressBtn.innerHTML='<i class="fas fa-compress-alt"></i> Compress'; }
       });
@@ -539,6 +631,7 @@
         };
         img.src = originalUrl;
         processedBlob = null;
+        addDropBounce(dropzone);
         return true;
       }
       dropzone.addEventListener('click',()=>fileInput.click());
@@ -589,6 +682,8 @@
           previewNew.src = URL.createObjectURL(processedBlob);
           resultPanel.classList.remove('hidden');
           setProgress(100);
+          celebrate();
+          addBounceToDownloadBtns();
         } catch(err) {
           alert('Compression failed: ' + err.message);
           progressArea.classList.add('hidden');
@@ -661,6 +756,7 @@
         };
         img.src = originalUrl;
         processedBlob = null;
+        addDropBounce(dropzone);
         return true;
       }
       dropzone.addEventListener('click',()=>fileInput.click());
@@ -706,6 +802,8 @@
           previewNew.src = URL.createObjectURL(processedBlob);
           resultPanel.classList.remove('hidden');
           setProgress(100);
+          celebrate();
+          addBounceToDownloadBtns();
         } catch(err) {
           alert('Conversion failed: ' + err.message);
           progressArea.classList.add('hidden');
@@ -778,12 +876,12 @@
         e.preventDefault(); mergeDrop.classList.remove('drop-active');
         const files = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf');
         if (mergeFiles.length + files.length > 10) alert('Max 10 files');
-        else { mergeFiles.push(...files); await updateMergePreview(); }
+        else { mergeFiles.push(...files); addDropBounce(mergeDrop); await updateMergePreview(); }
       });
       mergeInput.addEventListener('change', async e => {
         const files = Array.from(e.target.files);
         if (mergeFiles.length + files.length > 10) alert('Max 10 files');
-        else { mergeFiles.push(...files); await updateMergePreview(); }
+        else { mergeFiles.push(...files); addDropBounce(mergeDrop); await updateMergePreview(); }
         mergeInput.value = '';
       });
 
@@ -803,6 +901,7 @@
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url; a.download = 'merged.pdf'; a.click(); URL.revokeObjectURL(url);
+          celebrate();
         } catch(e) { alert('Merge failed: '+e.message); }
         finally { mergeBtn.disabled = false; mergeBtn.innerHTML = '<i class="fas fa-object-group"></i> Merge & Download'; }
       });
@@ -843,6 +942,7 @@
         splitPreviewDiv.classList.remove('hidden');
         await generateThumbnail(splitPdfDoc, 1);
         splitResult.innerHTML = `<span class="text-green-600">Ready to split – ${pageCount} pages</span>`;
+        addDropBounce(splitDrop);
       }
 
       splitDrop.addEventListener('click', () => splitInput.click());
@@ -874,6 +974,7 @@
           const a = document.createElement('a');
           a.href = url; a.download = 'extracted.pdf'; a.click(); URL.revokeObjectURL(url);
           splitResult.innerHTML += `<div class="text-green-600 mt-1">✅ Extracted ${pagesToExtract.length} pages. Download started.</div>`;
+          celebrate();
         } catch(e) { alert('Split error: '+e.message); }
       });
 
@@ -934,11 +1035,11 @@
       img2pdfDrop.addEventListener('drop', e => {
         e.preventDefault(); img2pdfDrop.classList.remove('drop-active');
         const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-        imageFiles.push(...files); updateImagePreview();
+        imageFiles.push(...files); addDropBounce(img2pdfDrop); updateImagePreview();
       });
       img2pdfInput.addEventListener('change', e => {
         const files = Array.from(e.target.files);
-        imageFiles.push(...files); updateImagePreview();
+        imageFiles.push(...files); addDropBounce(img2pdfDrop); updateImagePreview();
         img2pdfInput.value = '';
       });
 
@@ -983,6 +1084,7 @@
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url; a.download = 'images.pdf'; a.click(); URL.revokeObjectURL(url);
+          celebrate();
         } catch(e) { alert('Image to PDF failed: '+e.message); }
         finally { img2pdfBtn.disabled = false; img2pdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Convert to PDF'; }
       });
@@ -1005,19 +1107,26 @@
       split: document.getElementById('tabSplit'),
       img2pdf: document.getElementById('tabImg2Pdf')
     };
+
     function setActiveTab(tabId) {
       Object.values(sections).forEach(s => s.classList.add('hidden'));
       sections[tabId].classList.remove('hidden');
       Object.values(tabs).forEach(t => t.classList.remove('tab-active'));
       tabs[tabId].classList.add('tab-active');
+      updateIndicator(tabs[tabId]);
     }
+
     tabs.pdf.addEventListener('click', () => setActiveTab('pdf'));
     tabs.compress.addEventListener('click', () => setActiveTab('compress'));
     tabs.convert.addEventListener('click', () => setActiveTab('convert'));
     tabs.merge.addEventListener('click', () => setActiveTab('merge'));
     tabs.split.addEventListener('click', () => setActiveTab('split'));
     tabs.img2pdf.addEventListener('click', () => setActiveTab('img2pdf'));
-    setActiveTab('pdf');
+
+    // Initialize tab indicator on the default active tab
+    window.addEventListener('load', () => {
+      setActiveTab('pdf');
+    });
   </script>
 </body>
 </html>
