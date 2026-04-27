@@ -3,19 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Tools — Compress PDF, Images, Video & Convert Formats Online</title>
+    <title>File Tools — Compress PDF, Images & Convert Formats Online</title>
 
+    <!-- Existing libraries for PDF and ZIP -->
     <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script type="importmap">
-        {
-            "imports": {
-                "@ffmpeg/ffmpeg": "https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js",
-                "@ffmpeg/util": "https://unpkg.com/@ffmpeg/util@0.12.1/dist/esm/index.js"
-            }
-        }
-    </script>
 
+    <!-- No video FFmpeg imports anymore -->
     <style>
         :root {
             --red: #E53935;
@@ -170,7 +164,7 @@
     <main class="main-container">
         <section class="hero-section">
             <h1 class="hero-title">All-in-One File Tools — Private & Unlimited</h1>
-            <p class="hero-subtitle">Compress PDFs, images, video (TikTok HD) and convert formats. <strong>Everything stays on your device.</strong></p>
+            <p class="hero-subtitle">Compress PDFs, images, and convert formats. <strong>Everything stays on your device.</strong></p>
             <div class="privacy-badge">
                 <svg class="shield-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/></svg>
                 No Upload · 100% Browser Processing
@@ -181,7 +175,7 @@
             <button class="tab-btn active" data-tab="pdf">📄 PDF</button>
             <button class="tab-btn" data-tab="imageCompress">🖼️ Image Compress</button>
             <button class="tab-btn" data-tab="imageConvert">🔄 Image Convert</button>
-            <button class="tab-btn" data-tab="video">🎬 Video (TikTok HD)</button>
+            <!-- Video tab removed -->
         </div>
 
         <div class="tab-panel" id="pdfTab">
@@ -295,45 +289,7 @@
             </div>
         </div>
 
-        <div class="tab-panel" id="videoTab" style="display:none;">
-            <div class="card accent-border" id="videoDropZone">
-                <div class="drop-zone-content">
-                    <div class="upload-icon-wrapper"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
-                    <div>
-                        <div class="drop-zone-title">Drop video (max 1)</div>
-                        <div class="drop-zone-subtitle">or <span class="browse-link" id="videoBrowseLink">browse</span></div>
-                    </div>
-                </div>
-                <input type="file" id="videoFileInput" accept="video/*" hidden>
-            </div>
-            <div class="card" id="videoFileListCard" style="display:none;">
-                <div style="font-weight:700;">Selected Video</div>
-                <div class="file-list" id="videoFileList"></div>
-            </div>
-            <div class="card" id="videoActionCard" style="display:none;">
-                <div style="font-weight:700;">TikTok HD Settings</div>
-                <div style="background:#f0f4f8;padding:12px;border-radius:10px;">
-                    <div>🎯 1080x1920 · 30fps</div>
-                    <div>🎛️ Bitrate: <strong id="videoBitrateDisplay">12 Mbps</strong></div>
-                </div>
-                <div style="display:flex;justify-content:space-between;"><span>Bitrate (Mbps)</span><div class="slider-container"><input type="range" id="videoBitrateSlider" min="8" max="15" value="12" step="0.5"><span class="slider-value" id="videoBitrateValue">12 Mbps</span></div></div>
-                <button class="compress-btn" id="videoCompressBtn">Compress for TikTok</button>
-            </div>
-            
-            <div class="card processing-card" id="videoProcessingCard">
-                <div class="spinner"></div>
-                <div class="processing-text" id="videoProcessingText">Initializing…</div>
-                <div class="progress-bar-bg" id="videoProgressBg">
-                    <div class="progress-bar-fill" id="videoProgressBar"></div>
-                </div>
-            </div>
-
-            <div class="card results-card" id="videoResultsCard">
-                <div style="font-weight:700;">✅ Video Processed</div>
-                <div class="result-items" id="videoResultItems"></div>
-                <span class="reset-link" id="videoResetLink">Process another</span>
-            </div>
-        </div>
+        <!-- Video tab panel removed entirely -->
     </main>
 
     <footer class="footer">
@@ -343,22 +299,20 @@
     </footer>
 
     <script type="module">
-        import { FFmpeg } from '@ffmpeg/ffmpeg';
-        import { fetchFile, toBlobURL } from '@ffmpeg/util';
-
-        // Tab switching
+        // Tab switching (only pdf, imageCompress, imageConvert)
         const tabs = document.querySelectorAll('.tab-btn');
         const panels = {
             pdf: document.getElementById('pdfTab'),
             imageCompress: document.getElementById('imageCompressTab'),
-            imageConvert: document.getElementById('imageConvertTab'),
-            video: document.getElementById('videoTab')
+            imageConvert: document.getElementById('imageConvertTab')
         };
         tabs.forEach(btn => {
             btn.addEventListener('click', () => {
                 tabs.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                Object.entries(panels).forEach(([id, panel]) => panel.style.display = id === btn.dataset.tab ? '' : 'none');
+                Object.entries(panels).forEach(([id, panel]) => {
+                    if (panel) panel.style.display = id === btn.dataset.tab ? '' : 'none';
+                });
             });
         });
 
@@ -369,10 +323,10 @@
             const i = Math.floor(Math.log(b) / Math.log(k));
             return parseFloat((b / Math.pow(k, i)).toFixed(1)) + ' ' + s[i];
         };
-        const show = el => { el.style.display = ''; el.classList.add('visible'); };
-        const hide = el => { el.style.display = 'none'; el.classList.remove('visible'); };
+        const show = el => { if (el) { el.style.display = ''; el.classList.add('visible'); } };
+        const hide = el => { if (el) { el.style.display = 'none'; el.classList.remove('visible'); } };
 
-        // Generic multi‑file tool
+        // Generic multi‑file tool (reused for PDF, image compress, image convert)
         function createMultiFileTool(cfg) {
             const {
                 dzId, fiId, blId, flcId, flId, fcsId, acId, cbId, pcId, ptId, rcId, riId, daId, rlId,
@@ -383,6 +337,7 @@
             const ac = document.getElementById(acId), cb = document.getElementById(cbId);
             const pc = document.getElementById(pcId), pt = document.getElementById(ptId);
             const rc = document.getElementById(rcId), ri = document.getElementById(riId), da = document.getElementById(daId), rl = document.getElementById(rlId);
+            if (!dz || !fi || !bl || !flc || !fl || !fcs || !ac || !cb || !pc || !pt || !rc || !ri || !da || !rl) return;
 
             let files = [], results = [];
 
@@ -391,7 +346,7 @@
                 files.forEach((f, i) => {
                     const d = document.createElement('div'); d.className = 'file-list-item';
                     d.innerHTML = `<div class="file-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/></svg></div>
-                        <div class="file-details"><div class="file-name">${f.name}</div><div class="file-size">${formatBytes(f.size)}</div></div>
+                        <div class="file-details"><div class="file-name">${escapeHtml(f.name)}</div><div class="file-size">${formatBytes(f.size)}</div></div>
                         <button class="remove-file-btn" data-index="${i}"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15" stroke="#fff" stroke-width="2"/><line x1="9" y1="9" x2="15" y2="15" stroke="#fff" stroke-width="2"/></svg></button>`;
                     d.querySelector('.remove-file-btn').addEventListener('click', (e) => {
                         e.stopPropagation(); files.splice(i,1);
@@ -405,7 +360,7 @@
             function reset() {
                 files = []; results = [];
                 hide(flc); hide(ac); hide(pc); hide(rc);
-                dz.style.display = ''; fi.value = '';
+                if (dz) dz.style.display = ''; if (fi) fi.value = '';
             }
 
             function addFiles(nf) {
@@ -413,7 +368,8 @@
                 if (!filtered.length) { alert('Invalid file type.'); return; }
                 files = files.concat(filtered).slice(0, maxFiles);
                 if (files.length) {
-                    hide(dz); hide(rc); hide(pc);
+                    if (dz) hide(dz);
+                    hide(rc); hide(pc);
                     show(flc); show(ac); renderFiles();
                 }
             }
@@ -429,7 +385,7 @@
 
             cb.addEventListener('click', async () => {
                 if (!files.length) return;
-                hide(ac); hide(flc); hide(rc); hide(dz);
+                hide(ac); hide(flc); hide(rc); if (dz) hide(dz);
                 show(pc); cb.disabled = true;
                 results = [];
                 try {
@@ -451,7 +407,7 @@
                         const item = document.createElement('div'); item.className = 'result-item';
                         item.innerHTML = `
                             <div class="file-summary">
-                                <div class="result-name">${r.name}</div>
+                                <div class="result-name">${escapeHtml(r.name)}</div>
                                 <div class="result-sizes">${formatBytes(r.originalSize)} → ${formatBytes(r.compressedSize)} (${saved>=0?'-'+formatBytes(Math.abs(saved)):'+'+formatBytes(Math.abs(saved))} / ${saved>=0?pct+'%':'larger'})</div>
                             </div>
                             <button class="download-single" data-index="${idx}">⬇ Download</button>`;
@@ -479,6 +435,7 @@
             rl.addEventListener('click', reset);
             reset();
         }
+        function escapeHtml(str) { return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
 
         // ---------- PDF tool ----------
         createMultiFileTool({
@@ -507,15 +464,12 @@
                             if (!obj || !obj.dict) continue;
                             const subtype = obj.dict.get('Subtype');
                             if (!subtype || subtype.name !== 'Image') continue;
-                            
                             const filter = obj.dict.get('Filter');
                             let isJpeg = false;
-                            
                             if (filter) {
                                 const filterName = filter.name || (typeof filter.get === 'function' && filter.get(0)?.name);
                                 isJpeg = (filterName === 'DCTDecode');
                             }
-                            
                             if (!isJpeg) continue;
                             try {
                                 const bytes = obj.contents;
@@ -545,7 +499,7 @@
         });
 
         // PDF UI extras
-        document.getElementById('optionsRow').addEventListener('click', e => {
+        document.getElementById('optionsRow')?.addEventListener('click', e => {
             const btn = e.target.closest('.option-btn');
             if (!btn) return;
             document.querySelectorAll('#optionsRow .option-btn').forEach(b => b.classList.remove('active'));
@@ -553,8 +507,10 @@
         });
         const optChk = document.getElementById('optimizeImagesCheckbox');
         const qualRow = document.getElementById('imageQualityRow');
-        optChk.addEventListener('change', () => qualRow.style.display = optChk.checked ? 'flex' : 'none');
-        document.getElementById('pdfImageQualitySlider').addEventListener('input', function() {
+        if (optChk && qualRow) {
+            optChk.addEventListener('change', () => qualRow.style.display = optChk.checked ? 'flex' : 'none');
+        }
+        document.getElementById('pdfImageQualitySlider')?.addEventListener('input', function() {
             document.getElementById('pdfImageQualityValue').textContent = this.value + '%';
         });
 
@@ -587,8 +543,8 @@
                 return { blob };
             }
         });
-        document.getElementById('imgQualitySlider').addEventListener('input', function() { document.getElementById('imgQualityValue').textContent = this.value + '%'; });
-        document.getElementById('imgScaleSlider').addEventListener('input', function() { document.getElementById('imgScaleValue').textContent = this.value + '%'; });
+        document.getElementById('imgQualitySlider')?.addEventListener('input', function() { document.getElementById('imgQualityValue').textContent = this.value + '%'; });
+        document.getElementById('imgScaleSlider')?.addEventListener('input', function() { document.getElementById('imgScaleValue').textContent = this.value + '%'; });
 
         // ---------- Image Converter ----------
         createMultiFileTool({
@@ -614,134 +570,7 @@
                 return { blob, name };
             }
         });
-        document.getElementById('imgConvertQualitySlider').addEventListener('input', function() { document.getElementById('imgConvertQualityValue').textContent = this.value + '%'; });
-
-        // ---------- Video (TikTok HD) ----------
-        const vdz = document.getElementById('videoDropZone'), vfi = document.getElementById('videoFileInput'), vbl = document.getElementById('videoBrowseLink');
-        const vflc = document.getElementById('videoFileListCard'), vfl = document.getElementById('videoFileList');
-        const vac = document.getElementById('videoActionCard'), vcb = document.getElementById('videoCompressBtn');
-        const vpc = document.getElementById('videoProcessingCard'), vpt = document.getElementById('videoProcessingText');
-        const vrc = document.getElementById('videoResultsCard'), vri = document.getElementById('videoResultItems'), vrl = document.getElementById('videoResetLink');
-        const vbs = document.getElementById('videoBitrateSlider'), vbv = document.getElementById('videoBitrateValue'), vbd = document.getElementById('videoBitrateDisplay');
-
-        let videoFile = null, videoResult = null;
-        vbs.addEventListener('input', () => { vbv.textContent = vbs.value + ' Mbps'; vbd.textContent = vbs.value + ' Mbps'; });
-        function resetVideo() {
-            videoFile = videoResult = null;
-            hide(vflc); hide(vac); hide(vpc); hide(vrc);
-            vdz.style.display = ''; vfi.value = '';
-        }
-        function showVideo(file) {
-            videoFile = file; vfl.innerHTML = '';
-            const d = document.createElement('div'); d.className = 'file-list-item';
-            d.innerHTML = `<div class="file-icon"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
-                <div class="file-details"><div class="file-name">${file.name}</div><div class="file-size">${formatBytes(file.size)}</div></div>
-                <button class="remove-file-btn" id="videoRemoveBtn"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15" stroke="#fff" stroke-width="2"/><line x1="9" y1="9" x2="15" y2="15" stroke="#fff" stroke-width="2"/></svg></button>`;
-            vfl.appendChild(d);
-            document.getElementById('videoRemoveBtn').addEventListener('click', resetVideo);
-            hide(vdz); hide(vrc); hide(vpc); show(vflc); show(vac);
-        }
-        vdz.addEventListener('click', e => { if (e.target === vbl) return; vfi.click(); });
-        vbl.addEventListener('click', e => { e.stopPropagation(); vfi.click(); });
-        vfi.addEventListener('change', () => { if (vfi.files.length) showVideo(vfi.files[0]); vfi.value = ''; });
-        ['dragenter','dragover','dragleave','drop'].forEach(ev => vdz.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
-        vdz.addEventListener('dragenter', () => vdz.classList.add('drag-over'));
-        vdz.addEventListener('dragover', () => vdz.classList.add('drag-over'));
-        vdz.addEventListener('dragleave', () => vdz.classList.remove('drag-over'));
-        vdz.addEventListener('drop', (e) => { vdz.classList.remove('drag-over'); if (e.dataTransfer.files.length) showVideo(e.dataTransfer.files[0]); });
-
-        let ffmpeg = null;
-        async function getFFmpeg() {
-            if (ffmpeg) return ffmpeg;
-            ffmpeg = new FFmpeg();
-            vpt.textContent = 'Loading FFmpeg engine…';
-            
-            const coreBaseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/';
-            const ffmpegBaseURL = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/';
-            
-            ffmpeg.on('progress', ({ progress }) => {
-                const processingCard = document.getElementById('videoProcessingCard');
-                if (processingCard && processingCard.style.display !== 'none') {
-                    if (progress >= 0 && progress <= 1) {
-                        const pct = Math.round(progress * 100);
-                        document.getElementById('videoProcessingText').textContent = `Processing video… ${pct}%`;
-                        document.getElementById('videoProgressBar').style.width = `${pct}%`;
-                    }
-                }
-            });
-
-            await ffmpeg.load({
-                coreURL: await toBlobURL(`${coreBaseURL}ffmpeg-core.js`, 'text/javascript'),
-                wasmURL: await toBlobURL(`${coreBaseURL}ffmpeg-core.wasm`, 'application/wasm'),
-                classWorkerURL: await toBlobURL(`${ffmpegBaseURL}worker.js`, 'text/javascript')
-            });
-            return ffmpeg;
-        }
-
-        vcb.addEventListener('click', async () => {
-            if (!videoFile) return;
-            hide(vac); hide(vflc); hide(vrc); hide(vdz);
-            show(vpc); vcb.disabled = true;
-            
-            document.getElementById('videoProgressBg').style.display = 'block';
-            document.getElementById('videoProgressBar').style.width = '0%';
-            vpt.textContent = 'Initializing…';
-
-            try {
-                const ff = await getFFmpeg();
-                const bitrate = Math.round(parseFloat(vbs.value) * 1000) + 'k';
-                vpt.textContent = 'Processing video… 0%';
-                
-                // Get the original filename without the extension, and append .mp4
-                const originalNameWithoutExt = videoFile.name.replace(/\.[^/.]+$/, "");
-                const finalDownloadName = originalNameWithoutExt + '.mp4';
-                
-                const input = 'input.' + videoFile.name.split('.').pop();
-                const output = 'output.mp4'; // internal to FFmpeg memory
-                
-                await ff.writeFile(input, await fetchFile(videoFile));
-                await ff.exec([
-                    '-i', input,
-                    '-vf', 'scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2',
-                    '-r', '30', '-c:v', 'libx264', '-b:v', bitrate, '-preset', 'fast',
-                    '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', output
-                ]);
-                
-                const data = await ff.readFile(output);
-                videoResult = new Blob([data.buffer], { type: 'video/mp4' });
-                
-                hide(vpc); show(vrc);
-                document.getElementById('videoProgressBg').style.display = 'none';
-                vri.innerHTML = '';
-                
-                const saved = videoFile.size - videoResult.size;
-                const pct = Math.round((saved / videoFile.size) * 100);
-                const item = document.createElement('div'); item.className = 'result-item';
-                
-                // Use finalDownloadName here
-                item.innerHTML = `
-                    <div class="file-summary">
-                        <div class="result-name">${finalDownloadName}</div>
-                        <div class="result-sizes">${formatBytes(videoFile.size)} → ${formatBytes(videoResult.size)} (${saved>=0?'-'+formatBytes(saved):'+'+formatBytes(Math.abs(saved))} / ${saved>=0?pct+'%':'larger'})</div>
-                    </div>
-                    <button class="download-single" id="videoDownloadBtn">⬇ Download</button>`;
-                vri.appendChild(item);
-                
-                document.getElementById('videoDownloadBtn').addEventListener('click', () => {
-                    const url = URL.createObjectURL(videoResult);
-                    const a = document.createElement('a'); a.href = url; 
-                    a.download = finalDownloadName; // Using original name
-                    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-                });
-            } catch (err) { 
-                alert('Video error: ' + err.message); 
-                resetVideo(); 
-            } finally { 
-                vcb.disabled = false; 
-            }
-        });
-        vrl.addEventListener('click', resetVideo);
-        resetVideo();
+        document.getElementById('imgConvertQualitySlider')?.addEventListener('input', function() { document.getElementById('imgConvertQualityValue').textContent = this.value + '%'; });
     </script>
 </body>
 </html>
