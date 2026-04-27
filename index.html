@@ -11,6 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -20,21 +21,20 @@
       --success-hover: #16a34a;
       --danger: #ef4444;
       --danger-hover: #dc2626;
-      --bg: #0f0f0f;
-      --card-bg: rgba(20, 20, 30, 0.75);
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --border: rgba(255,255,255,0.08);
+      --bg: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --text: #111111;
+      --text-muted: #4b5563;
+      --border: rgba(0, 0, 0, 0.1);
     }
 
     body {
       background: var(--bg);
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: 'Poppins', system-ui, -apple-system, sans-serif;
       -webkit-tap-highlight-color: transparent;
       color: var(--text);
     }
 
-    /* UPDATED: flex-wrap so all tabs are visible – last two wrap to second row */
     #tabContainer {
       display: flex;
       flex-wrap: wrap;
@@ -60,50 +60,51 @@
       border-radius: 9999px;
       transition: all 0.2s;
       color: var(--text-muted);
-      background: rgba(255,255,255,0.06);
+      background: rgba(124, 58, 237, 0.08);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(124, 58, 237, 0.2);
       padding: 0.5rem 1rem;
       font-size: 0.8rem;
       touch-action: manipulation;
       display: flex;
       align-items: center;
       gap: 0.35rem;
+      font-weight: 500;
     }
     .tab-active {
       background: var(--accent);
       color: white !important;
       border-color: var(--accent);
-      box-shadow: 0 4px 12px rgba(124,58,237,0.4);
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
     }
 
     .tab-content > div:first-child {
       background: var(--card-bg);
       backdrop-filter: blur(28px);
       border-radius: 1.75rem;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px var(--border);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--border);
       padding: 1.25rem;
     }
     @media (min-width: 768px) { .tab-content > div:first-child { padding: 2rem 2.5rem; } }
 
     .hyperos-dropzone {
-      background: rgba(255,255,255,0.04);
+      background: rgba(124, 58, 237, 0.04);
       backdrop-filter: blur(20px);
-      border: 2px dashed rgba(255,255,255,0.15);
+      border: 2px dashed rgba(124, 58, 237, 0.2);
       border-radius: 1.5rem;
       transition: border-color 0.2s, background 0.2s, transform 0.2s;
       padding: 2rem 1rem;
       text-align: center;
       color: var(--text-muted);
     }
-    .hyperos-dropzone:hover { border-color: var(--accent); background: rgba(255,255,255,0.06); }
-    .drop-active { border-color: var(--accent); background: rgba(124,58,237,0.1); }
+    .hyperos-dropzone:hover { border-color: var(--accent); background: rgba(124, 58, 237, 0.08); }
+    .drop-active { border-color: var(--accent); background: rgba(124, 58, 237, 0.1); }
     @keyframes dropPop { 0% { transform: scale(1.02); } 80% { transform: scale(0.98); } 100% { transform: scale(1); } }
     .drop-zone-bounce { animation: dropPop 0.4s ease; }
 
     .dropzone-blob {
       position: absolute; width: 140px; height: 140px;
-      background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
       border-radius: 50%; top: -20px; right: -20px;
       animation: blobFloat 8s ease-in-out infinite alternate; pointer-events: none;
     }
@@ -124,7 +125,7 @@
     .hyperos-btn-danger,
     .hyperos-btn-clear {
       min-height: 42px; display: inline-flex; align-items: center; justify-content: center;
-      font-weight: 500; border-radius: 9999px; transition: all 0.2s; border: none;
+      font-weight: 600; border-radius: 9999px; transition: all 0.2s; border: none;
       cursor: pointer; padding: 0.5rem 1.1rem; font-size: 0.85rem; touch-action: manipulation;
       backdrop-filter: blur(8px);
     }
@@ -134,11 +135,11 @@
     .hyperos-btn-success:hover { background: var(--success-hover); }
     .hyperos-btn-danger { background: var(--danger); color: white; }
     .hyperos-btn-danger:hover { background: var(--danger-hover); }
-    .hyperos-btn-clear { background: rgba(255,255,255,0.08); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); }
-    .hyperos-btn-clear:hover { background: rgba(255,255,255,0.12); }
+    .hyperos-btn-clear { background: rgba(124, 58, 237, 0.08); color: var(--text-muted); border: 1px solid rgba(124, 58, 237, 0.2); }
+    .hyperos-btn-clear:hover { background: rgba(124, 58, 237, 0.15); }
 
     .control-panel {
-      background: rgba(255,255,255,0.05); backdrop-filter: blur(16px);
+      background: rgba(124, 58, 237, 0.05); backdrop-filter: blur(16px);
       border-radius: 1rem; padding: 0.75rem;
       display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center;
     }
@@ -146,42 +147,39 @@
 
     .preview-item {
       display: flex; align-items: center; gap: 0.75rem;
-      background: rgba(255,255,255,0.06); backdrop-filter: blur(16px);
-      border-radius: 1rem; padding: 0.75rem; border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(124, 58, 237, 0.04); backdrop-filter: blur(16px);
+      border-radius: 1rem; padding: 0.75rem; border: 1px solid rgba(124, 58, 237, 0.1);
     }
-    .preview-item img, .preview-item canvas { width: 80px; height: 110px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
-    .preview-item i.fa-file-pdf { font-size: 2.8rem; width: 80px; text-align: center; color: #ef4444; }
-    .preview-item-image img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
+    .preview-item img, .preview-item canvas { width: 80px; height: 110px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); }
+    .preview-item i.fa-file-pdf { font-size: 2.8rem; width: 80px; text-align: center; color: var(--danger); }
+    .preview-item-image img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); }
 
     .result-item {
       display: flex; align-items: center; gap: 0.75rem;
-      background: rgba(255,255,255,0.06); backdrop-filter: blur(16px);
-      border-radius: 1rem; padding: 0.75rem; border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(124, 58, 237, 0.04); backdrop-filter: blur(16px);
+      border-radius: 1rem; padding: 0.75rem; border: 1px solid rgba(124, 58, 237, 0.1);
     }
     .result-item img, .result-item canvas { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; }
     .result-item i { font-size: 2.2rem; width: 64px; text-align: center; }
     .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .text-gray-600, .text-gray-500, .text-gray-400 { color: var(--text-muted) !important; }
     .text-gray-700, .text-gray-800 { color: var(--text) !important; }
-    .bg-white, .bg-gray-50, .bg-green-50, .bg-red-50 { background-color: rgba(255,255,255,0.06) !important; }
-    .border { border-color: rgba(255,255,255,0.1) !important; }
+    .bg-white, .bg-gray-50, .bg-green-50, .bg-red-50 { background-color: rgba(124, 58, 237, 0.05) !important; }
+    .border { border-color: rgba(124, 58, 237, 0.2) !important; }
 
     .page-thumb {
       position: relative; cursor: pointer; border-radius: 0.5rem; overflow: hidden;
       border: 2px solid transparent; transition: all 0.2s;
     }
-    .page-thumb.selected { border-color: var(--accent); box-shadow: 0 0 10px rgba(124,58,237,0.4); }
+    .page-thumb.selected { border-color: var(--accent); box-shadow: 0 0 10px rgba(124, 58, 237, 0.4); }
     .page-thumb img { width: 100%; height: auto; display: block; border-radius: 0.4rem; }
     .page-thumb .check-overlay {
-      position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.5);
+      position: absolute; top: 4px; right: 4px; background: rgba(124, 58, 237, 0.8);
       border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center;
       justify-content: center; color: white; font-size: 0.8rem;
     }
-    .lock-btn {
-      background: none; border: none; cursor: pointer; color: #94a3b8;
-      padding: 0.25rem; display: flex; align-items: center;
-    }
-    .lock-btn:hover { color: white; }
+    .lock-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 0.25rem; display: flex; align-items: center; }
+    .lock-btn:hover { color: var(--accent); }
     .preview-item[draggable="true"] { cursor: grab; }
     .preview-item[draggable="true"]:active { cursor: grabbing; }
 
@@ -191,26 +189,36 @@
       .preview-item-image img { width: 60px; height: 60px; }
       .result-item { flex-wrap: wrap; }
     }
+
+    /* Override some Tailwind classes for the new theme */
+    .bg-white\/10 { background-color: rgba(124, 58, 237, 0.05) !important; }
+    .bg-white\/10:hover { background-color: rgba(124, 58, 237, 0.1) !important; }
+    .text-white { color: var(--text) !important; }
+    .text-gray-300, .text-gray-400, .text-gray-500 { color: var(--text-muted) !important; }
+    .border-white\/10 { border-color: rgba(124, 58, 237, 0.15) !important; }
+    .bg-black\/70 { background: rgba(255,255,255,0.85) !important; backdrop-filter: blur(20px); }
+    .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
+    select option { color: var(--text); }
   </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
-  <header class="w-full sticky top-0 z-50 bg-black/70 backdrop-blur-xl border-b border-white/10 py-2.5 px-3 md:px-6 flex items-center justify-between">
+  <header class="w-full sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200 py-2.5 px-3 md:px-6 flex items-center justify-between">
     <div class="flex items-center gap-2 min-w-0 flex-1">
       <i class="fas fa-compress text-purple-500 text-xl md:text-2xl flex-shrink-0"></i>
-      <span class="text-lg md:text-xl font-bold text-white tracking-tight truncate">CompresMedia</span>
+      <span class="text-lg md:text-xl font-bold text-black tracking-tight truncate">CompresMedia</span>
     </div>
-    <div class="text-xs md:text-sm text-gray-400 flex-shrink-0 ml-2">100% private</div>
+    <!-- removed "100% private" -->
   </header>
 
   <main class="flex-1 w-full max-w-4xl mx-auto px-3 md:px-6 py-4 md:py-8">
     <div class="text-center mb-6">
       <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-fuchsia-500">CompresMedia</h1>
-      <p class="text-gray-400 text-sm md:text-base mt-1">Batch processing · Up to 10 files · Original filenames</p>
+      <p class="text-gray-500 text-sm md:text-base mt-1">Batch processing · Up to 10 files · Original filenames</p>
       <div class="flex flex-wrap justify-center gap-2 mt-3 text-xs font-medium">
-        <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30"><i class="fas fa-check-circle mr-1"></i>100% Free</span>
-        <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30"><i class="fas fa-infinity mr-1"></i>100% Unlimited</span>
-        <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30"><i class="fas fa-shield-alt mr-1"></i>100% Privacy</span>
+        <span class="px-3 py-1 rounded-full bg-purple-100 text-purple-700 border border-purple-200"><i class="fas fa-check-circle mr-1"></i>100% Free</span>
+        <span class="px-3 py-1 rounded-full bg-purple-100 text-purple-700 border border-purple-200"><i class="fas fa-infinity mr-1"></i>100% Unlimited</span>
+        <span class="px-3 py-1 rounded-full bg-purple-100 text-purple-700 border border-purple-200"><i class="fas fa-shield-alt mr-1"></i>100% Privacy</span>
       </div>
     </div>
 
@@ -225,122 +233,130 @@
       <button id="tabPdf2Excel" class="tab-btn"><i class="fas fa-file-excel"></i> <span class="hidden sm:inline">PDF to Excel</span><span class="inline sm:hidden">→Excel</span></button>
     </div>
 
-    <!-- sections unchanged, identical to previous full implementation (all tools working) -->
+    <!-- ========== SECTIONS (unchanged from previous working code) ========== -->
     <!-- 1) PDF COMPRESSOR -->
     <div id="pdfSection" class="tab-content"><div>
-      <div id="pdfDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-300 font-medium text-sm md:text-base">Drop PDFs here or tap to select</p><p class="text-xs text-gray-500 mt-1">max 10 PDFs, each ≤ 250 MB</p><input type="file" id="pdfInput" accept=".pdf" multiple class="hidden"></div>
-      <div class="flex justify-between items-center mt-4"><span class="text-sm font-medium text-gray-400"><span id="pdfFileCount">0</span> file(s)</span><button id="pdfClearAll" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
+      <div id="pdfDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-600 font-medium text-sm md:text-base">Drop PDFs here or tap to select</p><p class="text-xs text-gray-500 mt-1">max 10 PDFs, each ≤ 250 MB</p><input type="file" id="pdfInput" accept=".pdf" multiple class="hidden"></div>
+      <div class="flex justify-between items-center mt-4"><span class="text-sm font-medium text-gray-600"><span id="pdfFileCount">0</span> file(s)</span><button id="pdfClearAll" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
       <div id="pdfFileList" class="mt-2 space-y-2 max-h-64 overflow-y-auto"></div>
       <div id="pdfSettings" class="mt-4 hidden control-panel">
-        <select id="pdfCompressionSelect" class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg px-3 py-2 text-sm text-white"><option value="light" class="text-black">📄 Light (keep text)</option><option value="balanced" class="text-black">⚖️ Balanced (85% JPEG)</option><option value="maximum" class="text-black">🔥 Maximum (50% JPEG)</option><option value="custom" class="text-black">🎛️ Custom</option></select>
-        <div id="pdfCustomQuality" class="hidden items-center gap-2 bg-white/10 px-3 py-1 rounded-lg"><span class="text-xs">JPEG:</span><input type="range" id="pdfJpegQuality" min="0.3" max="0.9" step="0.01" value="0.65" class="w-20"><span id="pdfQualityValue" class="text-xs">65%</span></div>
+        <select id="pdfCompressionSelect" class="bg-purple-50/70 backdrop-blur-sm border border-purple-200 rounded-lg px-3 py-2 text-sm text-black">
+          <option value="light" class="text-black">📄 Light (keep text)</option>
+          <option value="balanced" class="text-black">⚖️ Balanced (85% JPEG)</option>
+          <option value="maximum" class="text-black">🔥 Maximum (50% JPEG)</option>
+          <option value="custom" class="text-black">🎛️ Custom</option>
+        </select>
+        <div id="pdfCustomQuality" class="hidden items-center gap-2 bg-purple-50/50 px-3 py-1 rounded-lg">
+          <span class="text-xs text-black">JPEG:</span><input type="range" id="pdfJpegQuality" min="0.3" max="0.9" step="0.01" value="0.65" class="w-20"><span id="pdfQualityValue" class="text-xs text-black">65%</span>
+        </div>
         <button id="pdfCompressBtn" class="hyperos-btn-primary"><i class="fas fa-compress-alt"></i> Compress All</button>
       </div>
-      <div id="pdfProgressArea" class="mt-4 hidden"><div class="flex justify-between text-xs"><span id="pdfProgressLabel">Processing...</span><span id="pdfProgressPercent">0%</span></div><div class="w-full bg-gray-700 rounded-full h-2"><div id="pdfProgressFill" class="progress-fill h-2 rounded-full" style="width:0%"></div></div></div>
+      <div id="pdfProgressArea" class="mt-4 hidden"><div class="flex justify-between text-xs text-black"><span id="pdfProgressLabel">Processing...</span><span id="pdfProgressPercent">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="pdfProgressFill" class="progress-fill h-2 rounded-full" style="width:0%"></div></div></div>
       <div id="pdfResults" class="mt-6 hidden space-y-3"></div>
       <div class="mt-3 text-xs text-gray-500 text-center">⚠️ Aggressive modes flatten text. Best for scans.</div>
     </div></div>
 
     <!-- 2) IMAGE COMPRESSOR -->
     <div id="imageCompressSection" class="tab-content hidden"><div>
-      <div id="compDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-300 font-medium text-sm md:text-base">Drop images here (JPEG, PNG, WEBP)</p><p class="text-xs text-gray-500">max 10 images, each ≤ 35 MB</p><input type="file" id="compInput" accept="image/jpeg,image/png,image/webp" multiple class="hidden"></div>
-      <div class="flex justify-between items-center mt-4"><span class="text-sm font-medium text-gray-400"><span id="compFileCount">0</span> file(s)</span><button id="compClearAll" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
+      <div id="compDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-600 font-medium text-sm md:text-base">Drop images here (JPEG, PNG, WEBP)</p><p class="text-xs text-gray-500">max 10 images, each ≤ 35 MB</p><input type="file" id="compInput" accept="image/jpeg,image/png,image/webp" multiple class="hidden"></div>
+      <div class="flex justify-between items-center mt-4"><span class="text-sm font-medium text-gray-600"><span id="compFileCount">0</span> file(s)</span><button id="compClearAll" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
       <div id="compFileList" class="mt-2 space-y-2 max-h-64 overflow-y-auto"></div>
       <div id="compSettings" class="mt-4 hidden control-panel">
-        <div class="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-lg text-sm"><span class="text-xs">Compress:</span><input type="range" id="compQuality" min="0.1" max="1.0" step="0.01" value="0.5" class="w-20"><span id="compQualityVal" class="text-xs">50%</span></div>
-        <div class="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-lg text-sm"><span class="text-xs">Scale:</span><select id="compScale" class="text-xs border border-white/10 rounded px-2 py-1 bg-white/10 text-white"><option value="1">100%</option><option value="0.75" selected>75%</option><option value="0.5">50%</option><option value="0.25">25%</option></select><button id="compApplyScale" class="text-xs bg-purple-600 text-white px-2 py-1 rounded-full">Apply</button></div>
-        <div class="flex items-center gap-1 bg-white/10 px-3 py-2 rounded-lg text-sm flex-wrap">
-          <span class="text-xs">W:</span><input type="number" id="compWidth" placeholder="auto" class="w-14 text-xs border border-white/10 rounded px-1 py-0.5 bg-white/10 text-white">
+        <div class="flex items-center gap-2 bg-purple-50/50 px-3 py-2 rounded-lg text-sm"><span class="text-xs text-black">Compress:</span><input type="range" id="compQuality" min="0.1" max="1.0" step="0.01" value="0.5" class="w-20"><span id="compQualityVal" class="text-xs text-black">50%</span></div>
+        <div class="flex items-center gap-2 bg-purple-50/50 px-3 py-2 rounded-lg text-sm"><span class="text-xs text-black">Scale:</span><select id="compScale" class="text-xs border border-purple-200 rounded px-2 py-1 bg-purple-50/50 text-black"><option value="1">100%</option><option value="0.75" selected>75%</option><option value="0.5">50%</option><option value="0.25">25%</option></select><button id="compApplyScale" class="text-xs bg-purple-600 text-white px-2 py-1 rounded-full">Apply</button></div>
+        <div class="flex items-center gap-1 bg-purple-50/50 px-3 py-2 rounded-lg text-sm flex-wrap">
+          <span class="text-xs text-black">W:</span><input type="number" id="compWidth" placeholder="auto" class="w-14 text-xs border border-purple-200 rounded px-1 py-0.5 bg-white text-black">
           <button id="compLock" class="lock-btn"><i class="fas fa-lock"></i></button>
-          <span class="text-xs">H:</span><input type="number" id="compHeight" placeholder="auto" class="w-14 text-xs border border-white/10 rounded px-1 py-0.5 bg-white/10 text-white">
+          <span class="text-xs text-black">H:</span><input type="number" id="compHeight" placeholder="auto" class="w-14 text-xs border border-purple-200 rounded px-1 py-0.5 bg-white text-black">
           <button id="compClearResize" class="text-xs text-red-400"><i class="fas fa-times-circle"></i></button>
         </div>
-        <label class="flex items-center gap-1 bg-white/10 px-3 py-2 rounded-lg text-xs"><input type="checkbox" id="compForceJpeg" checked> Force JPEG</label>
+        <label class="flex items-center gap-1 bg-purple-50/50 px-3 py-2 rounded-lg text-xs text-black"><input type="checkbox" id="compForceJpeg" checked> Force JPEG</label>
         <button id="compProcessBtn" class="hyperos-btn-danger"><i class="fas fa-fire"></i> Aggressive Compress</button>
       </div>
-      <div id="compLivePreview" class="mt-4 hidden"><p class="text-sm text-gray-400 mb-2">Live Preview (first image)</p><div class="flex flex-col sm:flex-row gap-4 items-start justify-center"><div class="text-center"><p class="text-xs text-gray-500">Original</p><canvas id="compPreviewOrig" class="max-w-[200px] max-h-[200px] border border-white/10 rounded"></canvas></div><div class="text-center"><p class="text-xs text-gray-500">Compressed</p><canvas id="compPreviewComp" class="max-w-[200px] max-h-[200px] border border-white/10 rounded"></canvas><p id="compPreviewSize" class="text-xs text-gray-400 mt-1"></p></div></div></div>
-      <div id="compProgressArea" class="mt-4 hidden"><div class="flex justify-between text-xs"><span id="compProgressLabel">Processing...</span><span id="compProgressPercent">0%</span></div><div class="w-full bg-gray-700 rounded-full h-2"><div id="compProgressFill" class="progress-fill h-2 rounded-full" style="width:0%"></div></div></div>
+      <div id="compLivePreview" class="mt-4 hidden"><p class="text-sm text-gray-600 mb-2">Live Preview (first image)</p><div class="flex flex-col sm:flex-row gap-4 items-start justify-center"><div class="text-center"><p class="text-xs text-gray-500">Original</p><canvas id="compPreviewOrig" class="max-w-[200px] max-h-[200px] border border-gray-200 rounded"></canvas></div><div class="text-center"><p class="text-xs text-gray-500">Compressed</p><canvas id="compPreviewComp" class="max-w-[200px] max-h-[200px] border border-gray-200 rounded"></canvas><p id="compPreviewSize" class="text-xs text-gray-500 mt-1"></p></div></div></div>
+      <div id="compProgressArea" class="mt-4 hidden"><div class="flex justify-between text-xs text-black"><span id="compProgressLabel">Processing...</span><span id="compProgressPercent">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="compProgressFill" class="progress-fill h-2 rounded-full" style="width:0%"></div></div></div>
       <div id="compResults" class="mt-6 hidden space-y-3"></div>
     </div></div>
 
     <!-- 3) IMAGE CONVERTER -->
     <div id="imageConvertSection" class="tab-content hidden"><div>
-      <div id="convDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-300 font-medium text-sm md:text-base">Drop images here (JPEG, PNG, WEBP)</p><p class="text-xs text-gray-500">max 10 images, each ≤ 35 MB</p><input type="file" id="convInput" accept="image/jpeg,image/png,image/webp" multiple class="hidden"></div>
-      <div class="flex justify-between items-center mt-4"><span class="text-sm font-medium text-gray-400"><span id="convFileCount">0</span> file(s)</span><button id="convClearAll" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
+      <div id="convDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-600 font-medium text-sm md:text-base">Drop images here (JPEG, PNG, WEBP)</p><p class="text-xs text-gray-500">max 10 images, each ≤ 35 MB</p><input type="file" id="convInput" accept="image/jpeg,image/png,image/webp" multiple class="hidden"></div>
+      <div class="flex justify-between items-center mt-4"><span class="text-sm font-medium text-gray-600"><span id="convFileCount">0</span> file(s)</span><button id="convClearAll" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
       <div id="convFileList" class="mt-2 space-y-2 max-h-64 overflow-y-auto"></div>
       <div id="convSettings" class="mt-4 hidden control-panel">
-        <select id="convFormat" class="bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"><option value="jpeg" class="text-black">JPEG</option><option value="png" class="text-black">PNG</option><option value="webp" class="text-black">WEBP</option></select>
-        <div class="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-lg text-sm"><span class="text-xs">Quality:</span><input type="range" id="convQuality" min="0.1" max="1.0" step="0.01" value="0.8" class="w-20"><span id="convQualityVal" class="text-xs">80%</span></div>
-        <div class="flex items-center gap-1 bg-white/10 px-3 py-2 rounded-lg text-sm flex-wrap">
-          <span class="text-xs">W:</span><input type="number" id="convWidth" placeholder="auto" class="w-14 text-xs border border-white/10 rounded px-1 py-0.5 bg-white/10 text-white">
+        <select id="convFormat" class="bg-purple-50/50 border border-purple-200 rounded-lg px-3 py-2 text-sm text-black"><option value="jpeg" class="text-black">JPEG</option><option value="png" class="text-black">PNG</option><option value="webp" class="text-black">WEBP</option></select>
+        <div class="flex items-center gap-2 bg-purple-50/50 px-3 py-2 rounded-lg text-sm"><span class="text-xs text-black">Quality:</span><input type="range" id="convQuality" min="0.1" max="1.0" step="0.01" value="0.8" class="w-20"><span id="convQualityVal" class="text-xs text-black">80%</span></div>
+        <div class="flex items-center gap-1 bg-purple-50/50 px-3 py-2 rounded-lg text-sm flex-wrap">
+          <span class="text-xs text-black">W:</span><input type="number" id="convWidth" placeholder="auto" class="w-14 text-xs border border-purple-200 rounded px-1 py-0.5 bg-white text-black">
           <button id="convLock" class="lock-btn"><i class="fas fa-lock"></i></button>
-          <span class="text-xs">H:</span><input type="number" id="convHeight" placeholder="auto" class="w-14 text-xs border border-white/10 rounded px-1 py-0.5 bg-white/10 text-white">
+          <span class="text-xs text-black">H:</span><input type="number" id="convHeight" placeholder="auto" class="w-14 text-xs border border-purple-200 rounded px-1 py-0.5 bg-white text-black">
           <button id="convClearResize" class="text-xs text-red-400"><i class="fas fa-times-circle"></i></button>
         </div>
         <button id="convProcessBtn" class="hyperos-btn-primary"><i class="fas fa-exchange-alt"></i> Convert All</button>
       </div>
-      <div id="convProgressArea" class="mt-4 hidden"><div class="flex justify-between text-xs"><span id="convProgressLabel">Processing...</span><span id="convProgressPercent">0%</span></div><div class="w-full bg-gray-700 rounded-full h-2"><div id="convProgressFill" class="progress-fill h-2 rounded-full" style="width:0%"></div></div></div>
+      <div id="convProgressArea" class="mt-4 hidden"><div class="flex justify-between text-xs text-black"><span id="convProgressLabel">Processing...</span><span id="convProgressPercent">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="convProgressFill" class="progress-fill h-2 rounded-full" style="width:0%"></div></div></div>
       <div id="convResults" class="mt-6 hidden space-y-3"></div>
     </div></div>
 
     <!-- 4) MERGE PDF -->
     <div id="mergeSection" class="tab-content hidden"><div>
-      <h3 class="text-xl font-bold text-white mb-4 truncate"><i class="fas fa-object-group text-purple-400 mr-2"></i>Merge PDFs</h3>
-      <div id="mergeDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-300 font-medium text-sm md:text-base">Select multiple PDFs (drag to reorder)</p><p class="text-xs text-gray-500">max 10 files, each ≤ 250 MB</p><input type="file" id="mergeInput" accept=".pdf" multiple class="hidden"></div>
-      <div class="flex justify-between items-center mt-4"><span class="text-sm font-medium text-gray-400"><span id="mergeFileCount">0</span> file(s)</span><button id="mergeClearAll" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
+      <h3 class="text-xl font-bold text-black mb-4 truncate"><i class="fas fa-object-group text-purple-500 mr-2"></i>Merge PDFs</h3>
+      <div id="mergeDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-600 font-medium text-sm md:text-base">Select multiple PDFs (drag to reorder)</p><p class="text-xs text-gray-500">max 10 files, each ≤ 250 MB</p><input type="file" id="mergeInput" accept=".pdf" multiple class="hidden"></div>
+      <div class="flex justify-between items-center mt-4"><span class="text-sm font-medium text-gray-600"><span id="mergeFileCount">0</span> file(s)</span><button id="mergeClearAll" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
       <div id="mergePreviewList" class="mt-2 space-y-2 max-h-64 overflow-y-auto"></div>
       <button id="mergeBtn" class="mt-4 hyperos-btn-primary w-full sm:w-auto disabled:opacity-50"><i class="fas fa-object-group"></i> Merge & Download</button>
     </div></div>
 
     <!-- 5) SPLIT PDF -->
     <div id="splitSection" class="tab-content hidden"><div>
-      <h3 class="text-xl font-bold text-white mb-4 truncate"><i class="fas fa-cut text-purple-400 mr-2"></i>Split PDFs</h3>
-      <div id="splitDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-300 font-medium text-sm">Drop PDFs here (select pages visually)</p><p class="text-xs text-gray-500">max 10 files, each ≤ 250 MB</p><input type="file" id="splitInput" accept=".pdf" multiple class="hidden"></div>
-      <div class="flex justify-between items-center mt-4"><span class="text-sm font-medium text-gray-400"><span id="splitFileCount">0</span> file(s)</span><button id="splitClearAll" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
+      <h3 class="text-xl font-bold text-black mb-4 truncate"><i class="fas fa-cut text-purple-500 mr-2"></i>Split PDFs</h3>
+      <div id="splitDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-600 font-medium text-sm">Drop PDFs here (select pages visually)</p><p class="text-xs text-gray-500">max 10 files, each ≤ 250 MB</p><input type="file" id="splitInput" accept=".pdf" multiple class="hidden"></div>
+      <div class="flex justify-between items-center mt-4"><span class="text-sm font-medium text-gray-600"><span id="splitFileCount">0</span> file(s)</span><button id="splitClearAll" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
       <div id="splitFileList" class="mt-2 space-y-2 max-h-64 overflow-y-auto"></div>
-      <div id="splitPageSelector" class="mt-4 hidden"><p class="text-sm text-gray-400 mb-2">Select pages to extract (based on first PDF, up to 50 pages shown)</p><div class="flex gap-2 mb-3"><button id="splitSelectAll" class="hyperos-btn-clear px-3 py-1 text-xs">Select All</button><button id="splitDeselectAll" class="hyperos-btn-clear px-3 py-1 text-xs">Deselect</button></div><div id="splitPageThumbnails" class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-h-96 overflow-y-auto p-2"></div></div>
+      <div id="splitPageSelector" class="mt-4 hidden"><p class="text-sm text-gray-600 mb-2">Select pages to extract (based on first PDF, up to 50 pages shown)</p><div class="flex gap-2 mb-3"><button id="splitSelectAll" class="hyperos-btn-clear px-3 py-1 text-xs">Select All</button><button id="splitDeselectAll" class="hyperos-btn-clear px-3 py-1 text-xs">Deselect</button></div><div id="splitPageThumbnails" class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-h-96 overflow-y-auto p-2"></div></div>
       <button id="splitBtn" class="hyperos-btn-primary mt-4 w-full sm:w-auto disabled:opacity-50"><i class="fas fa-cut"></i> Extract Pages</button>
-      <div id="splitResult" class="mt-3 text-sm text-gray-400"></div>
+      <div id="splitResult" class="mt-3 text-sm text-gray-600"></div>
     </div></div>
 
     <!-- 6) IMAGE TO PDF -->
     <div id="img2pdfSection" class="tab-content hidden"><div>
-      <h3 class="text-xl font-bold text-white mb-4 truncate"><i class="fas fa-file-image text-purple-400 mr-2"></i>Image(s) to PDF</h3>
-      <div id="img2pdfDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-300 font-medium text-sm">Select images (JPG, PNG, WEBP)</p><p class="text-xs text-gray-500">max 10 images, each ≤ 35 MB</p><input type="file" id="img2pdfInput" accept="image/jpeg,image/png,image/webp" multiple class="hidden"></div>
-      <div class="flex justify-between items-center mt-4"><span class="text-sm font-medium text-gray-400"><span id="img2pdfFileCount">0</span> file(s)</span><button id="img2pdfClearAll" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
+      <h3 class="text-xl font-bold text-black mb-4 truncate"><i class="fas fa-file-image text-purple-500 mr-2"></i>Image(s) to PDF</h3>
+      <div id="img2pdfDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-600 font-medium text-sm">Select images (JPG, PNG, WEBP)</p><p class="text-xs text-gray-500">max 10 images, each ≤ 35 MB</p><input type="file" id="img2pdfInput" accept="image/jpeg,image/png,image/webp" multiple class="hidden"></div>
+      <div class="flex justify-between items-center mt-4"><span class="text-sm font-medium text-gray-600"><span id="img2pdfFileCount">0</span> file(s)</span><button id="img2pdfClearAll" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
       <div id="img2pdfPreviewList" class="mt-2 space-y-2 max-h-64 overflow-y-auto"></div>
-      <div class="mt-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center"><label class="text-sm font-medium text-gray-300">Page size:</label><select id="img2pdfPageSize" class="border border-white/10 rounded-lg px-3 py-2 text-sm bg-white/10 text-white"><option value="A4">A4</option><option value="Letter">Letter</option><option value="Fit">Fit to image</option></select><button id="img2pdfBtn" class="hyperos-btn-primary w-full sm:w-auto"><i class="fas fa-file-pdf"></i> Convert to PDF</button></div>
+      <div class="mt-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center"><label class="text-sm font-medium text-gray-700">Page size:</label><select id="img2pdfPageSize" class="border border-purple-200 rounded-lg px-3 py-2 text-sm bg-purple-50/50 text-black"><option value="A4">A4</option><option value="Letter">Letter</option><option value="Fit">Fit to image</option></select><button id="img2pdfBtn" class="hyperos-btn-primary w-full sm:w-auto"><i class="fas fa-file-pdf"></i> Convert to PDF</button></div>
     </div></div>
 
-    <!-- 7) PDF TO WORD with OCR -->
+    <!-- 7) PDF TO WORD -->
     <div id="pdf2wordSection" class="tab-content hidden"><div>
-      <h3 class="text-xl font-bold text-white mb-4 truncate"><i class="fas fa-file-word text-blue-400 mr-2"></i>PDF to Word</h3>
-      <div id="pdf2wordDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-300 font-medium text-sm">Drop a PDF here</p><p class="text-xs text-gray-500">max 250 MB · OCR for scanned docs</p><input type="file" id="pdf2wordInput" accept=".pdf" class="hidden"></div>
-      <div class="flex justify-between items-center mt-4"><span id="pdf2wordFileName" class="text-sm text-gray-400 truncate">No file chosen</span><button id="pdf2wordClear" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
-      <div class="mt-3 flex items-center gap-2"><label class="flex items-center gap-1 text-xs text-gray-300"><input type="checkbox" id="pdf2wordOcr"> Enable OCR (slower, best for scanned PDFs)</label></div>
+      <h3 class="text-xl font-bold text-black mb-4 truncate"><i class="fas fa-file-word text-blue-500 mr-2"></i>PDF to Word</h3>
+      <div id="pdf2wordDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-600 font-medium text-sm">Drop a PDF here</p><p class="text-xs text-gray-500">max 250 MB · OCR for scanned docs</p><input type="file" id="pdf2wordInput" accept=".pdf" class="hidden"></div>
+      <div class="flex justify-between items-center mt-4"><span id="pdf2wordFileName" class="text-sm text-gray-600 truncate">No file chosen</span><button id="pdf2wordClear" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
+      <div class="mt-3 flex items-center gap-2"><label class="flex items-center gap-1 text-xs text-gray-700"><input type="checkbox" id="pdf2wordOcr"> Enable OCR (slower, best for scanned PDFs)</label></div>
       <button id="pdf2wordBtn" class="hyperos-btn-primary mt-4 w-full sm:w-auto" disabled><i class="fas fa-file-word"></i> Convert to Word</button>
-      <div id="pdf2wordProgress" class="mt-4 hidden"><div class="flex justify-between text-xs"><span id="pdf2wordProgressLabel">Processing...</span><span id="pdf2wordProgressPercent">0%</span></div><div class="w-full bg-gray-700 rounded-full h-2"><div id="pdf2wordProgressFill" class="progress-fill h-2 rounded-full" style="width:0%"></div></div></div>
+      <div id="pdf2wordProgress" class="mt-4 hidden"><div class="flex justify-between text-xs text-black"><span id="pdf2wordProgressLabel">Processing...</span><span id="pdf2wordProgressPercent">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="pdf2wordProgressFill" class="progress-fill h-2 rounded-full" style="width:0%"></div></div></div>
       <div id="pdf2wordResult" class="mt-4 hidden"><a id="pdf2wordDownload" class="hyperos-btn-success w-full sm:w-auto"><i class="fas fa-download"></i> Download .doc</a></div>
     </div></div>
 
-    <!-- 8) PDF TO EXCEL with OCR -->
+    <!-- 8) PDF TO EXCEL -->
     <div id="pdf2excelSection" class="tab-content hidden"><div>
-      <h3 class="text-xl font-bold text-white mb-4 truncate"><i class="fas fa-file-excel text-green-400 mr-2"></i>PDF to Excel</h3>
-      <div id="pdf2excelDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-300 font-medium text-sm">Drop a PDF here</p><p class="text-xs text-gray-500">max 250 MB · OCR for scanned docs</p><input type="file" id="pdf2excelInput" accept=".pdf" class="hidden"></div>
-      <div class="flex justify-between items-center mt-4"><span id="pdf2excelFileName" class="text-sm text-gray-400 truncate">No file chosen</span><button id="pdf2excelClear" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
-      <div class="mt-3 flex items-center gap-2"><label class="flex items-center gap-1 text-xs text-gray-300"><input type="checkbox" id="pdf2excelOcr"> Enable OCR (slower, best for scanned PDFs)</label></div>
+      <h3 class="text-xl font-bold text-black mb-4 truncate"><i class="fas fa-file-excel text-green-500 mr-2"></i>PDF to Excel</h3>
+      <div id="pdf2excelDropzone" class="hyperos-dropzone cursor-pointer relative"><div class="dropzone-blob"></div><i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i><p class="text-gray-600 font-medium text-sm">Drop a PDF here</p><p class="text-xs text-gray-500">max 250 MB · OCR for scanned docs</p><input type="file" id="pdf2excelInput" accept=".pdf" class="hidden"></div>
+      <div class="flex justify-between items-center mt-4"><span id="pdf2excelFileName" class="text-sm text-gray-600 truncate">No file chosen</span><button id="pdf2excelClear" class="hyperos-btn-clear px-3 py-1.5 text-xs hidden"><i class="fas fa-trash-alt mr-1"></i> Clear</button></div>
+      <div class="mt-3 flex items-center gap-2"><label class="flex items-center gap-1 text-xs text-gray-700"><input type="checkbox" id="pdf2excelOcr"> Enable OCR (slower, best for scanned PDFs)</label></div>
       <button id="pdf2excelBtn" class="hyperos-btn-primary mt-4 w-full sm:w-auto" disabled><i class="fas fa-file-excel"></i> Convert to Excel</button>
-      <div id="pdf2excelProgress" class="mt-4 hidden"><div class="flex justify-between text-xs"><span id="pdf2excelProgressLabel">Processing...</span><span id="pdf2excelProgressPercent">0%</span></div><div class="w-full bg-gray-700 rounded-full h-2"><div id="pdf2excelProgressFill" class="progress-fill h-2 rounded-full" style="width:0%"></div></div></div>
+      <div id="pdf2excelProgress" class="mt-4 hidden"><div class="flex justify-between text-xs text-black"><span id="pdf2excelProgressLabel">Processing...</span><span id="pdf2excelProgressPercent">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="pdf2excelProgressFill" class="progress-fill h-2 rounded-full" style="width:0%"></div></div></div>
       <div id="pdf2excelResult" class="mt-4 hidden"><a id="pdf2excelDownload" class="hyperos-btn-success w-full sm:w-auto"><i class="fas fa-download"></i> Download .xls</a></div>
     </div></div>
   </main>
 
-  <footer class="w-full bg-black/70 backdrop-blur-lg border-t border-white/10 py-3 px-4 text-center text-xs md:text-sm text-gray-500 mt-8">
+  <footer class="w-full bg-white/80 backdrop-blur-lg border-t border-gray-200 py-3 px-4 text-center text-xs md:text-sm text-gray-500 mt-8">
     <p>© 2025 CompresMedia · All processing is local and private.</p>
     <p class="text-xs mt-1 opacity-75">Created by Grafynx Visual</p>
   </footer>
 
   <script>
+    // Full JavaScript functionality (identical to previous version)
     (function() {
       const sections = {
         pdf: document.getElementById('pdfSection'),
@@ -446,7 +462,7 @@
           fileList.innerHTML = '';
           for (let i=0; i<files.length; i++) {
             const f=files[i]; const thumb = await generatePdfThumbnail(f);
-            fileList.innerHTML += `<div class="preview-item" draggable="true" data-index="${i}"><img src="${thumb}" alt="thumb"/><div class="flex-1 min-w-0"><p class="font-medium text-sm truncate">${f.name}</p><p class="text-xs text-gray-400">${formatBytes(f.size)}</p></div><button data-index="${i}" class="remove-pdf text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`;
+            fileList.innerHTML += `<div class="preview-item" draggable="true" data-index="${i}"><img src="${thumb}" alt="thumb"/><div class="flex-1 min-w-0"><p class="font-medium text-sm truncate">${f.name}</p><p class="text-xs text-gray-500">${formatBytes(f.size)}</p></div><button data-index="${i}" class="remove-pdf text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`;
           }
           document.querySelectorAll('.remove-pdf').forEach(b => b.addEventListener('click', (e) => {
             const idx = parseInt(b.dataset.index); files.splice(idx,1); renderFileList();
@@ -514,10 +530,10 @@
               const newSize = resultBuffer.byteLength, saved = file.size - newSize, percent = (saved/file.size)*100;
               const blob = new Blob([resultBuffer], {type:'application/pdf'});
               const url = URL.createObjectURL(blob);
-              results.innerHTML += `<div class="result-item"><i class="fas fa-file-pdf text-green-500"></i><div class="flex-1 min-w-0"><p class="font-semibold text-sm truncate">${file.name}</p><p class="text-xs text-gray-400">${formatBytes(file.size)} → ${formatBytes(newSize)} (↓${percent.toFixed(1)}%)</p></div><a href="${url}" download="${file.name}" class="hyperos-btn-success px-3 py-1.5 text-xs ml-auto flex-shrink-0"><i class="fas fa-download"></i></a></div>`;
+              results.innerHTML += `<div class="result-item"><i class="fas fa-file-pdf text-red-500"></i><div class="flex-1 min-w-0"><p class="font-semibold text-sm truncate">${file.name}</p><p class="text-xs text-gray-500">${formatBytes(file.size)} → ${formatBytes(newSize)} (↓${percent.toFixed(1)}%)</p></div><a href="${url}" download="${file.name}" class="hyperos-btn-success px-3 py-1.5 text-xs ml-auto flex-shrink-0"><i class="fas fa-download"></i></a></div>`;
               progressFill.style.width = '100%'; progressPercent.innerText = '100%';
             } catch (err) {
-              results.innerHTML += `<div class="result-item bg-red-50/10"><i class="fas fa-exclamation-circle text-red-400"></i><div class="flex-1 min-w-0"><p class="text-sm font-medium text-red-400 truncate">${file.name}</p><p class="text-xs text-red-300">Compression failed: ${err.message}</p></div></div>`;
+              results.innerHTML += `<div class="result-item bg-red-50"><i class="fas fa-exclamation-circle text-red-400"></i><div class="flex-1 min-w-0"><p class="text-sm font-medium text-red-400 truncate">${file.name}</p><p class="text-xs text-red-300">Compression failed: ${err.message}</p></div></div>`;
             }
           }
           results.classList.remove('hidden'); progressArea.classList.add('hidden');
@@ -606,7 +622,7 @@
             const img = new Image(); img.src = url;
             await new Promise((res,rej) => { img.onload=res; img.onerror=rej; });
             origDimensions.set(f, { w: img.width, h: img.height });
-            fileList.innerHTML += `<div class="preview-item preview-item-image" draggable="true" data-index="${i}"><img src="${url}" alt="${f.name}"/><div class="flex-1 min-w-0"><p class="font-medium text-sm truncate">${f.name}</p><p class="text-xs text-gray-400">${formatBytes(f.size)} · ${img.width}×${img.height}</p></div><button data-index="${i}" class="remove-comp text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`;
+            fileList.innerHTML += `<div class="preview-item preview-item-image" draggable="true" data-index="${i}"><img src="${url}" alt="${f.name}"/><div class="flex-1 min-w-0"><p class="font-medium text-sm truncate">${f.name}</p><p class="text-xs text-gray-500">${formatBytes(f.size)} · ${img.width}×${img.height}</p></div><button data-index="${i}" class="remove-comp text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`;
           }
           document.querySelectorAll('.remove-comp').forEach(b => b.addEventListener('click', (e) => { const idx = parseInt(b.dataset.index); files.splice(idx,1); origDimensions.delete(files[idx]||{}); renderFileList(); }));
           updateLivePreview();
@@ -649,10 +665,10 @@
               const blob = await new Promise(res => canvas.toBlob(res, mime, quality));
               const newSize = blob.size, saved = file.size - newSize, percent = (saved/file.size)*100;
               const url = URL.createObjectURL(blob);
-              results.innerHTML += `<div class="result-item"><img src="${URL.createObjectURL(blob)}" alt="result"/><div class="flex-1 min-w-0"><p class="font-semibold text-sm truncate">${file.name}</p><p class="text-xs text-gray-400">${formatBytes(file.size)} → ${formatBytes(newSize)} (↓${percent.toFixed(1)}%) · ${w}×${h}</p></div><a href="${url}" download="${file.name}" class="hyperos-btn-success px-3 py-1.5 text-xs ml-auto flex-shrink-0"><i class="fas fa-download"></i></a></div>`;
+              results.innerHTML += `<div class="result-item"><img src="${URL.createObjectURL(blob)}" alt="result"/><div class="flex-1 min-w-0"><p class="font-semibold text-sm truncate">${file.name}</p><p class="text-xs text-gray-500">${formatBytes(file.size)} → ${formatBytes(newSize)} (↓${percent.toFixed(1)}%) · ${w}×${h}</p></div><a href="${url}" download="${file.name}" class="hyperos-btn-success px-3 py-1.5 text-xs ml-auto flex-shrink-0"><i class="fas fa-download"></i></a></div>`;
               progressFill.style.width = '100%'; progressPercent.innerText = '100%';
             } catch (err) {
-              results.innerHTML += `<div class="result-item bg-red-50/10"><i class="fas fa-exclamation-circle text-red-400"></i><div class="flex-1 min-w-0"><p class="text-sm font-medium text-red-400 truncate">${file.name}</p><p class="text-xs text-red-300">Compression failed: ${err.message}</p></div></div>`;
+              results.innerHTML += `<div class="result-item bg-red-50"><i class="fas fa-exclamation-circle text-red-400"></i><div class="flex-1 min-w-0"><p class="text-sm font-medium text-red-400 truncate">${file.name}</p><p class="text-xs text-red-300">Compression failed: ${err.message}</p></div></div>`;
             }
           }
           results.classList.remove('hidden'); progressArea.classList.add('hidden');
@@ -706,7 +722,7 @@
             const img = new Image(); img.src = url;
             await new Promise((res,rej) => { img.onload=res; img.onerror=rej; });
             origDimensions.set(f, { w: img.width, h: img.height });
-            fileList.innerHTML += `<div class="preview-item preview-item-image" draggable="true" data-index="${i}"><img src="${url}" alt="${f.name}"/><div class="flex-1 min-w-0"><p class="font-medium text-sm truncate">${f.name}</p><p class="text-xs text-gray-400">${formatBytes(f.size)} · ${img.width}×${img.height}</p></div><button data-index="${i}" class="remove-conv text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`;
+            fileList.innerHTML += `<div class="preview-item preview-item-image" draggable="true" data-index="${i}"><img src="${url}" alt="${f.name}"/><div class="flex-1 min-w-0"><p class="font-medium text-sm truncate">${f.name}</p><p class="text-xs text-gray-500">${formatBytes(f.size)} · ${img.width}×${img.height}</p></div><button data-index="${i}" class="remove-conv text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`;
           }
           document.querySelectorAll('.remove-conv').forEach(b => b.addEventListener('click', (e) => { const idx = parseInt(b.dataset.index); files.splice(idx,1); origDimensions.delete(files[idx]||{}); renderFileList(); }));
         }
@@ -748,10 +764,10 @@
               const blob = await new Promise(res => canvas.toBlob(res, mime, quality));
               const newSize = blob.size, saved = file.size - newSize, percent = (saved/file.size)*100;
               const url = URL.createObjectURL(blob);
-              results.innerHTML += `<div class="result-item"><img src="${URL.createObjectURL(blob)}" alt="result"/><div class="flex-1 min-w-0"><p class="font-semibold text-sm truncate">${file.name}</p><p class="text-xs text-gray-400">${formatBytes(file.size)} → ${formatBytes(newSize)} (${percent>0?'↓':'↑'}${Math.abs(percent).toFixed(1)}%) · ${w}×${h}</p></div><a href="${url}" download="${file.name}" class="hyperos-btn-success px-3 py-1.5 text-xs ml-auto flex-shrink-0"><i class="fas fa-download"></i></a></div>`;
+              results.innerHTML += `<div class="result-item"><img src="${URL.createObjectURL(blob)}" alt="result"/><div class="flex-1 min-w-0"><p class="font-semibold text-sm truncate">${file.name}</p><p class="text-xs text-gray-500">${formatBytes(file.size)} → ${formatBytes(newSize)} (${percent>0?'↓':'↑'}${Math.abs(percent).toFixed(1)}%) · ${w}×${h}</p></div><a href="${url}" download="${file.name}" class="hyperos-btn-success px-3 py-1.5 text-xs ml-auto flex-shrink-0"><i class="fas fa-download"></i></a></div>`;
               progressFill.style.width = '100%'; progressPercent.innerText = '100%';
             } catch (err) {
-              results.innerHTML += `<div class="result-item bg-red-50/10"><i class="fas fa-exclamation-circle text-red-400"></i><div class="flex-1 min-w-0"><p class="text-sm font-medium text-red-400 truncate">${file.name}</p><p class="text-xs text-red-300">Conversion failed: ${err.message}</p></div></div>`;
+              results.innerHTML += `<div class="result-item bg-red-50"><i class="fas fa-exclamation-circle text-red-400"></i><div class="flex-1 min-w-0"><p class="text-sm font-medium text-red-400 truncate">${file.name}</p><p class="text-xs text-red-300">Conversion failed: ${err.message}</p></div></div>`;
             }
           }
           results.classList.remove('hidden'); progressArea.classList.add('hidden');
@@ -769,12 +785,12 @@
         let files = [];
         async function updatePreview() {
           fileCount.innerText = files.length;
-          if (!files.length) { previewList.innerHTML='<p class="text-gray-400 text-center text-sm">No files selected</p>'; mergeBtn.disabled=true; clearAll.classList.add('hidden'); return; }
+          if (!files.length) { previewList.innerHTML='<p class="text-gray-500 text-center text-sm">No files selected</p>'; mergeBtn.disabled=true; clearAll.classList.add('hidden'); return; }
           clearAll.classList.remove('hidden');
           previewList.innerHTML='';
           for (let i=0; i<files.length; i++) {
             const f=files[i]; const thumb=await generatePdfThumbnail(f, 0.25);
-            previewList.innerHTML+=`<div class="preview-item" draggable="true" data-index="${i}"><img src="${thumb}" alt="thumb"/><div class="flex-1 min-w-0"><p class="font-medium text-sm truncate">${f.name}</p><p class="text-xs text-gray-400">${(f.size/1024).toFixed(1)} KB</p></div><button data-index="${i}" class="remove-merge text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`;
+            previewList.innerHTML+=`<div class="preview-item" draggable="true" data-index="${i}"><img src="${thumb}" alt="thumb"/><div class="flex-1 min-w-0"><p class="font-medium text-sm truncate">${f.name}</p><p class="text-xs text-gray-500">${(f.size/1024).toFixed(1)} KB</p></div><button data-index="${i}" class="remove-merge text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`;
           }
           mergeBtn.disabled=false;
           document.querySelectorAll('.remove-merge').forEach(b => b.addEventListener('click', (e)=>{ const idx=parseInt(b.dataset.index); files.splice(idx,1); updatePreview(); }));
@@ -819,9 +835,9 @@
 
         function updateFileList() {
           fileCount.innerText = splitFiles.length;
-          if (!splitFiles.length) { fileList.innerHTML='<p class="text-gray-400 text-center text-sm">No PDFs selected</p>'; clearAll.classList.add('hidden'); pageSelector.classList.add('hidden'); splitBtn.disabled=true; return; }
+          if (!splitFiles.length) { fileList.innerHTML='<p class="text-gray-500 text-center text-sm">No PDFs selected</p>'; clearAll.classList.add('hidden'); pageSelector.classList.add('hidden'); splitBtn.disabled=true; return; }
           clearAll.classList.remove('hidden');
-          fileList.innerHTML = splitFiles.map((item, i) => `<div class="preview-item"><i class="fas fa-file-pdf text-2xl"></i><div class="flex-1"><p class="font-medium text-sm truncate">${item.file.name}</p><p class="text-xs text-gray-400">${formatBytes(item.file.size)}</p></div><button data-index="${i}" class="remove-split text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`).join('');
+          fileList.innerHTML = splitFiles.map((item, i) => `<div class="preview-item"><i class="fas fa-file-pdf text-2xl"></i><div class="flex-1"><p class="font-medium text-sm truncate">${item.file.name}</p><p class="text-xs text-gray-500">${formatBytes(item.file.size)}</p></div><button data-index="${i}" class="remove-split text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`).join('');
           document.querySelectorAll('.remove-split').forEach(b => b.addEventListener('click', (e) => { const idx = parseInt(b.dataset.index); splitFiles.splice(idx,1); selectedPages.clear(); updateFileList(); loadFirstForThumbnails(); }));
           loadFirstForThumbnails();
         }
@@ -894,7 +910,7 @@
               const total = pdf.getPageCount();
               const pagesToExtract = [...selectedPages].filter(p => p >= 1 && p <= total).map(p => p - 1);
               if (pagesToExtract.length === 0) {
-                resultDiv.innerHTML += `<p class="text-yellow-400">⚠️ No valid pages in "${item.file.name}"</p>`;
+                resultDiv.innerHTML += `<p class="text-yellow-600">⚠️ No valid pages in "${item.file.name}"</p>`;
                 continue;
               }
               const newPdf = await PDFLib.PDFDocument.create();
@@ -906,7 +922,7 @@
               a.download = item.file.name.replace(/\.pdf$/i, '_extracted.pdf');
               a.click();
               URL.revokeObjectURL(a.href);
-              resultDiv.innerHTML += `<p class="text-green-400">✅ Extracted ${pagesToExtract.length} pages from "${item.file.name}"</p>`;
+              resultDiv.innerHTML += `<p class="text-green-600">✅ Extracted ${pagesToExtract.length} pages from "${item.file.name}"</p>`;
             }
             celebrate();
           } catch (e) { alert('Split error: ' + e.message); }
@@ -923,9 +939,9 @@
         let images=[];
         function updatePreview(){
           fileCount.innerText=images.length;
-          if(!images.length){ previewList.innerHTML='<p class="text-gray-400 text-center text-sm">No images selected</p>'; btn.disabled=true; clearAll.classList.add('hidden'); return; }
+          if(!images.length){ previewList.innerHTML='<p class="text-gray-500 text-center text-sm">No images selected</p>'; btn.disabled=true; clearAll.classList.add('hidden'); return; }
           clearAll.classList.remove('hidden');
-          previewList.innerHTML=images.map((f,i)=>`<div class="preview-item preview-item-image" draggable="true" data-index="${i}"><img src="${URL.createObjectURL(f)}" alt="${f.name}"/><div class="flex-1 min-w-0"><p class="font-medium text-sm truncate">${f.name}</p><p class="text-xs text-gray-400">${(f.size/1024).toFixed(1)} KB</p></div><button data-index="${i}" class="remove-img text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`).join('');
+          previewList.innerHTML=images.map((f,i)=>`<div class="preview-item preview-item-image" draggable="true" data-index="${i}"><img src="${URL.createObjectURL(f)}" alt="${f.name}"/><div class="flex-1 min-w-0"><p class="font-medium text-sm truncate">${f.name}</p><p class="text-xs text-gray-500">${(f.size/1024).toFixed(1)} KB</p></div><button data-index="${i}" class="remove-img text-red-400 p-1"><i class="fas fa-trash-alt"></i></button></div>`).join('');
           btn.disabled=false;
           document.querySelectorAll('.remove-img').forEach(b=>b.addEventListener('click',(e)=>{ const idx=parseInt(b.dataset.index); images.splice(idx,1); updatePreview(); }));
         }
