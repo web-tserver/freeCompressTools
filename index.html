@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=1.0, minimum-scale=1.0">
-  <title>Media Toolbox – Purple & Black</title>
+  <title>Media Toolbox – Purple & Black | Mobile Grid Tabs</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -33,7 +33,7 @@
       color: var(--text);
     }
 
-    /* Tabs – scrollable on mobile */
+    /* ----- Tab container: horizontal scroll on desktop, 2‑column grid on mobile ----- */
     #tabContainer {
       display: flex;
       flex-wrap: nowrap;
@@ -45,6 +45,22 @@
       margin-bottom: 0.5rem;
     }
     #tabContainer::-webkit-scrollbar { display: none; }
+    @media (max-width: 640px) {
+      #tabContainer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+        max-height: 160px; /* show all 6 tabs in 3 rows */
+        padding-bottom: 0;
+      }
+      #tabContainer::-webkit-scrollbar { display: none; }
+      .tab-btn {
+        width: 100%; /* fill the grid cell */
+        justify-content: center;
+      }
+    }
     .tab-btn {
       white-space: nowrap;
       flex-shrink: 0;
@@ -148,7 +164,7 @@
     }
     @media (max-width: 640px) { .control-panel { flex-direction: column; align-items: stretch; } }
 
-    /* Larger previews */
+    /* Preview items – ensure truncation */
     .preview-item {
       display: flex; align-items: center; gap: 0.75rem;
       background: rgba(255,255,255,0.06);
@@ -172,7 +188,10 @@
     .result-item img, .result-item canvas { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; }
     .result-item i { font-size: 2.2rem; width: 64px; text-align: center; }
 
-    /* Text colors */
+    /* Truncation utility (already in Tailwind, but ensures) */
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Text colours */
     .text-gray-600, .text-gray-500, .text-gray-400 { color: var(--text-muted) !important; }
     .text-gray-700, .text-gray-800 { color: var(--text) !important; }
     .bg-white, .bg-gray-50, .bg-green-50, .bg-red-50 { background-color: rgba(255,255,255,0.06) !important; }
@@ -182,11 +201,11 @@
 <body class="flex flex-col min-h-screen">
 
   <header class="w-full sticky top-0 z-50 bg-black/70 backdrop-blur-xl border-b border-white/10 py-2.5 px-3 md:px-6 flex items-center justify-between">
-    <div class="flex items-center gap-2">
-      <i class="fas fa-toolbox text-purple-500 text-xl md:text-2xl"></i>
-      <span class="text-lg md:text-xl font-bold text-white tracking-tight">Media Toolbox</span>
+    <div class="flex items-center gap-2 min-w-0 flex-1">
+      <i class="fas fa-toolbox text-purple-500 text-xl md:text-2xl flex-shrink-0"></i>
+      <span class="text-lg md:text-xl font-bold text-white tracking-tight truncate">Media Toolbox</span>
     </div>
-    <div class="text-xs md:text-sm text-gray-400">100% private</div>
+    <div class="text-xs md:text-sm text-gray-400 flex-shrink-0 ml-2">100% private</div>
   </header>
 
   <main class="flex-1 w-full max-w-4xl mx-auto px-3 md:px-6 py-4 md:py-8">
@@ -197,6 +216,7 @@
       <p class="text-gray-400 text-sm md:text-base mt-1">Batch processing · Up to 10 files · Original filenames</p>
     </div>
 
+    <!-- Tabs: horizontal scroll on desktop, 2-col grid on mobile -->
     <div id="tabContainer">
       <button id="tabPdf" class="tab-btn tab-active"><i class="fas fa-file-pdf"></i> PDF Compressor</button>
       <button id="tabImageCompress" class="tab-btn"><i class="fas fa-compress-alt"></i> Image Compressor</button>
@@ -298,7 +318,7 @@
     <!-- ======================= 4) MERGE PDF ======================= -->
     <div id="mergeSection" class="tab-content hidden">
       <div>
-        <h3 class="text-xl font-bold text-white mb-4"><i class="fas fa-object-group text-purple-400 mr-2"></i>Merge PDFs</h3>
+        <h3 class="text-xl font-bold text-white mb-4 truncate"><i class="fas fa-object-group text-purple-400 mr-2"></i>Merge PDFs</h3>
         <div id="mergeDropzone" class="hyperos-dropzone cursor-pointer relative">
           <div class="dropzone-blob"></div>
           <i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i>
@@ -318,7 +338,7 @@
     <!-- ======================= 5) SPLIT PDF ======================= -->
     <div id="splitSection" class="tab-content hidden">
       <div>
-        <h3 class="text-xl font-bold text-white mb-4"><i class="fas fa-cut text-purple-400 mr-2"></i>Split PDF</h3>
+        <h3 class="text-xl font-bold text-white mb-4 truncate"><i class="fas fa-cut text-purple-400 mr-2"></i>Split PDF</h3>
         <div id="splitDropzone" class="hyperos-dropzone cursor-pointer relative">
           <div class="dropzone-blob"></div>
           <i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i>
@@ -326,7 +346,7 @@
           <input type="file" id="splitInput" accept=".pdf" class="hidden">
         </div>
         <div id="splitPreview" class="mt-4 hidden">
-          <div class="preview-item"><canvas id="splitThumbnail" width="80" height="110" class="border rounded bg-white/10 shadow-sm"></canvas><div><p id="splitFileName" class="font-semibold text-sm"></p><p id="splitFileSize" class="text-xs text-gray-400"></p><p id="splitPageCount" class="text-xs text-gray-400"></p></div></div>
+          <div class="preview-item"><canvas id="splitThumbnail" width="80" height="110" class="border rounded bg-white/10 shadow-sm"></canvas><div class="min-w-0 flex-1"><p id="splitFileName" class="font-semibold text-sm truncate"></p><p id="splitFileSize" class="text-xs text-gray-400"></p><p id="splitPageCount" class="text-xs text-gray-400"></p></div></div>
         </div>
         <div class="mt-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
           <div class="flex-1"><label class="text-sm font-medium text-gray-300">Page range:</label><input type="text" id="splitRange" placeholder="1-5,8,10-12" class="border border-white/10 rounded-lg px-3 py-2 w-full text-sm mt-1 bg-white/10 text-white placeholder-gray-500"></div>
@@ -339,7 +359,7 @@
     <!-- ======================= 6) IMAGE TO PDF ======================= -->
     <div id="img2pdfSection" class="tab-content hidden">
       <div>
-        <h3 class="text-xl font-bold text-white mb-4"><i class="fas fa-file-image text-purple-400 mr-2"></i>Image(s) to PDF</h3>
+        <h3 class="text-xl font-bold text-white mb-4 truncate"><i class="fas fa-file-image text-purple-400 mr-2"></i>Image(s) to PDF</h3>
         <div id="img2pdfDropzone" class="hyperos-dropzone cursor-pointer relative">
           <div class="dropzone-blob"></div>
           <i class="fas fa-cloud-upload-alt text-4xl md:text-5xl text-gray-500 mb-2"></i>
@@ -495,10 +515,10 @@
             const newSize = resultBuffer.byteLength, saved = file.size - newSize, percent = (saved/file.size)*100;
             const blob = new Blob([resultBuffer], {type:'application/pdf'});
             const url = URL.createObjectURL(blob);
-            results.innerHTML += `<div class="result-item"><i class="fas fa-file-pdf text-green-500"></i><div class="flex-1 min-w-0"><p class="font-semibold text-sm">${file.name}</p><p class="text-xs text-gray-400">${formatBytes(file.size)} → ${formatBytes(newSize)} (↓${percent.toFixed(1)}%)</p></div><a href="${url}" download="${file.name}" class="hyperos-btn-success px-3 py-1.5 text-xs ml-auto"><i class="fas fa-download"></i></a></div>`;
+            results.innerHTML += `<div class="result-item"><i class="fas fa-file-pdf text-green-500"></i><div class="flex-1 min-w-0"><p class="font-semibold text-sm truncate">${file.name}</p><p class="text-xs text-gray-400">${formatBytes(file.size)} → ${formatBytes(newSize)} (↓${percent.toFixed(1)}%)</p></div><a href="${url}" download="${file.name}" class="hyperos-btn-success px-3 py-1.5 text-xs ml-auto flex-shrink-0"><i class="fas fa-download"></i></a></div>`;
             progressFill.style.width = '100%'; progressPercent.innerText = '100%';
           } catch (err) {
-            results.innerHTML += `<div class="result-item bg-red-50/10"><i class="fas fa-exclamation-circle text-red-400"></i><div class="flex-1"><p class="text-sm font-medium text-red-400">${file.name}</p><p class="text-xs text-red-300">Compression failed: ${err.message}</p></div></div>`;
+            results.innerHTML += `<div class="result-item bg-red-50/10"><i class="fas fa-exclamation-circle text-red-400"></i><div class="flex-1 min-w-0"><p class="text-sm font-medium text-red-400 truncate">${file.name}</p><p class="text-xs text-red-300">Compression failed: ${err.message}</p></div></div>`;
           }
         }
         results.classList.remove('hidden'); progressArea.classList.add('hidden');
@@ -574,21 +594,23 @@
           try {
             const img = new Image(); img.src = URL.createObjectURL(file);
             await new Promise((res,rej) => { img.onload=res; img.onerror=rej; });
+            const origW = img.width, origH = img.height;
             let w = tw, h = th;
-            if (w && !h) h = Math.round(img.height * (w / img.width));
-            else if (!w && h) w = Math.round(img.width * (h / img.height));
-            else if (!w && !h) { w = img.width; h = img.height; }
+            if (w && !h) h = Math.round(origH * (w / origW));
+            else if (!w && h) w = Math.round(origW * (h / origH));
+            else if (!w && !h) { w = origW; h = origH; }
             const canvas = document.createElement('canvas'); canvas.width=w; canvas.height=h;
             const ctx = canvas.getContext('2d'); ctx.drawImage(img,0,0,w,h);
             let mime = force ? 'image/jpeg' : file.type;
             const blob = await new Promise(res => canvas.toBlob(res, mime, quality));
             const newSize = blob.size, saved = file.size - newSize, percent = (saved/file.size)*100;
             const url = URL.createObjectURL(blob);
-            results.innerHTML += `<div class="result-item"><img src="${URL.createObjectURL(blob)}" alt="result"/><div class="flex-1 min-w-0"><p class="font-semibold text-sm">${file.name}</p><p class="text-xs text-gray-400">${formatBytes(file.size)} → ${formatBytes(newSize)} (↓${percent.toFixed(1)}%) · ${w}×${h}</p></div><a href="${url}" download="${file.name}" class="hyperos-btn-success px-3 py-1.5 text-xs ml-auto"><i class="fas fa-download"></i></a></div>`;
+            // Download with original file name (unchanged)
+            results.innerHTML += `<div class="result-item"><img src="${URL.createObjectURL(blob)}" alt="result"/><div class="flex-1 min-w-0"><p class="font-semibold text-sm truncate">${file.name}</p><p class="text-xs text-gray-400">${formatBytes(file.size)} → ${formatBytes(newSize)} (↓${percent.toFixed(1)}%) · ${w}×${h}</p></div><a href="${url}" download="${file.name}" class="hyperos-btn-success px-3 py-1.5 text-xs ml-auto flex-shrink-0"><i class="fas fa-download"></i></a></div>`;
             progressFill.style.width = '100%'; progressPercent.innerText = '100%';
             processed++;
           } catch (err) {
-            results.innerHTML += `<div class="result-item bg-red-50/10"><i class="fas fa-exclamation-circle text-red-400"></i><div class="flex-1"><p class="text-sm font-medium text-red-400">${file.name}</p><p class="text-xs text-red-300">Compression failed: ${err.message}</p></div></div>`;
+            results.innerHTML += `<div class="result-item bg-red-50/10"><i class="fas fa-exclamation-circle text-red-400"></i><div class="flex-1 min-w-0"><p class="text-sm font-medium text-red-400 truncate">${file.name}</p><p class="text-xs text-red-300">Compression failed: ${err.message}</p></div></div>`;
           }
         }
         results.classList.remove('hidden'); progressArea.classList.add('hidden');
@@ -655,21 +677,22 @@
           try {
             const img = new Image(); img.src = URL.createObjectURL(file);
             await new Promise((res,rej) => { img.onload=res; img.onerror=rej; });
+            const origW = img.width, origH = img.height;
             let w = tw, h = th;
-            if (w && !h) h = Math.round(img.height * (w / img.width));
-            else if (!w && h) w = Math.round(img.width * (h / img.height));
-            else if (!w && !h) { w = img.width; h = img.height; }
+            if (w && !h) h = Math.round(origH * (w / origW));
+            else if (!w && h) w = Math.round(origW * (h / origH));
+            else if (!w && !h) { w = origW; h = origH; }
             const canvas = document.createElement('canvas'); canvas.width=w; canvas.height=h;
             const ctx = canvas.getContext('2d'); ctx.drawImage(img,0,0,w,h);
             let mime = format==='jpeg' ? 'image/jpeg' : format==='png' ? 'image/png' : 'image/webp';
             const blob = await new Promise(res => canvas.toBlob(res, mime, quality));
             const newSize = blob.size, saved = file.size - newSize, percent = (saved/file.size)*100;
             const url = URL.createObjectURL(blob);
-            results.innerHTML += `<div class="result-item"><img src="${URL.createObjectURL(blob)}" alt="result"/><div class="flex-1 min-w-0"><p class="font-semibold text-sm">${file.name}</p><p class="text-xs text-gray-400">${formatBytes(file.size)} → ${formatBytes(newSize)} (${percent>0?'↓':'↑'}${Math.abs(percent).toFixed(1)}%) · ${w}×${h}</p></div><a href="${url}" download="${file.name}" class="hyperos-btn-success px-3 py-1.5 text-xs ml-auto"><i class="fas fa-download"></i></a></div>`;
+            results.innerHTML += `<div class="result-item"><img src="${URL.createObjectURL(blob)}" alt="result"/><div class="flex-1 min-w-0"><p class="font-semibold text-sm truncate">${file.name}</p><p class="text-xs text-gray-400">${formatBytes(file.size)} → ${formatBytes(newSize)} (${percent>0?'↓':'↑'}${Math.abs(percent).toFixed(1)}%) · ${w}×${h}</p></div><a href="${url}" download="${file.name}" class="hyperos-btn-success px-3 py-1.5 text-xs ml-auto flex-shrink-0"><i class="fas fa-download"></i></a></div>`;
             progressFill.style.width = '100%'; progressPercent.innerText = '100%';
             processed++;
           } catch (err) {
-            results.innerHTML += `<div class="result-item bg-red-50/10"><i class="fas fa-exclamation-circle text-red-400"></i><div class="flex-1"><p class="text-sm font-medium text-red-400">${file.name}</p><p class="text-xs text-red-300">Conversion failed: ${err.message}</p></div></div>`;
+            results.innerHTML += `<div class="result-item bg-red-50/10"><i class="fas fa-exclamation-circle text-red-400"></i><div class="flex-1 min-w-0"><p class="text-sm font-medium text-red-400 truncate">${file.name}</p><p class="text-xs text-red-300">Conversion failed: ${err.message}</p></div></div>`;
           }
         }
         results.classList.remove('hidden'); progressArea.classList.add('hidden');
