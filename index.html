@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>PDF & Image Toolbox – Compress / Convert</title>
+  <title>Media Toolbox – PDF | Image Compress | Image Convert</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -12,140 +12,105 @@
   <style>
     body { background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%); }
     .drop-active { background-color: rgba(59,130,246,0.1); border-color: #3b82f6; }
-    .card-hover { transition: all 0.2s; }
-    .card-hover:hover { transform: translateY(-2px); }
     .tab-active { border-bottom: 2px solid #3b82f6; color: #1e40af; }
   </style>
 </head>
 <body class="font-sans antialiased p-4 md:p-8">
 
 <div class="max-w-5xl mx-auto">
-  <!-- Header -->
   <div class="text-center mb-8">
     <h1 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">Media Toolbox</h1>
-    <p class="text-gray-600 mt-2">Compress PDFs · Resize & Convert Images · All local & private</p>
+    <p class="text-gray-600 mt-2">PDF compression · Image size reduction · Format conversion — all local</p>
   </div>
 
-  <!-- Tab Navigation -->
+  <!-- Three Tabs -->
   <div class="flex flex-wrap gap-2 mb-6 border-b border-gray-200 pb-2">
-    <button id="tabPdf" class="tab-btn px-5 py-2 font-semibold rounded-t-lg transition text-gray-600 hover:text-blue-600 focus:outline-none">
+    <button id="tabPdf" class="tab-btn px-5 py-2 font-semibold rounded-t-lg transition text-gray-600 hover:text-blue-600">
       <i class="fas fa-file-pdf mr-2"></i>PDF Compressor
     </button>
-    <button id="tabImage" class="tab-btn px-5 py-2 font-semibold rounded-t-lg transition text-gray-600 hover:text-blue-600 focus:outline-none">
-      <i class="fas fa-image mr-2"></i>Image Compressor & Converter
+    <button id="tabImageCompress" class="tab-btn px-5 py-2 font-semibold rounded-t-lg transition text-gray-600 hover:text-blue-600">
+      <i class="fas fa-compress-alt mr-2"></i>Image Compressor
+    </button>
+    <button id="tabImageConvert" class="tab-btn px-5 py-2 font-semibold rounded-t-lg transition text-gray-600 hover:text-blue-600">
+      <i class="fas fa-exchange-alt mr-2"></i>Image Converter
     </button>
   </div>
 
-  <!-- PDF Section -->
+  <!-- ======================= PDF COMPRESSOR (unchanged) ======================= -->
   <div id="pdfSection" class="tab-content">
     <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 p-6 md:p-8">
-      <!-- dropzone -->
       <div id="pdfDropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition hover:border-blue-400 bg-gray-50/40">
         <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
-        <p class="text-gray-700 font-medium">Drop PDF here or click to upload</p>
+        <p class="text-gray-700 font-medium">Drop PDF here or click</p>
         <p class="text-xs text-gray-400 mt-1">max 100 MB</p>
         <input type="file" id="pdfInput" accept=".pdf" class="hidden">
       </div>
-
       <div id="pdfControlPanel" class="mt-6 hidden">
         <div class="flex flex-wrap items-center justify-between gap-3 p-3 bg-gray-100 rounded-xl">
-          <div class="flex items-center gap-3 truncate">
-            <i class="fas fa-file-pdf text-red-500 text-xl"></i>
-            <div class="truncate">
-              <p id="pdfFileName" class="font-semibold truncate max-w-[180px] md:max-w-sm"></p>
-              <p id="pdfFileSize" class="text-xs text-gray-500"></p>
-            </div>
-          </div>
+          <div class="flex items-center gap-3 truncate"><i class="fas fa-file-pdf text-red-500 text-xl"></i><div><p id="pdfFileName" class="font-semibold truncate"></p><p id="pdfFileSize" class="text-xs text-gray-500"></p></div></div>
           <div class="flex flex-wrap items-center gap-2">
-            <select id="pdfCompressionSelect" class="bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-sm font-medium shadow-sm">
-              <option value="light">📄 Light (standard, keep text)</option>
-              <option value="balanced">⚖️ Balanced (aggressive 85% quality)</option>
-              <option value="maximum">🔥 Maximum (aggressive 50% quality)</option>
-              <option value="custom">🎛️ Custom (set quality below)</option>
+            <select id="pdfCompressionSelect" class="bg-white border rounded-lg px-3 py-1.5 text-sm">
+              <option value="light">📄 Light (keep text)</option><option value="balanced">⚖️ Balanced (85% JPEG)</option><option value="maximum">🔥 Maximum (50% JPEG)</option><option value="custom">🎛️ Custom</option>
             </select>
-            <div id="pdfCustomQuality" class="hidden items-center gap-2 bg-white px-3 py-1 rounded-lg shadow-sm">
-              <span class="text-xs font-medium">JPEG quality:</span>
-              <input type="range" id="pdfJpegQuality" min="0.3" max="0.9" step="0.01" value="0.65" class="w-28">
-              <span id="pdfQualityValue" class="text-xs font-mono w-10">65%</span>
-            </div>
-            <button id="pdfCompressBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-1.5 rounded-xl shadow-md flex items-center gap-2 transition disabled:opacity-50">
-              <i class="fas fa-compress-alt"></i> Compress
-            </button>
+            <div id="pdfCustomQuality" class="hidden items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">JPEG quality:</span><input type="range" id="pdfJpegQuality" min="0.3" max="0.9" step="0.01" value="0.65" class="w-28"><span id="pdfQualityValue" class="text-xs">65%</span></div>
+            <button id="pdfCompressBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-1.5 rounded-xl shadow-md flex items-center gap-2"><i class="fas fa-compress-alt"></i> Compress</button>
           </div>
         </div>
-        <div id="pdfProgressArea" class="mt-5 hidden">
-          <div class="flex justify-between text-xs text-gray-600 mb-1"><span><i class="fas fa-spinner fa-pulse"></i> processing...</span><span id="pdfProgressPercent">0%</span></div>
-          <div class="w-full bg-gray-200 rounded-full h-2"><div id="pdfProgressFill" class="bg-blue-500 h-2 rounded-full transition-all" style="width:0%"></div></div>
-          <p id="pdfProgressDetail" class="text-xs text-gray-400 mt-1"></p>
-        </div>
-        <div id="pdfResultPanel" class="mt-6 hidden">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-gray-50 p-4 rounded-xl border"><p class="text-xs text-gray-500 uppercase">original</p><p class="text-2xl font-bold" id="pdfOrigSize">—</p><div class="bg-gray-200 h-1.5 rounded-full mt-2"><div class="bg-gray-500 h-1.5 rounded-full w-full"></div></div></div>
-            <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-xl border"><p class="text-xs text-gray-500 uppercase">compressed</p><p class="text-2xl font-bold" id="pdfCompSize">—</p><div class="bg-gray-200 h-1.5 rounded-full mt-2"><div id="pdfRatioFill" class="bg-green-500 h-1.5 rounded-full" style="width:0%"></div></div><p id="pdfSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div>
-          </div>
-          <div class="mt-5 flex justify-center"><button id="pdfDownloadBtn" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-xl shadow-md flex items-center gap-2"><i class="fas fa-download"></i> Download PDF</button></div>
-        </div>
+        <div id="pdfProgressArea" class="mt-5 hidden"><div class="flex justify-between text-xs"><span><i class="fas fa-spinner fa-pulse"></i> processing...</span><span id="pdfProgressPercent">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="pdfProgressFill" class="bg-blue-500 h-2 rounded-full" style="width:0%"></div></div><p id="pdfProgressDetail" class="text-xs text-gray-400 mt-1"></p></div>
+        <div id="pdfResultPanel" class="mt-6 hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="bg-gray-50 p-4 rounded-xl"><p class="text-xs text-gray-500">original</p><p class="text-2xl font-bold" id="pdfOrigSize">—</p></div><div class="bg-green-50 p-4 rounded-xl"><p class="text-xs text-gray-500">compressed</p><p class="text-2xl font-bold" id="pdfCompSize">—</p><p id="pdfSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div></div><div class="mt-5 flex justify-center"><button id="pdfDownloadBtn" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-xl"><i class="fas fa-download"></i> Download PDF</button></div></div>
       </div>
-      <div class="mt-4 text-xs text-gray-400 text-center">⚠️ Aggressive modes flatten text (no search). Best for scans/photos.</div>
+      <div class="mt-4 text-xs text-gray-400 text-center">⚠️ Aggressive modes flatten text (no search). Best for scans.</div>
     </div>
   </div>
 
-  <!-- Image Section -->
-  <div id="imageSection" class="tab-content hidden">
+  <!-- ======================= IMAGE COMPRESSOR (reduce size, keep format) ======================= -->
+  <div id="imageCompressSection" class="tab-content hidden">
     <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 p-6 md:p-8">
-      <div id="imageDropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition hover:border-blue-400 bg-gray-50/40">
+      <div id="compDropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition hover:border-blue-400 bg-gray-50/40">
         <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
-        <p class="text-gray-700 font-medium">Drop image here or click (JPEG, PNG, WEBP)</p>
-        <p class="text-xs text-gray-400 mt-1">max 20 MB</p>
-        <input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp" class="hidden">
+        <p class="text-gray-700 font-medium">Drop image here (JPEG, PNG, WEBP)</p>
+        <p class="text-xs text-gray-400 mt-1">max 20 MB · keeps original format</p>
+        <input type="file" id="compInput" accept="image/jpeg,image/png,image/webp" class="hidden">
       </div>
+      <div id="compControlPanel" class="mt-6 hidden">
+        <div class="flex flex-wrap items-center gap-3 p-3 bg-gray-100 rounded-xl mb-4">
+          <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">Quality:</span><input type="range" id="compQuality" min="0.1" max="1.0" step="0.01" value="0.7" class="w-28"><span id="compQualityVal" class="text-xs w-10">70%</span></div>
+          <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">Resize (px):</span><input type="number" id="compWidth" placeholder="width" class="w-16 text-xs border rounded px-1"><span class="text-xs">x</span><input type="number" id="compHeight" placeholder="height" class="w-16 text-xs border rounded px-1"><button id="compClearResize" class="text-xs text-red-500"><i class="fas fa-times-circle"></i></button></div>
+          <button id="compProcessBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-1.5 rounded-xl shadow-md flex items-center gap-2"><i class="fas fa-compress-alt"></i> Compress</button>
+        </div>
+        <div id="compProgressArea" class="mt-4 hidden"><div class="flex justify-between text-xs"><span>Compressing...</span><span id="compProgressPercent">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="compProgressFill" class="bg-blue-500 h-2 rounded-full" style="width:0%"></div></div></div>
+        <div id="compResultPanel" class="mt-6 hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="bg-gray-50 p-4 rounded-xl"><p class="text-xs text-gray-500">original</p><p class="text-2xl font-bold" id="compOrigSize">—</p><img id="compPreviewOrig" class="mt-2 max-h-40 object-contain border rounded mx-auto"></div><div class="bg-green-50 p-4 rounded-xl"><p class="text-xs text-gray-500">compressed</p><p class="text-2xl font-bold" id="compNewSize">—</p><img id="compPreviewNew" class="mt-2 max-h-40 object-contain border rounded mx-auto"><p id="compSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div></div><div class="mt-5 flex justify-center"><button id="compDownloadBtn" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-xl shadow-md"><i class="fas fa-download"></i> Download Compressed</button></div></div>
+      </div>
+      <div class="mt-4 text-xs text-gray-400 text-center">✅ Reduces file size by lowering quality and/or dimensions. Keeps original format.</div>
+    </div>
+  </div>
 
-      <div id="imageControlPanel" class="mt-6 hidden">
-        <div class="flex flex-wrap items-center justify-between gap-3 p-3 bg-gray-100 rounded-xl">
-          <div class="flex items-center gap-3 truncate">
-            <i class="fas fa-image text-blue-500 text-xl"></i>
-            <div class="truncate"><p id="imageFileName" class="font-semibold truncate max-w-[180px] md:max-w-sm"></p><p id="imageFileSize" class="text-xs text-gray-500"></p></div>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <select id="imageFormat" class="bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-sm font-medium">
-              <option value="same">📷 Same format (compress only)</option>
-              <option value="jpeg">🖼️ Convert to JPEG</option>
-              <option value="png">💎 Convert to PNG</option>
-              <option value="webp">🌐 Convert to WEBP</option>
-            </select>
-            <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg shadow-sm">
-              <span class="text-xs font-medium">Quality:</span>
-              <input type="range" id="imageQuality" min="0.1" max="1.0" step="0.01" value="0.8" class="w-28">
-              <span id="imageQualityVal" class="text-xs font-mono w-10">80%</span>
-            </div>
-            <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg shadow-sm">
-              <span class="text-xs font-medium">Resize (px):</span>
-              <input type="number" id="imageWidth" placeholder="width" class="w-16 text-xs border rounded px-1" step="1" min="1">
-              <span class="text-xs">x</span>
-              <input type="number" id="imageHeight" placeholder="height" class="w-16 text-xs border rounded px-1" step="1" min="1">
-              <button id="clearResize" class="text-xs text-red-500 hover:text-red-700 ml-1"><i class="fas fa-times-circle"></i></button>
-            </div>
-            <button id="imageProcessBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-1.5 rounded-xl shadow-md flex items-center gap-2">
-              <i class="fas fa-magic"></i> Process
-            </button>
-          </div>
-        </div>
-        <div id="imageProgress" class="mt-4 hidden"><div class="flex justify-between text-xs"><span>processing...</span><span id="imageProgressPercent">0%</span></div><div class="w-full bg-gray-200 h-1.5 rounded-full"><div id="imageProgressFill" class="bg-blue-500 h-1.5 rounded-full" style="width:0%"></div></div></div>
-        <div id="imageResultPanel" class="mt-6 hidden">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-gray-50 p-4 rounded-xl"><p class="text-xs text-gray-500">original</p><p class="text-2xl font-bold" id="imageOrigSize">—</p><img id="imagePreviewOrig" class="mt-2 max-h-32 object-contain border rounded" alt="original preview"></div>
-            <div class="bg-green-50 p-4 rounded-xl"><p class="text-xs text-gray-500">processed</p><p class="text-2xl font-bold" id="imageNewSize">—</p><img id="imagePreviewNew" class="mt-2 max-h-32 object-contain border rounded" alt="compressed preview"><p id="imageSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div>
-          </div>
-          <div class="mt-4 flex justify-center"><button id="imageDownloadBtn" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-xl shadow-md"><i class="fas fa-download"></i> Download Image</button></div>
-        </div>
+  <!-- ======================= IMAGE CONVERTER (change format, optional compression) ======================= -->
+  <div id="imageConvertSection" class="tab-content hidden">
+    <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 p-6 md:p-8">
+      <div id="convDropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition hover:border-blue-400 bg-gray-50/40">
+        <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
+        <p class="text-gray-700 font-medium">Drop image here (JPEG, PNG, WEBP)</p>
+        <p class="text-xs text-gray-400 mt-1">max 20 MB · convert to any format</p>
+        <input type="file" id="convInput" accept="image/jpeg,image/png,image/webp" class="hidden">
       </div>
-      <div class="mt-4 text-xs text-gray-400 text-center">✅ WEBP offers best compression. PNG is lossless. JPEG is good for photos. Use resize to shrink dimensions.</div>
+      <div id="convControlPanel" class="mt-6 hidden">
+        <div class="flex flex-wrap items-center gap-3 p-3 bg-gray-100 rounded-xl mb-4">
+          <select id="convFormat" class="bg-white border rounded-lg px-3 py-1.5 text-sm"><option value="jpeg">JPEG</option><option value="png">PNG</option><option value="webp">WEBP</option></select>
+          <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">Quality (JPEG/WEBP):</span><input type="range" id="convQuality" min="0.1" max="1.0" step="0.01" value="0.8" class="w-28"><span id="convQualityVal" class="text-xs w-10">80%</span></div>
+          <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">Resize (px):</span><input type="number" id="convWidth" placeholder="width" class="w-16 text-xs border rounded px-1"><span class="text-xs">x</span><input type="number" id="convHeight" placeholder="height" class="w-16 text-xs border rounded px-1"><button id="convClearResize" class="text-xs text-red-500"><i class="fas fa-times-circle"></i></button></div>
+          <button id="convProcessBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-1.5 rounded-xl shadow-md flex items-center gap-2"><i class="fas fa-exchange-alt"></i> Convert</button>
+        </div>
+        <div id="convProgressArea" class="mt-4 hidden"><div class="flex justify-between text-xs"><span>Converting...</span><span id="convProgressPercent">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="convProgressFill" class="bg-blue-500 h-2 rounded-full" style="width:0%"></div></div></div>
+        <div id="convResultPanel" class="mt-6 hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="bg-gray-50 p-4 rounded-xl"><p class="text-xs text-gray-500">original</p><p class="text-2xl font-bold" id="convOrigSize">—</p><img id="convPreviewOrig" class="mt-2 max-h-40 object-contain border rounded mx-auto"></div><div class="bg-green-50 p-4 rounded-xl"><p class="text-xs text-gray-500">converted</p><p class="text-2xl font-bold" id="convNewSize">—</p><img id="convPreviewNew" class="mt-2 max-h-40 object-contain border rounded mx-auto"><p id="convSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div></div><div class="mt-5 flex justify-center"><button id="convDownloadBtn" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-xl shadow-md"><i class="fas fa-download"></i> Download Converted</button></div></div>
+      </div>
+      <div class="mt-4 text-xs text-gray-400 text-center">✅ Change format (JPEG/PNG/WEBP) and adjust quality/resize. PNG is lossless.</div>
     </div>
   </div>
 </div>
 
 <script>
-  // ======================= PDF COMPRESSOR (reused from previous, cleaned) =======================
+  // ======================= PDF COMPRESSOR (same reliable code) =======================
   (function() {
     const dropzone = document.getElementById('pdfDropzone');
     const fileInput = document.getElementById('pdfInput');
@@ -164,12 +129,10 @@
     const resultPanel = document.getElementById('pdfResultPanel');
     const origSizeVal = document.getElementById('pdfOrigSize');
     const compSizeVal = document.getElementById('pdfCompSize');
-    const ratioFill = document.getElementById('pdfRatioFill');
     const savingsText = document.getElementById('pdfSavings');
     const downloadBtn = document.getElementById('pdfDownloadBtn');
 
     let originalBuffer = null, originalSize = 0, originalName = "", compressedBuffer = null;
-
     function formatBytes(b){ if(b===0) return '0 Bytes'; const k=1024, sizes=['Bytes','KB','MB','GB']; const i=Math.floor(Math.log(b)/Math.log(k)); return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+sizes[i]; }
     function setProgress(p, d=''){ let pp=Math.min(100,Math.max(0,p)); progressFill.style.width=pp+'%'; progressPercent.innerText=pp+'%'; if(d) progressDetail.innerText=d; }
     function toggleCustom(){ if(compressionSelect.value==='custom') customQualityContainer.classList.remove('hidden'); else customQualityContainer.classList.add('hidden'); }
@@ -206,7 +169,7 @@
     }
     async function compressWithChoice(mode,buf){ if(mode==='light') return compressStandard(buf); else if(mode==='balanced') return compressAggressive(buf,0.85); else if(mode==='maximum') return compressAggressive(buf,0.50); else if(mode==='custom'){ let q=parseFloat(jpegQualitySlider.value); q=Math.min(0.9,Math.max(0.3,q)); return compressAggressive(buf,q); } else throw new Error('unknown mode'); }
 
-    function handleFile(file){
+    function handlePdfFile(file){
       if(!file || file.type!=='application/pdf'){ alert('Please select a PDF file.'); return false; }
       if(file.size>100*1024*1024){ alert('Max 100 MB'); return false; }
       originalName=file.name; originalSize=file.size;
@@ -219,8 +182,8 @@
     dropzone.addEventListener('click',()=>fileInput.click());
     dropzone.addEventListener('dragover',e=>{e.preventDefault(); dropzone.classList.add('drop-active');});
     dropzone.addEventListener('dragleave',()=>dropzone.classList.remove('drop-active'));
-    dropzone.addEventListener('drop',e=>{e.preventDefault(); dropzone.classList.remove('drop-active'); if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);});
-    fileInput.addEventListener('change',e=>{if(e.target.files.length) handleFile(e.target.files[0]);});
+    dropzone.addEventListener('drop',e=>{e.preventDefault(); dropzone.classList.remove('drop-active'); if(e.dataTransfer.files.length) handlePdfFile(e.dataTransfer.files[0]);});
+    fileInput.addEventListener('change',e=>{if(e.target.files.length) handlePdfFile(e.target.files[0]);});
     compressBtn.addEventListener('click',async()=>{
       if(!originalBuffer) return;
       const mode=compressionSelect.value;
@@ -231,7 +194,6 @@
         compressedBuffer=result;
         const newSize=compressedBuffer.byteLength, saved=originalSize-newSize, percent=(saved/originalSize)*100;
         origSizeVal.innerText=formatBytes(originalSize); compSizeVal.innerText=formatBytes(newSize);
-        ratioFill.style.width=(newSize/originalSize*100)+'%';
         savingsText.innerHTML=`↓ saved ${formatBytes(saved)} (${percent.toFixed(1)}%)`;
         resultPanel.classList.remove('hidden'); downloadBtn.disabled=false; setProgress(100);
       } catch(err){ alert('Compression failed: '+err.message+'\nTry Light mode for text PDFs.'); progressArea.classList.add('hidden'); }
@@ -247,134 +209,191 @@
     });
   })();
 
-  // ======================= IMAGE COMPRESSOR & CONVERTER =======================
+  // ======================= IMAGE COMPRESSOR (keep format, reduce size) =======================
   (function(){
-    const dropzone=document.getElementById('imageDropzone');
-    const fileInput=document.getElementById('imageInput');
-    const controlPanel=document.getElementById('imageControlPanel');
-    const fileNameSpan=document.getElementById('imageFileName');
-    const fileSizeSpan=document.getElementById('imageFileSize');
-    const formatSelect=document.getElementById('imageFormat');
-    const qualitySlider=document.getElementById('imageQuality');
-    const qualityVal=document.getElementById('imageQualityVal');
-    const widthInput=document.getElementById('imageWidth');
-    const heightInput=document.getElementById('imageHeight');
-    const clearResize=document.getElementById('clearResize');
-    const processBtn=document.getElementById('imageProcessBtn');
-    const progressDiv=document.getElementById('imageProgress');
-    const progressFill=document.getElementById('imageProgressFill');
-    const progressPercentSpan=document.getElementById('imageProgressPercent');
-    const resultPanel=document.getElementById('imageResultPanel');
-    const origSizeSpan=document.getElementById('imageOrigSize');
-    const newSizeSpan=document.getElementById('imageNewSize');
-    const previewOrig=document.getElementById('imagePreviewOrig');
-    const previewNew=document.getElementById('imagePreviewNew');
-    const imageSavings=document.getElementById('imageSavings');
-    const downloadImgBtn=document.getElementById('imageDownloadBtn');
+    const dropzone = document.getElementById('compDropzone');
+    const fileInput = document.getElementById('compInput');
+    const controlPanel = document.getElementById('compControlPanel');
+    const qualitySlider = document.getElementById('compQuality');
+    const qualityVal = document.getElementById('compQualityVal');
+    const widthInput = document.getElementById('compWidth');
+    const heightInput = document.getElementById('compHeight');
+    const clearResize = document.getElementById('compClearResize');
+    const processBtn = document.getElementById('compProcessBtn');
+    const progressArea = document.getElementById('compProgressArea');
+    const progressFill = document.getElementById('compProgressFill');
+    const progressPercentSpan = document.getElementById('compProgressPercent');
+    const resultPanel = document.getElementById('compResultPanel');
+    const origSizeSpan = document.getElementById('compOrigSize');
+    const newSizeSpan = document.getElementById('compNewSize');
+    const previewOrig = document.getElementById('compPreviewOrig');
+    const previewNew = document.getElementById('compPreviewNew');
+    const savingsSpan = document.getElementById('compSavings');
+    const downloadBtn = document.getElementById('compDownloadBtn');
 
-    let originalFile=null, originalBlobUrl=null, processedBlob=null, originalFileName="";
-
-    qualitySlider.addEventListener('input',()=>{ qualityVal.innerText=Math.round(qualitySlider.value*100)+'%'; });
-    clearResize.addEventListener('click',()=>{ widthInput.value=''; heightInput.value=''; });
-
+    let currentFile = null, originalUrl = null, processedBlob = null;
+    qualitySlider.addEventListener('input', () => { qualityVal.innerText = Math.round(qualitySlider.value*100)+'%'; });
+    clearResize.addEventListener('click', () => { widthInput.value = ''; heightInput.value = ''; });
     function formatBytes(b){ if(b===0) return '0 Bytes'; const k=1024, sizes=['Bytes','KB','MB','GB']; const i=Math.floor(Math.log(b)/Math.log(k)); return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+sizes[i]; }
-
     function setProgress(p){ let pp=Math.min(100,Math.max(0,p)); progressFill.style.width=pp+'%'; progressPercentSpan.innerText=pp+'%'; }
 
-    function handleImageFile(file){
-      if(!file || !file.type.startsWith('image/')){ alert('Please select a valid image (JPEG, PNG, WEBP).'); return false; }
+    function handleFile(file){
+      if(!file || !file.type.startsWith('image/')){ alert('Please select an image (JPEG, PNG, WEBP).'); return false; }
       if(file.size>20*1024*1024){ alert('Max 20 MB'); return false; }
-      originalFileName=file.name;
-      fileNameSpan.innerText=originalFileName;
-      fileSizeSpan.innerText=formatBytes(file.size);
-      if(originalBlobUrl) URL.revokeObjectURL(originalBlobUrl);
-      originalBlobUrl=URL.createObjectURL(file);
-      originalFile=file;
+      if(originalUrl) URL.revokeObjectURL(originalUrl);
+      originalUrl = URL.createObjectURL(file);
+      currentFile = file;
       controlPanel.classList.remove('hidden');
       resultPanel.classList.add('hidden');
-      processedBlob=null;
+      processedBlob = null;
       return true;
     }
-
     dropzone.addEventListener('click',()=>fileInput.click());
     dropzone.addEventListener('dragover',e=>{e.preventDefault(); dropzone.classList.add('drop-active');});
     dropzone.addEventListener('dragleave',()=>dropzone.classList.remove('drop-active'));
-    dropzone.addEventListener('drop',e=>{e.preventDefault(); dropzone.classList.remove('drop-active'); if(e.dataTransfer.files.length) handleImageFile(e.dataTransfer.files[0]);});
-    fileInput.addEventListener('change',e=>{if(e.target.files.length) handleImageFile(e.target.files[0]);});
+    dropzone.addEventListener('drop',e=>{e.preventDefault(); dropzone.classList.remove('drop-active'); if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);});
+    fileInput.addEventListener('change',e=>{if(e.target.files.length) handleFile(e.target.files[0]);});
 
-    processBtn.addEventListener('click', async ()=>{
-      if(!originalFile) return;
-      processBtn.disabled=true; processBtn.innerHTML='<i class="fas fa-spinner fa-pulse"></i> Processing...';
-      progressDiv.classList.remove('hidden'); resultPanel.classList.add('hidden'); setProgress(0);
+    processBtn.addEventListener('click', async () => {
+      if(!currentFile) { alert('Please select an image.'); return; }
+      const quality = parseFloat(qualitySlider.value);
+      let targetWidth = null, targetHeight = null;
+      if(widthInput.value && parseInt(widthInput.value)>0) targetWidth = parseInt(widthInput.value);
+      if(heightInput.value && parseInt(heightInput.value)>0) targetHeight = parseInt(heightInput.value);
+      processBtn.disabled=true; processBtn.innerHTML='<i class="fas fa-spinner fa-pulse"></i> Compressing...';
+      progressArea.classList.remove('hidden'); resultPanel.classList.add('hidden'); setProgress(0);
       try{
-        const img=new Image();
-        img.src=originalBlobUrl;
-        await new Promise((resolve,reject)=>{ img.onload=resolve; img.onerror=reject; });
-        let width=img.width, height=img.height;
-        if(widthInput.value && parseInt(widthInput.value)>0) width=parseInt(widthInput.value);
-        if(heightInput.value && parseInt(heightInput.value)>0) height=parseInt(heightInput.value);
-        const canvas=document.createElement('canvas');
-        canvas.width=width; canvas.height=height;
-        const ctx=canvas.getContext('2d');
-        ctx.drawImage(img,0,0,width,height);
-        let mimeType='image/jpeg';
-        let ext='jpg';
-        let targetFormat=formatSelect.value;
-        if(targetFormat==='jpeg'){ mimeType='image/jpeg'; ext='jpg'; }
-        else if(targetFormat==='png'){ mimeType='image/png'; ext='png'; }
-        else if(targetFormat==='webp'){ mimeType='image/webp'; ext='webp'; }
-        else { // same as original
-          if(originalFile.type==='image/jpeg'){ mimeType='image/jpeg'; ext='jpg'; }
-          else if(originalFile.type==='image/png'){ mimeType='image/png'; ext='png'; }
-          else if(originalFile.type==='image/webp'){ mimeType='image/webp'; ext='webp'; }
-          else mimeType='image/jpeg';
-        }
-        const quality=parseFloat(qualitySlider.value);
-        const blob=await new Promise(resolve=>canvas.toBlob(resolve, mimeType, quality));
-        processedBlob=blob;
-        const newSize=blob.size;
-        const saved=originalFile.size-newSize;
-        const percent=(saved/originalFile.size)*100;
-        origSizeSpan.innerText=formatBytes(originalFile.size);
-        newSizeSpan.innerText=formatBytes(newSize);
-        imageSavings.innerHTML=`↓ saved ${formatBytes(saved)} (${percent.toFixed(1)}%)`;
-        previewOrig.src=originalBlobUrl;
-        previewNew.src=URL.createObjectURL(blob);
-        resultPanel.classList.remove('hidden');
-        setProgress(100);
-      } catch(err){ console.error(err); alert('Processing failed: '+err.message); progressDiv.classList.add('hidden'); }
-      finally{ processBtn.disabled=false; processBtn.innerHTML='<i class="fas fa-magic"></i> Process'; }
+        const img = new Image(); img.src = originalUrl;
+        await new Promise((res,rej)=>{ img.onload=res; img.onerror=rej; });
+        let width = img.width, height = img.height;
+        if(targetWidth) width = targetWidth; if(targetHeight) height = targetHeight;
+        const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+        let mimeType = currentFile.type;
+        if(mimeType !== 'image/jpeg' && mimeType !== 'image/png' && mimeType !== 'image/webp') mimeType = 'image/jpeg';
+        processedBlob = await new Promise(resolve => canvas.toBlob(resolve, mimeType, quality));
+        const newSize = processedBlob.size, saved = currentFile.size - newSize, percent = (saved / currentFile.size)*100;
+        origSizeSpan.innerText = formatBytes(currentFile.size); newSizeSpan.innerText = formatBytes(newSize);
+        savingsSpan.innerHTML = `↓ saved ${formatBytes(saved)} (${percent.toFixed(1)}%)`;
+        previewOrig.src = originalUrl; previewNew.src = URL.createObjectURL(processedBlob);
+        resultPanel.classList.remove('hidden'); setProgress(100);
+      } catch(err){ alert('Compression failed: '+err.message); progressArea.classList.add('hidden'); }
+      finally{ processBtn.disabled=false; processBtn.innerHTML='<i class="fas fa-compress-alt"></i> Compress'; }
     });
-
-    downloadImgBtn.addEventListener('click',()=>{
+    downloadBtn.addEventListener('click',()=>{
       if(!processedBlob) return;
-      let ext='jpg';
-      const fmt=formatSelect.value;
-      if(fmt==='jpeg') ext='jpg';
-      else if(fmt==='png') ext='png';
-      else if(fmt==='webp') ext='webp';
-      else ext=originalFileName.split('.').pop().toLowerCase();
-      const downloadName=originalFileName.replace(/\.[^/.]+$/,'')+'_processed.'+ext;
-      const url=URL.createObjectURL(processedBlob);
-      const a=document.createElement('a'); a.href=url; a.download=downloadName; a.click(); URL.revokeObjectURL(url);
+      const ext = currentFile.name.split('.').pop().toLowerCase();
+      const downloadName = currentFile.name.replace(/\.[^/.]+$/, '') + '_compressed.' + ext;
+      const url = URL.createObjectURL(processedBlob); const a = document.createElement('a');
+      a.href = url; a.download = downloadName; a.click(); URL.revokeObjectURL(url);
+    });
+  })();
+
+  // ======================= IMAGE CONVERTER (change format) =======================
+  (function(){
+    const dropzone = document.getElementById('convDropzone');
+    const fileInput = document.getElementById('convInput');
+    const controlPanel = document.getElementById('convControlPanel');
+    const formatSelect = document.getElementById('convFormat');
+    const qualitySlider = document.getElementById('convQuality');
+    const qualityVal = document.getElementById('convQualityVal');
+    const widthInput = document.getElementById('convWidth');
+    const heightInput = document.getElementById('convHeight');
+    const clearResize = document.getElementById('convClearResize');
+    const processBtn = document.getElementById('convProcessBtn');
+    const progressArea = document.getElementById('convProgressArea');
+    const progressFill = document.getElementById('convProgressFill');
+    const progressPercentSpan = document.getElementById('convProgressPercent');
+    const resultPanel = document.getElementById('convResultPanel');
+    const origSizeSpan = document.getElementById('convOrigSize');
+    const newSizeSpan = document.getElementById('convNewSize');
+    const previewOrig = document.getElementById('convPreviewOrig');
+    const previewNew = document.getElementById('convPreviewNew');
+    const savingsSpan = document.getElementById('convSavings');
+    const downloadBtn = document.getElementById('convDownloadBtn');
+
+    let currentFile = null, originalUrl = null, processedBlob = null;
+    qualitySlider.addEventListener('input', () => { qualityVal.innerText = Math.round(qualitySlider.value*100)+'%'; });
+    clearResize.addEventListener('click', () => { widthInput.value = ''; heightInput.value = ''; });
+    function formatBytes(b){ if(b===0) return '0 Bytes'; const k=1024, sizes=['Bytes','KB','MB','GB']; const i=Math.floor(Math.log(b)/Math.log(k)); return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+sizes[i]; }
+    function setProgress(p){ let pp=Math.min(100,Math.max(0,p)); progressFill.style.width=pp+'%'; progressPercentSpan.innerText=pp+'%'; }
+
+    function handleFile(file){
+      if(!file || !file.type.startsWith('image/')){ alert('Please select an image.'); return false; }
+      if(file.size>20*1024*1024){ alert('Max 20 MB'); return false; }
+      if(originalUrl) URL.revokeObjectURL(originalUrl);
+      originalUrl = URL.createObjectURL(file);
+      currentFile = file;
+      controlPanel.classList.remove('hidden');
+      resultPanel.classList.add('hidden');
+      processedBlob = null;
+      return true;
+    }
+    dropzone.addEventListener('click',()=>fileInput.click());
+    dropzone.addEventListener('dragover',e=>{e.preventDefault(); dropzone.classList.add('drop-active');});
+    dropzone.addEventListener('dragleave',()=>dropzone.classList.remove('drop-active'));
+    dropzone.addEventListener('drop',e=>{e.preventDefault(); dropzone.classList.remove('drop-active'); if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);});
+    fileInput.addEventListener('change',e=>{if(e.target.files.length) handleFile(e.target.files[0]);});
+
+    processBtn.addEventListener('click', async () => {
+      if(!currentFile) { alert('Please select an image.'); return; }
+      const format = formatSelect.value;
+      const quality = parseFloat(qualitySlider.value);
+      let targetWidth = null, targetHeight = null;
+      if(widthInput.value && parseInt(widthInput.value)>0) targetWidth = parseInt(widthInput.value);
+      if(heightInput.value && parseInt(heightInput.value)>0) targetHeight = parseInt(heightInput.value);
+      processBtn.disabled=true; processBtn.innerHTML='<i class="fas fa-spinner fa-pulse"></i> Converting...';
+      progressArea.classList.remove('hidden'); resultPanel.classList.add('hidden'); setProgress(0);
+      try{
+        const img = new Image(); img.src = originalUrl;
+        await new Promise((res,rej)=>{ img.onload=res; img.onerror=rej; });
+        let width = img.width, height = img.height;
+        if(targetWidth) width = targetWidth; if(targetHeight) height = targetHeight;
+        const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+        let mimeType = 'image/jpeg', ext = 'jpg';
+        if(format === 'jpeg'){ mimeType = 'image/jpeg'; ext = 'jpg'; }
+        else if(format === 'png'){ mimeType = 'image/png'; ext = 'png'; }
+        else if(format === 'webp'){ mimeType = 'image/webp'; ext = 'webp'; }
+        processedBlob = await new Promise(resolve => canvas.toBlob(resolve, mimeType, quality));
+        const newSize = processedBlob.size, saved = currentFile.size - newSize, percent = (saved / currentFile.size)*100;
+        origSizeSpan.innerText = formatBytes(currentFile.size); newSizeSpan.innerText = formatBytes(newSize);
+        savingsSpan.innerHTML = `↓ ${saved>0 ? 'saved' : 'increased'} ${formatBytes(Math.abs(saved))} (${percent>0 ? percent.toFixed(1)+'% reduction' : Math.abs(percent).toFixed(1)+'% increase'})`;
+        previewOrig.src = originalUrl; previewNew.src = URL.createObjectURL(processedBlob);
+        resultPanel.classList.remove('hidden'); setProgress(100);
+      } catch(err){ alert('Conversion failed: '+err.message); progressArea.classList.add('hidden'); }
+      finally{ processBtn.disabled=false; processBtn.innerHTML='<i class="fas fa-exchange-alt"></i> Convert'; }
+    });
+    downloadBtn.addEventListener('click',()=>{
+      if(!processedBlob) return;
+      const fmt = formatSelect.value;
+      const ext = fmt === 'jpeg' ? 'jpg' : fmt;
+      const downloadName = currentFile.name.replace(/\.[^/.]+$/, '') + '_converted.' + ext;
+      const url = URL.createObjectURL(processedBlob); const a = document.createElement('a');
+      a.href = url; a.download = downloadName; a.click(); URL.revokeObjectURL(url);
     });
   })();
 
   // TABS
-  const pdfSection=document.getElementById('pdfSection');
-  const imageSection=document.getElementById('imageSection');
-  const tabPdf=document.getElementById('tabPdf');
-  const tabImage=document.getElementById('tabImage');
+  const pdfSection = document.getElementById('pdfSection');
+  const imgCompressSection = document.getElementById('imageCompressSection');
+  const imgConvertSection = document.getElementById('imageConvertSection');
+  const tabPdf = document.getElementById('tabPdf');
+  const tabImgCompress = document.getElementById('tabImageCompress');
+  const tabImgConvert = document.getElementById('tabImageConvert');
   function setActiveTab(tab){
-    pdfSection.classList.add('hidden'); imageSection.classList.add('hidden');
+    pdfSection.classList.add('hidden'); imgCompressSection.classList.add('hidden'); imgConvertSection.classList.add('hidden');
     if(tab==='pdf') pdfSection.classList.remove('hidden');
-    else imageSection.classList.remove('hidden');
-    tabPdf.classList.remove('tab-active'); tabImage.classList.remove('tab-active');
+    else if(tab==='compress') imgCompressSection.classList.remove('hidden');
+    else imgConvertSection.classList.remove('hidden');
+    tabPdf.classList.remove('tab-active'); tabImgCompress.classList.remove('tab-active'); tabImgConvert.classList.remove('tab-active');
     if(tab==='pdf') tabPdf.classList.add('tab-active');
-    else tabImage.classList.add('tab-active');
+    else if(tab==='compress') tabImgCompress.classList.add('tab-active');
+    else tabImgConvert.classList.add('tab-active');
   }
   tabPdf.addEventListener('click',()=>setActiveTab('pdf'));
-  tabImage.addEventListener('click',()=>setActiveTab('image'));
+  tabImgCompress.addEventListener('click',()=>setActiveTab('compress'));
+  tabImgConvert.addEventListener('click',()=>setActiveTab('convert'));
   setActiveTab('pdf');
 </script>
 </body>
