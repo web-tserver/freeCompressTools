@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Media Toolbox – Aggressive Image Compression</title>
+  <title>Media Toolbox – Full Preview for All Tools</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -13,30 +13,28 @@
     body { background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%); }
     .drop-active { background-color: rgba(59,130,246,0.1); border-color: #3b82f6; }
     .tab-active { border-bottom: 2px solid #3b82f6; color: #1e40af; }
+    .preview-thumb { max-width: 80px; max-height: 100px; border-radius: 6px; border: 1px solid #ccc; }
   </style>
 </head>
 <body class="font-sans antialiased p-4 md:p-8">
 
-<div class="max-w-5xl mx-auto">
+<div class="max-w-6xl mx-auto">
   <div class="text-center mb-8">
     <h1 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">Media Toolbox</h1>
-    <p class="text-gray-600 mt-2">PDF compression · Aggressive image compression · Format conversion — all local & private</p>
+    <p class="text-gray-600 mt-2">All tools show previews · PDF · Images · Merge · Split · Image to PDF — local & private</p>
   </div>
 
-  <!-- Tabs -->
+  <!-- Six Tabs -->
   <div class="flex flex-wrap gap-2 mb-6 border-b border-gray-200 pb-2">
-    <button id="tabPdf" class="tab-btn px-5 py-2 font-semibold rounded-t-lg transition text-gray-600 hover:text-blue-600">
-      <i class="fas fa-file-pdf mr-2"></i>PDF Compressor
-    </button>
-    <button id="tabImageCompress" class="tab-btn px-5 py-2 font-semibold rounded-t-lg transition text-gray-600 hover:text-blue-600">
-      <i class="fas fa-compress-alt mr-2"></i>Image Compressor (Aggressive)
-    </button>
-    <button id="tabImageConvert" class="tab-btn px-5 py-2 font-semibold rounded-t-lg transition text-gray-600 hover:text-blue-600">
-      <i class="fas fa-exchange-alt mr-2"></i>Image Converter
-    </button>
+    <button id="tabPdf" class="tab-btn px-4 py-2 font-semibold rounded-t-lg transition"><i class="fas fa-file-pdf mr-1"></i>PDF Compressor</button>
+    <button id="tabImageCompress" class="tab-btn px-4 py-2 font-semibold rounded-t-lg transition"><i class="fas fa-compress-alt mr-1"></i>Image Compressor</button>
+    <button id="tabImageConvert" class="tab-btn px-4 py-2 font-semibold rounded-t-lg transition"><i class="fas fa-exchange-alt mr-1"></i>Image Converter</button>
+    <button id="tabMerge" class="tab-btn px-4 py-2 font-semibold rounded-t-lg transition"><i class="fas fa-object-group mr-1"></i>Merge PDF</button>
+    <button id="tabSplit" class="tab-btn px-4 py-2 font-semibold rounded-t-lg transition"><i class="fas fa-cut mr-1"></i>Split PDF</button>
+    <button id="tabImg2Pdf" class="tab-btn px-4 py-2 font-semibold rounded-t-lg transition"><i class="fas fa-file-image mr-1"></i>Image to PDF</button>
   </div>
 
-  <!-- ======================= PDF COMPRESSOR (unchanged) ======================= -->
+  <!-- ======================= 1) PDF COMPRESSOR (with preview) ======================= -->
   <div id="pdfSection" class="tab-content">
     <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 p-6 md:p-8">
       <div id="pdfDropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition hover:border-blue-400 bg-gray-50/40">
@@ -45,7 +43,18 @@
         <p class="text-xs text-gray-400 mt-1">max 100 MB</p>
         <input type="file" id="pdfInput" accept=".pdf" class="hidden">
       </div>
-      <div id="pdfControlPanel" class="mt-6 hidden">
+      <!-- PDF preview area -->
+      <div id="pdfPreviewArea" class="mt-4 hidden">
+        <div class="flex items-start gap-4 p-3 bg-gray-100 rounded-xl">
+          <canvas id="pdfThumbnail" width="80" height="110" class="border rounded bg-white shadow-sm"></canvas>
+          <div>
+            <p class="font-semibold" id="pdfPreviewName"></p>
+            <p class="text-sm text-gray-600" id="pdfPreviewSize"></p>
+            <p class="text-sm text-gray-600" id="pdfPreviewPages"></p>
+          </div>
+        </div>
+      </div>
+      <div id="pdfControlPanel" class="mt-4 hidden">
         <div class="flex flex-wrap items-center justify-between gap-3 p-3 bg-gray-100 rounded-xl">
           <div class="flex items-center gap-3 truncate"><i class="fas fa-file-pdf text-red-500 text-xl"></i><div><p id="pdfFileName" class="font-semibold truncate"></p><p id="pdfFileSize" class="text-xs text-gray-500"></p></div></div>
           <div class="flex flex-wrap items-center gap-2">
@@ -63,58 +72,51 @@
     </div>
   </div>
 
-  <!-- ======================= AGGRESSIVE IMAGE COMPRESSOR ======================= -->
+  <!-- ======================= 2) IMAGE COMPRESSOR (preview before compression) ======================= -->
   <div id="imageCompressSection" class="tab-content hidden">
     <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 p-6 md:p-8">
       <div id="compDropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition hover:border-blue-400 bg-gray-50/40">
         <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
         <p class="text-gray-700 font-medium">Drop image here (JPEG, PNG, WEBP)</p>
-        <p class="text-xs text-gray-400 mt-1">max 20 MB · aggressive compression</p>
+        <p class="text-xs text-gray-400 mt-1">max 20 MB · preview shown instantly</p>
         <input type="file" id="compInput" accept="image/jpeg,image/png,image/webp" class="hidden">
       </div>
-      <div id="compControlPanel" class="mt-6 hidden">
+      <div id="compPreviewArea" class="mt-4 hidden">
+        <div class="flex items-start gap-4 p-3 bg-gray-100 rounded-xl">
+          <img id="compPreviewImg" class="w-24 h-24 object-cover rounded border" alt="preview">
+          <div><p class="font-semibold" id="compPreviewName"></p><p class="text-sm text-gray-600" id="compPreviewSize"></p><p class="text-sm text-gray-600" id="compPreviewDim"></p></div>
+        </div>
+      </div>
+      <div id="compControlPanel" class="mt-4 hidden">
         <div class="flex flex-wrap items-center gap-3 p-3 bg-gray-100 rounded-xl mb-4">
-          <!-- aggressive defaults: quality 50%, force JPEG -->
           <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">Compression %:</span><input type="range" id="compQuality" min="0.1" max="1.0" step="0.01" value="0.5" class="w-28"><span id="compQualityVal" class="text-xs w-10">50%</span></div>
-          
-          <!-- auto scale -->
-          <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg">
-            <span class="text-xs">Scale:</span>
-            <select id="compScale" class="text-xs border rounded px-2 py-1">
-              <option value="1">100% (1x)</option>
-              <option value="0.75" selected>75% (0.75x)</option>
-              <option value="0.5">50% (0.5x)</option>
-              <option value="0.25">25% (0.25x)</option>
-            </select>
-            <button id="compApplyScale" class="text-xs bg-blue-500 text-white px-2 py-0.5 rounded hover:bg-blue-600">Apply</button>
-          </div>
-
+          <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">Scale:</span><select id="compScale" class="text-xs border rounded px-2 py-1"><option value="1">100%</option><option value="0.75" selected>75%</option><option value="0.5">50%</option><option value="0.25">25%</option></select><button id="compApplyScale" class="text-xs bg-blue-500 text-white px-2 py-0.5 rounded">Apply</button></div>
           <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">Resize (px):</span><input type="number" id="compWidth" placeholder="width" class="w-16 text-xs border rounded px-1"><span class="text-xs">x</span><input type="number" id="compHeight" placeholder="height" class="w-16 text-xs border rounded px-1"><button id="compClearResize" class="text-xs text-red-500"><i class="fas fa-times-circle"></i></button></div>
-          
-          <!-- aggressive force JPEG checkbox -->
-          <label class="flex items-center gap-1 bg-white px-3 py-1 rounded-lg text-xs">
-            <input type="checkbox" id="compForceJpeg" checked> <i class="fas fa-file-image"></i> Force JPEG (max compression)
-          </label>
-
+          <label class="flex items-center gap-1 bg-white px-3 py-1 rounded-lg text-xs"><input type="checkbox" id="compForceJpeg" checked> <i class="fas fa-file-image"></i> Force JPEG</label>
           <button id="compProcessBtn" class="bg-red-600 hover:bg-red-700 text-white px-5 py-1.5 rounded-xl shadow-md flex items-center gap-2"><i class="fas fa-fire"></i> Aggressive Compress</button>
         </div>
         <div id="compProgressArea" class="mt-4 hidden"><div class="flex justify-between text-xs"><span>Compressing...</span><span id="compProgressPercent">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="compProgressFill" class="bg-blue-500 h-2 rounded-full" style="width:0%"></div></div></div>
-        <div id="compResultPanel" class="mt-6 hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="bg-gray-50 p-4 rounded-xl"><p class="text-xs text-gray-500">original</p><p class="text-2xl font-bold" id="compOrigSize">—</p><img id="compPreviewOrig" class="mt-2 max-h-40 object-contain border rounded mx-auto"></div><div class="bg-green-50 p-4 rounded-xl"><p class="text-xs text-gray-500">compressed (aggressive)</p><p class="text-2xl font-bold" id="compNewSize">—</p><img id="compPreviewNew" class="mt-2 max-h-40 object-contain border rounded mx-auto"><p id="compSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div></div><div class="mt-5 flex justify-center"><button id="compDownloadBtn" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-xl shadow-md"><i class="fas fa-download"></i> Download</button></div></div>
+        <div id="compResultPanel" class="mt-6 hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="bg-gray-50 p-4 rounded-xl"><p class="text-xs text-gray-500">original</p><p class="text-2xl font-bold" id="compOrigSize">—</p><img id="compPreviewOrig" class="mt-2 max-h-40 object-contain border rounded"></div><div class="bg-green-50 p-4 rounded-xl"><p class="text-xs text-gray-500">compressed</p><p class="text-2xl font-bold" id="compNewSize">—</p><img id="compPreviewNew" class="mt-2 max-h-40 object-contain border rounded"><p id="compSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div></div><div class="mt-5 flex justify-center"><button id="compDownloadBtn" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-xl shadow-md"><i class="fas fa-download"></i> Download</button></div></div>
       </div>
-      <div class="mt-4 text-xs text-gray-400 text-center">🔥 Aggressive mode: defaults to JPEG at 50% quality + 75% resize. PNGs become tiny JPEGs. Uncheck "Force JPEG" to keep original format (PNG will stay large).</div>
     </div>
   </div>
 
-  <!-- ======================= IMAGE CONVERTER (unchanged) ======================= -->
+  <!-- ======================= 3) IMAGE CONVERTER (preview before conversion) ======================= -->
   <div id="imageConvertSection" class="tab-content hidden">
     <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 p-6 md:p-8">
       <div id="convDropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition hover:border-blue-400 bg-gray-50/40">
         <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
         <p class="text-gray-700 font-medium">Drop image here (JPEG, PNG, WEBP)</p>
-        <p class="text-xs text-gray-400 mt-1">max 20 MB · convert to any format</p>
+        <p class="text-xs text-gray-400 mt-1">max 20 MB · preview shown instantly</p>
         <input type="file" id="convInput" accept="image/jpeg,image/png,image/webp" class="hidden">
       </div>
-      <div id="convControlPanel" class="mt-6 hidden">
+      <div id="convPreviewArea" class="mt-4 hidden">
+        <div class="flex items-start gap-4 p-3 bg-gray-100 rounded-xl">
+          <img id="convPreviewImg" class="w-24 h-24 object-cover rounded border" alt="preview">
+          <div><p class="font-semibold" id="convPreviewName"></p><p class="text-sm text-gray-600" id="convPreviewSize"></p><p class="text-sm text-gray-600" id="convPreviewDim"></p></div>
+        </div>
+      </div>
+      <div id="convControlPanel" class="mt-4 hidden">
         <div class="flex flex-wrap items-center gap-3 p-3 bg-gray-100 rounded-xl mb-4">
           <select id="convFormat" class="bg-white border rounded-lg px-3 py-1.5 text-sm"><option value="jpeg">JPEG</option><option value="png">PNG</option><option value="webp">WEBP</option></select>
           <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-lg"><span class="text-xs">Quality (JPEG/WEBP):</span><input type="range" id="convQuality" min="0.1" max="1.0" step="0.01" value="0.8" class="w-28"><span id="convQualityVal" class="text-xs w-10">80%</span></div>
@@ -122,18 +124,83 @@
           <button id="convProcessBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-1.5 rounded-xl shadow-md flex items-center gap-2"><i class="fas fa-exchange-alt"></i> Convert</button>
         </div>
         <div id="convProgressArea" class="mt-4 hidden"><div class="flex justify-between text-xs"><span>Converting...</span><span id="convProgressPercent">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="convProgressFill" class="bg-blue-500 h-2 rounded-full" style="width:0%"></div></div></div>
-        <div id="convResultPanel" class="mt-6 hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="bg-gray-50 p-4 rounded-xl"><p class="text-xs text-gray-500">original</p><p class="text-2xl font-bold" id="convOrigSize">—</p><img id="convPreviewOrig" class="mt-2 max-h-40 object-contain border rounded mx-auto"></div><div class="bg-green-50 p-4 rounded-xl"><p class="text-xs text-gray-500">converted</p><p class="text-2xl font-bold" id="convNewSize">—</p><img id="convPreviewNew" class="mt-2 max-h-40 object-contain border rounded mx-auto"><p id="convSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div></div><div class="mt-5 flex justify-center"><button id="convDownloadBtn" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-xl shadow-md"><i class="fas fa-download"></i> Download Converted</button></div></div>
+        <div id="convResultPanel" class="mt-6 hidden"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="bg-gray-50 p-4 rounded-xl"><p class="text-xs text-gray-500">original</p><p class="text-2xl font-bold" id="convOrigSize">—</p><img id="convPreviewOrig" class="mt-2 max-h-40 object-contain border rounded"></div><div class="bg-green-50 p-4 rounded-xl"><p class="text-xs text-gray-500">converted</p><p class="text-2xl font-bold" id="convNewSize">—</p><img id="convPreviewNew" class="mt-2 max-h-40 object-contain border rounded"><p id="convSavings" class="text-xs font-semibold text-green-700 mt-2"></p></div></div><div class="mt-5 flex justify-center"><button id="convDownloadBtn" class="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-xl shadow-md"><i class="fas fa-download"></i> Download Converted</button></div></div>
       </div>
-      <div class="mt-4 text-xs text-gray-400 text-center">✅ Change format (JPEG/PNG/WEBP) and adjust quality/resize. PNG is lossless.</div>
+    </div>
+  </div>
+
+  <!-- ======================= 4) MERGE PDF (preview list with thumbnails) ======================= -->
+  <div id="mergeSection" class="tab-content hidden">
+    <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 p-6 md:p-8">
+      <h3 class="text-xl font-bold text-gray-800 mb-4"><i class="fas fa-object-group text-blue-600 mr-2"></i>Merge PDFs</h3>
+      <div id="mergeDropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition hover:border-blue-400 bg-gray-50/40">
+        <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
+        <p class="text-gray-700 font-medium">Select multiple PDFs (order = upload order)</p>
+        <p class="text-xs text-gray-400">max 10 files, each ≤ 50 MB</p>
+        <input type="file" id="mergeInput" accept=".pdf" multiple class="hidden">
+      </div>
+      <div id="mergePreviewList" class="mt-4 space-y-2 max-h-64 overflow-y-auto"></div>
+      <button id="mergeBtn" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl shadow-md flex items-center gap-2 disabled:opacity-50"><i class="fas fa-object-group"></i> Merge & Download</button>
+    </div>
+  </div>
+
+  <!-- ======================= 5) SPLIT PDF (already had preview) ======================= -->
+  <div id="splitSection" class="tab-content hidden">
+    <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 p-6 md:p-8">
+      <h3 class="text-xl font-bold text-gray-800 mb-4"><i class="fas fa-cut text-blue-600 mr-2"></i>Split PDF</h3>
+      <div id="splitDropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition hover:border-blue-400 bg-gray-50/40">
+        <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
+        <p class="text-gray-700 font-medium">Select a PDF to split</p>
+        <input type="file" id="splitInput" accept=".pdf" class="hidden">
+      </div>
+      <div id="splitPreview" class="mt-4 hidden">
+        <div class="flex items-start gap-4 p-3 bg-gray-100 rounded-xl">
+          <canvas id="splitThumbnail" width="80" height="110" class="border rounded bg-white shadow-sm"></canvas>
+          <div><p class="font-semibold" id="splitFileName"></p><p class="text-sm text-gray-600" id="splitFileSize"></p><p class="text-sm text-gray-600" id="splitPageCount"></p></div>
+        </div>
+      </div>
+      <div class="mt-4 flex flex-wrap gap-3 items-end">
+        <div class="flex-1 min-w-[200px]"><label class="text-sm font-medium">Page range (e.g., 1-3,5,7-9):</label><input type="text" id="splitRange" placeholder="1-5,8,10-12" class="border rounded-lg px-3 py-1 w-full text-sm"></div>
+        <button id="splitBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl shadow-md flex items-center gap-2"><i class="fas fa-cut"></i> Extract Pages</button>
+      </div>
+      <div id="splitResult" class="mt-3 text-sm text-gray-600"></div>
+    </div>
+  </div>
+
+  <!-- ======================= 6) IMAGE TO PDF (preview list with thumbnails) ======================= -->
+  <div id="img2pdfSection" class="tab-content hidden">
+    <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 p-6 md:p-8">
+      <h3 class="text-xl font-bold text-gray-800 mb-4"><i class="fas fa-file-image text-blue-600 mr-2"></i>Image(s) to PDF</h3>
+      <div id="img2pdfDropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition hover:border-blue-400 bg-gray-50/40">
+        <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
+        <p class="text-gray-700 font-medium">Select one or more images (JPG, PNG, WEBP)</p>
+        <p class="text-xs text-gray-400">each image becomes a separate page</p>
+        <input type="file" id="img2pdfInput" accept="image/jpeg,image/png,image/webp" multiple class="hidden">
+      </div>
+      <div id="img2pdfPreviewList" class="mt-4 space-y-2 max-h-64 overflow-y-auto"></div>
+      <div class="mt-4 flex flex-wrap gap-3 items-center">
+        <label class="text-sm font-medium">Page size:</label>
+        <select id="img2pdfPageSize" class="border rounded-lg px-3 py-1 text-sm">
+          <option value="A4">A4</option><option value="Letter">Letter</option><option value="Fit">Fit to image</option>
+        </select>
+        <button id="img2pdfBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl shadow-md flex items-center gap-2"><i class="fas fa-file-pdf"></i> Convert to PDF</button>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-  // ======================= PDF COMPRESSOR (unchanged, reliable) =======================
+  // ============================================================
+  // 1) PDF COMPRESSOR (with preview: thumbnail, page count)
+  // ============================================================
   (function() {
     const dropzone = document.getElementById('pdfDropzone');
     const fileInput = document.getElementById('pdfInput');
+    const previewArea = document.getElementById('pdfPreviewArea');
+    const previewName = document.getElementById('pdfPreviewName');
+    const previewSize = document.getElementById('pdfPreviewSize');
+    const previewPages = document.getElementById('pdfPreviewPages');
+    const thumbnailCanvas = document.getElementById('pdfThumbnail');
     const controlPanel = document.getElementById('pdfControlPanel');
     const fileNameSpan = document.getElementById('pdfFileName');
     const fileSizeSpan = document.getElementById('pdfFileSize');
@@ -153,12 +220,51 @@
     const downloadBtn = document.getElementById('pdfDownloadBtn');
 
     let originalBuffer = null, originalSize = 0, originalName = "", compressedBuffer = null;
+    let pdfDoc = null;
+
     function formatBytes(b){ if(b===0) return '0 Bytes'; const k=1024, sizes=['Bytes','KB','MB','GB']; const i=Math.floor(Math.log(b)/Math.log(k)); return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+sizes[i]; }
     function setProgress(p, d=''){ let pp=Math.min(100,Math.max(0,p)); progressFill.style.width=pp+'%'; progressPercent.innerText=pp+'%'; if(d) progressDetail.innerText=d; }
     function toggleCustom(){ if(compressionSelect.value==='custom') customQualityContainer.classList.remove('hidden'); else customQualityContainer.classList.add('hidden'); }
     compressionSelect.addEventListener('change', toggleCustom);
     jpegQualitySlider.addEventListener('input', (e)=>{ qualityValueSpan.innerText = Math.round(e.target.value*100)+'%'; });
     toggleCustom();
+
+    async function generateThumbnail(doc) {
+      const page = await doc.getPage(1);
+      const viewport = page.getViewport({ scale: 0.2 });
+      thumbnailCanvas.width = viewport.width;
+      thumbnailCanvas.height = viewport.height;
+      const ctx = thumbnailCanvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+    }
+
+    async function handlePdfFile(file) {
+      if(!file || file.type!=='application/pdf'){ alert('Please select a PDF file.'); return false; }
+      if(file.size>100*1024*1024){ alert('Max 100 MB'); return false; }
+      originalName=file.name; originalSize=file.size;
+      const arrayBuffer = await file.arrayBuffer();
+      originalBuffer = arrayBuffer;
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      pdfDoc = await loadingTask.promise;
+      const pageCount = pdfDoc.numPages;
+      previewName.innerText = file.name;
+      previewSize.innerText = formatBytes(file.size);
+      previewPages.innerText = `${pageCount} page${pageCount !== 1 ? 's' : ''}`;
+      await generateThumbnail(pdfDoc);
+      previewArea.classList.remove('hidden');
+      controlPanel.classList.remove('hidden');
+      resultPanel.classList.add('hidden');
+      fileNameSpan.innerText = originalName;
+      fileSizeSpan.innerText = formatBytes(originalSize);
+      compressBtn.disabled = false;
+      compressedBuffer = null;
+      return true;
+    }
+    dropzone.addEventListener('click',()=>fileInput.click());
+    dropzone.addEventListener('dragover',e=>{e.preventDefault(); dropzone.classList.add('drop-active');});
+    dropzone.addEventListener('dragleave',()=>dropzone.classList.remove('drop-active'));
+    dropzone.addEventListener('drop',async e=>{e.preventDefault(); dropzone.classList.remove('drop-active'); if(e.dataTransfer.files.length) await handlePdfFile(e.dataTransfer.files[0]);});
+    fileInput.addEventListener('change',async e=>{if(e.target.files.length) await handlePdfFile(e.target.files[0]);});
 
     async function compressStandard(buf){ const pdoc=await PDFLib.PDFDocument.load(buf); const ndoc=await PDFLib.PDFDocument.create(); const pages=await ndoc.copyPages(pdoc, pdoc.getPageIndices()); for(let pg of pages) ndoc.addPage(pg); ndoc.setTitle(''); ndoc.setAuthor(''); ndoc.setSubject(''); ndoc.setCreator('PDF Compressor'); ndoc.setProducer(''); ndoc.setKeywords([]); return await ndoc.save({ useObjectStreams: true }); }
     async function compressAggressive(buf, quality){
@@ -189,21 +295,6 @@
     }
     async function compressWithChoice(mode,buf){ if(mode==='light') return compressStandard(buf); else if(mode==='balanced') return compressAggressive(buf,0.85); else if(mode==='maximum') return compressAggressive(buf,0.50); else if(mode==='custom'){ let q=parseFloat(jpegQualitySlider.value); q=Math.min(0.9,Math.max(0.3,q)); return compressAggressive(buf,q); } else throw new Error('unknown mode'); }
 
-    function handlePdfFile(file){
-      if(!file || file.type!=='application/pdf'){ alert('Please select a PDF file.'); return false; }
-      if(file.size>100*1024*1024){ alert('Max 100 MB'); return false; }
-      originalName=file.name; originalSize=file.size;
-      fileNameSpan.innerText=originalName; fileSizeSpan.innerText=formatBytes(originalSize);
-      const reader=new FileReader();
-      reader.onload=e=>{ originalBuffer=e.target.result; controlPanel.classList.remove('hidden'); resultPanel.classList.add('hidden'); compressBtn.disabled=false; compressedBuffer=null; };
-      reader.readAsArrayBuffer(file);
-      return true;
-    }
-    dropzone.addEventListener('click',()=>fileInput.click());
-    dropzone.addEventListener('dragover',e=>{e.preventDefault(); dropzone.classList.add('drop-active');});
-    dropzone.addEventListener('dragleave',()=>dropzone.classList.remove('drop-active'));
-    dropzone.addEventListener('drop',e=>{e.preventDefault(); dropzone.classList.remove('drop-active'); if(e.dataTransfer.files.length) handlePdfFile(e.dataTransfer.files[0]);});
-    fileInput.addEventListener('change',e=>{if(e.target.files.length) handlePdfFile(e.target.files[0]);});
     compressBtn.addEventListener('click',async()=>{
       if(!originalBuffer) return;
       const mode=compressionSelect.value;
@@ -229,15 +320,20 @@
     });
   })();
 
-  // ======================= AGGRESSIVE IMAGE COMPRESSOR =======================
+  // ========== 2) IMAGE COMPRESSOR (preview before compression) ==========
   (function(){
     const dropzone = document.getElementById('compDropzone');
     const fileInput = document.getElementById('compInput');
+    const previewArea = document.getElementById('compPreviewArea');
+    const previewImg = document.getElementById('compPreviewImg');
+    const previewName = document.getElementById('compPreviewName');
+    const previewSize = document.getElementById('compPreviewSize');
+    const previewDim = document.getElementById('compPreviewDim');
     const controlPanel = document.getElementById('compControlPanel');
     const qualitySlider = document.getElementById('compQuality');
     const qualityVal = document.getElementById('compQualityVal');
-    const widthInput = document.getElementById('compWidth');
-    const heightInput = document.getElementById('compHeight');
+    const widthInp = document.getElementById('compWidth');
+    const heightInp = document.getElementById('compHeight');
     const clearResize = document.getElementById('compClearResize');
     const processBtn = document.getElementById('compProcessBtn');
     const progressArea = document.getElementById('compProgressArea');
@@ -255,33 +351,38 @@
     const forceJpegCheck = document.getElementById('compForceJpeg');
 
     let currentFile = null, originalUrl = null, processedBlob = null;
-    let originalImageWidth = 0, originalImageHeight = 0;
+    let origWidth = 0, origHeight = 0;
 
     qualitySlider.addEventListener('input', () => { qualityVal.innerText = Math.round(qualitySlider.value*100)+'%'; });
-    clearResize.addEventListener('click', () => { widthInput.value = ''; heightInput.value = ''; });
-
+    clearResize.addEventListener('click', () => { widthInp.value = ''; heightInp.value = ''; });
     function applyScale() {
-      if (!originalImageWidth || !originalImageHeight) { alert('Please load an image first.'); return; }
+      if(!origWidth) { alert('Please load an image first'); return; }
       const factor = parseFloat(scaleSelect.value);
-      widthInput.value = Math.round(originalImageWidth * factor);
-      heightInput.value = Math.round(originalImageHeight * factor);
+      widthInp.value = Math.round(origWidth * factor);
+      heightInp.value = Math.round(origHeight * factor);
     }
     applyScaleBtn.addEventListener('click', applyScale);
+    const formatBytes = (b) => { if(b===0) return '0 Bytes'; const k=1024; const s=['Bytes','KB','MB','GB']; const i=Math.floor(Math.log(b)/Math.log(k)); return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+s[i]; };
+    const setProgress = (p) => { let pp=Math.min(100,Math.max(0,p)); progressFill.style.width=pp+'%'; progressPercentSpan.innerText=pp+'%'; };
 
-    function formatBytes(b){ if(b===0) return '0 Bytes'; const k=1024, sizes=['Bytes','KB','MB','GB']; const i=Math.floor(Math.log(b)/Math.log(k)); return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+sizes[i]; }
-    function setProgress(p){ let pp=Math.min(100,Math.max(0,p)); progressFill.style.width=pp+'%'; progressPercentSpan.innerText=pp+'%'; }
-
-    function handleFile(file){
-      if(!file || !file.type.startsWith('image/')){ alert('Please select an image (JPEG, PNG, WEBP).'); return false; }
+    function handleFile(file) {
+      if(!file || !file.type.startsWith('image/')){ alert('Select an image (JPEG, PNG, WEBP)'); return false; }
       if(file.size>20*1024*1024){ alert('Max 20 MB'); return false; }
       if(originalUrl) URL.revokeObjectURL(originalUrl);
       originalUrl = URL.createObjectURL(file);
       currentFile = file;
       const img = new Image();
-      img.onload = () => { originalImageWidth = img.width; originalImageHeight = img.height; };
+      img.onload = () => {
+        origWidth = img.width; origHeight = img.height;
+        previewImg.src = originalUrl;
+        previewName.innerText = file.name;
+        previewSize.innerText = formatBytes(file.size);
+        previewDim.innerText = `${origWidth} x ${origHeight} px`;
+        previewArea.classList.remove('hidden');
+        controlPanel.classList.remove('hidden');
+        resultPanel.classList.add('hidden');
+      };
       img.src = originalUrl;
-      controlPanel.classList.remove('hidden');
-      resultPanel.classList.add('hidden');
       processedBlob = null;
       return true;
     }
@@ -292,62 +393,76 @@
     fileInput.addEventListener('change',e=>{if(e.target.files.length) handleFile(e.target.files[0]);});
 
     processBtn.addEventListener('click', async () => {
-      if(!currentFile) { alert('Please select an image.'); return; }
+      if(!currentFile) { alert('Please select an image'); return; }
       const quality = parseFloat(qualitySlider.value);
-      let targetWidth = null, targetHeight = null;
-      if(widthInput.value && parseInt(widthInput.value)>0) targetWidth = parseInt(widthInput.value);
-      if(heightInput.value && parseInt(heightInput.value)>0) targetHeight = parseInt(heightInput.value);
-      const forceJpeg = forceJpegCheck.checked;
-      processBtn.disabled=true; processBtn.innerHTML='<i class="fas fa-spinner fa-pulse"></i> Aggressively compressing...';
-      progressArea.classList.remove('hidden'); resultPanel.classList.add('hidden'); setProgress(0);
-      try{
-        const img = new Image(); img.src = originalUrl;
+      let tw = null, th = null;
+      if(widthInp.value && parseInt(widthInp.value)>0) tw = parseInt(widthInp.value);
+      if(heightInp.value && parseInt(heightInp.value)>0) th = parseInt(heightInp.value);
+      const force = forceJpegCheck.checked;
+      processBtn.disabled = true;
+      processBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> crushing...';
+      progressArea.classList.remove('hidden');
+      resultPanel.classList.add('hidden');
+      setProgress(0);
+      try {
+        const img = new Image();
+        img.src = originalUrl;
         await new Promise((res,rej)=>{ img.onload=res; img.onerror=rej; });
-        let width = img.width, height = img.height;
-        if(targetWidth) width = targetWidth; if(targetHeight) height = targetHeight;
-        const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
-        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
-        
-        // aggressive: if forceJpeg, force JPEG; else keep original mime
-        let mimeType = 'image/jpeg';
+        let w = img.width, h = img.height;
+        if(tw) w = tw; if(th) h = th;
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        let mime = 'image/jpeg';
         let ext = 'jpg';
-        if(!forceJpeg){
-          mimeType = currentFile.type;
-          if(mimeType === 'image/jpeg') ext = 'jpg';
-          else if(mimeType === 'image/png') ext = 'png';
-          else if(mimeType === 'image/webp') ext = 'webp';
-          else mimeType = 'image/jpeg';
+        if(!force) {
+          mime = currentFile.type;
+          if(mime === 'image/jpeg') ext = 'jpg';
+          else if(mime === 'image/png') ext = 'png';
+          else if(mime === 'image/webp') ext = 'webp';
+          else mime = 'image/jpeg';
         }
-        processedBlob = await new Promise(resolve => canvas.toBlob(resolve, mimeType, quality));
+        processedBlob = await new Promise(resolve => canvas.toBlob(resolve, mime, quality));
         const newSize = processedBlob.size;
         const saved = currentFile.size - newSize;
         const percent = (saved / currentFile.size) * 100;
         origSizeSpan.innerText = formatBytes(currentFile.size);
         newSizeSpan.innerText = formatBytes(newSize);
-        savingsSpan.innerHTML = `↓ saved ${formatBytes(saved)} (${percent.toFixed(1)}%) — ${forceJpeg ? 'JPEG' : ext.toUpperCase()}`;
+        savingsSpan.innerHTML = `↓ saved ${formatBytes(saved)} (${percent.toFixed(1)}%) — ${force ? 'JPEG' : ext.toUpperCase()}`;
         previewOrig.src = originalUrl;
         previewNew.src = URL.createObjectURL(processedBlob);
         resultPanel.classList.remove('hidden');
         setProgress(100);
-      } catch(err){ alert('Compression failed: '+err.message); progressArea.classList.add('hidden'); }
-      finally{ processBtn.disabled=false; processBtn.innerHTML='<i class="fas fa-fire"></i> Aggressive Compress'; }
+      } catch(err) {
+        alert('Compression failed: ' + err.message);
+        progressArea.classList.add('hidden');
+      } finally {
+        processBtn.disabled = false;
+        processBtn.innerHTML = '<i class="fas fa-fire"></i> Aggressive Compress';
+      }
     });
-    downloadBtn.addEventListener('click',()=>{
+    downloadBtn.addEventListener('click', () => {
       if(!processedBlob) return;
-      const forceJpeg = forceJpegCheck.checked;
-      let ext = forceJpeg ? 'jpg' : currentFile.name.split('.').pop().toLowerCase();
+      const force = forceJpegCheck.checked;
+      let ext = force ? 'jpg' : currentFile.name.split('.').pop().toLowerCase();
       if(ext === 'jpeg') ext = 'jpg';
-      const downloadName = currentFile.name.replace(/\.[^/.]+$/, '') + '_aggressive.' + ext;
+      const name = currentFile.name.replace(/\.[^/.]+$/, '') + '_aggressive.' + ext;
       const url = URL.createObjectURL(processedBlob);
       const a = document.createElement('a');
-      a.href = url; a.download = downloadName; a.click(); URL.revokeObjectURL(url);
+      a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url);
     });
   })();
 
-  // ======================= IMAGE CONVERTER (unchanged) =======================
+  // ========== 3) IMAGE CONVERTER (preview before conversion) ==========
   (function(){
     const dropzone = document.getElementById('convDropzone');
     const fileInput = document.getElementById('convInput');
+    const previewArea = document.getElementById('convPreviewArea');
+    const previewImg = document.getElementById('convPreviewImg');
+    const previewName = document.getElementById('convPreviewName');
+    const previewSize = document.getElementById('convPreviewSize');
+    const previewDim = document.getElementById('convPreviewDim');
     const controlPanel = document.getElementById('convControlPanel');
     const formatSelect = document.getElementById('convFormat');
     const qualitySlider = document.getElementById('convQuality');
@@ -370,17 +485,26 @@
     let currentFile = null, originalUrl = null, processedBlob = null;
     qualitySlider.addEventListener('input', () => { qualityVal.innerText = Math.round(qualitySlider.value*100)+'%'; });
     clearResize.addEventListener('click', () => { widthInput.value = ''; heightInput.value = ''; });
-    function formatBytes(b){ if(b===0) return '0 Bytes'; const k=1024, sizes=['Bytes','KB','MB','GB']; const i=Math.floor(Math.log(b)/Math.log(k)); return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+sizes[i]; }
-    function setProgress(p){ let pp=Math.min(100,Math.max(0,p)); progressFill.style.width=pp+'%'; progressPercentSpan.innerText=pp+'%'; }
+    const formatBytes = (b) => { if(b===0) return '0 Bytes'; const k=1024; const s=['Bytes','KB','MB','GB']; const i=Math.floor(Math.log(b)/Math.log(k)); return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+s[i]; };
+    const setProgress = (p) => { let pp=Math.min(100,Math.max(0,p)); progressFill.style.width=pp+'%'; progressPercentSpan.innerText=pp+'%'; };
 
-    function handleFile(file){
-      if(!file || !file.type.startsWith('image/')){ alert('Please select an image.'); return false; }
+    function handleFile(file) {
+      if(!file || !file.type.startsWith('image/')){ alert('Select an image'); return false; }
       if(file.size>20*1024*1024){ alert('Max 20 MB'); return false; }
       if(originalUrl) URL.revokeObjectURL(originalUrl);
       originalUrl = URL.createObjectURL(file);
       currentFile = file;
-      controlPanel.classList.remove('hidden');
-      resultPanel.classList.add('hidden');
+      const img = new Image();
+      img.onload = () => {
+        previewImg.src = originalUrl;
+        previewName.innerText = file.name;
+        previewSize.innerText = formatBytes(file.size);
+        previewDim.innerText = `${img.width} x ${img.height} px`;
+        previewArea.classList.remove('hidden');
+        controlPanel.classList.remove('hidden');
+        resultPanel.classList.add('hidden');
+      };
+      img.src = originalUrl;
       processedBlob = null;
       return true;
     }
@@ -391,64 +515,353 @@
     fileInput.addEventListener('change',e=>{if(e.target.files.length) handleFile(e.target.files[0]);});
 
     processBtn.addEventListener('click', async () => {
-      if(!currentFile) { alert('Please select an image.'); return; }
+      if(!currentFile) { alert('Select an image'); return; }
       const format = formatSelect.value;
       const quality = parseFloat(qualitySlider.value);
-      let targetWidth = null, targetHeight = null;
-      if(widthInput.value && parseInt(widthInput.value)>0) targetWidth = parseInt(widthInput.value);
-      if(heightInput.value && parseInt(heightInput.value)>0) targetHeight = parseInt(heightInput.value);
-      processBtn.disabled=true; processBtn.innerHTML='<i class="fas fa-spinner fa-pulse"></i> Converting...';
-      progressArea.classList.remove('hidden'); resultPanel.classList.add('hidden'); setProgress(0);
-      try{
-        const img = new Image(); img.src = originalUrl;
+      let tw = null, th = null;
+      if(widthInput.value && parseInt(widthInput.value)>0) tw = parseInt(widthInput.value);
+      if(heightInput.value && parseInt(heightInput.value)>0) th = parseInt(heightInput.value);
+      processBtn.disabled = true;
+      processBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> converting...';
+      progressArea.classList.remove('hidden');
+      resultPanel.classList.add('hidden');
+      setProgress(0);
+      try {
+        const img = new Image();
+        img.src = originalUrl;
         await new Promise((res,rej)=>{ img.onload=res; img.onerror=rej; });
-        let width = img.width, height = img.height;
-        if(targetWidth) width = targetWidth; if(targetHeight) height = targetHeight;
-        const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
-        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
-        let mimeType = 'image/jpeg', ext = 'jpg';
-        if(format === 'jpeg'){ mimeType = 'image/jpeg'; ext = 'jpg'; }
-        else if(format === 'png'){ mimeType = 'image/png'; ext = 'png'; }
-        else if(format === 'webp'){ mimeType = 'image/webp'; ext = 'webp'; }
-        processedBlob = await new Promise(resolve => canvas.toBlob(resolve, mimeType, quality));
-        const newSize = processedBlob.size, saved = currentFile.size - newSize, percent = (saved / currentFile.size)*100;
-        origSizeSpan.innerText = formatBytes(currentFile.size); newSizeSpan.innerText = formatBytes(newSize);
-        savingsSpan.innerHTML = `↓ ${saved>0 ? 'saved' : 'increased'} ${formatBytes(Math.abs(saved))} (${percent>0 ? percent.toFixed(1)+'% reduction' : Math.abs(percent).toFixed(1)+'% increase'})`;
-        previewOrig.src = originalUrl; previewNew.src = URL.createObjectURL(processedBlob);
-        resultPanel.classList.remove('hidden'); setProgress(100);
-      } catch(err){ alert('Conversion failed: '+err.message); progressArea.classList.add('hidden'); }
-      finally{ processBtn.disabled=false; processBtn.innerHTML='<i class="fas fa-exchange-alt"></i> Convert'; }
+        let w = img.width, h = img.height;
+        if(tw) w = tw; if(th) h = th;
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        let mime = 'image/jpeg', ext = 'jpg';
+        if(format === 'jpeg') { mime = 'image/jpeg'; ext = 'jpg'; }
+        else if(format === 'png') { mime = 'image/png'; ext = 'png'; }
+        else if(format === 'webp') { mime = 'image/webp'; ext = 'webp'; }
+        processedBlob = await new Promise(resolve => canvas.toBlob(resolve, mime, quality));
+        const newSize = processedBlob.size;
+        const saved = currentFile.size - newSize;
+        const percent = (saved / currentFile.size) * 100;
+        origSizeSpan.innerText = formatBytes(currentFile.size);
+        newSizeSpan.innerText = formatBytes(newSize);
+        savingsSpan.innerHTML = `${saved>0 ? '↓ saved' : '↑ increased'} ${formatBytes(Math.abs(saved))} (${percent>0 ? percent.toFixed(1)+'% reduction' : Math.abs(percent).toFixed(1)+'% increase'})`;
+        previewOrig.src = originalUrl;
+        previewNew.src = URL.createObjectURL(processedBlob);
+        resultPanel.classList.remove('hidden');
+        setProgress(100);
+      } catch(err) {
+        alert('Conversion failed: ' + err.message);
+        progressArea.classList.add('hidden');
+      } finally {
+        processBtn.disabled = false;
+        processBtn.innerHTML = '<i class="fas fa-exchange-alt"></i> Convert';
+      }
     });
-    downloadBtn.addEventListener('click',()=>{
+    downloadBtn.addEventListener('click', () => {
       if(!processedBlob) return;
       const fmt = formatSelect.value;
       const ext = fmt === 'jpeg' ? 'jpg' : fmt;
-      const downloadName = currentFile.name.replace(/\.[^/.]+$/, '') + '_converted.' + ext;
-      const url = URL.createObjectURL(processedBlob); const a = document.createElement('a');
-      a.href = url; a.download = downloadName; a.click(); URL.revokeObjectURL(url);
+      const name = currentFile.name.replace(/\.[^/.]+$/, '') + '_converted.' + ext;
+      const url = URL.createObjectURL(processedBlob);
+      const a = document.createElement('a');
+      a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url);
     });
   })();
 
-  // TABS
-  const pdfSection = document.getElementById('pdfSection');
-  const imgCompressSection = document.getElementById('imageCompressSection');
-  const imgConvertSection = document.getElementById('imageConvertSection');
-  const tabPdf = document.getElementById('tabPdf');
-  const tabImgCompress = document.getElementById('tabImageCompress');
-  const tabImgConvert = document.getElementById('tabImageConvert');
-  function setActiveTab(tab){
-    pdfSection.classList.add('hidden'); imgCompressSection.classList.add('hidden'); imgConvertSection.classList.add('hidden');
-    if(tab==='pdf') pdfSection.classList.remove('hidden');
-    else if(tab==='compress') imgCompressSection.classList.remove('hidden');
-    else imgConvertSection.classList.remove('hidden');
-    tabPdf.classList.remove('tab-active'); tabImgCompress.classList.remove('tab-active'); tabImgConvert.classList.remove('tab-active');
-    if(tab==='pdf') tabPdf.classList.add('tab-active');
-    else if(tab==='compress') tabImgCompress.classList.add('tab-active');
-    else tabImgConvert.classList.add('tab-active');
+  // ========== 4) MERGE PDF (preview list with thumbnails) ==========
+  (function() {
+    const mergeDrop = document.getElementById('mergeDropzone');
+    const mergeInput = document.getElementById('mergeInput');
+    const previewList = document.getElementById('mergePreviewList');
+    const mergeBtn = document.getElementById('mergeBtn');
+    let mergeFiles = [];
+
+    async function generateMergeThumbnail(file, index) {
+      const arrayBuffer = await file.arrayBuffer();
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      const pdfDoc = await loadingTask.promise;
+      const page = await pdfDoc.getPage(1);
+      const viewport = page.getViewport({ scale: 0.15 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+      return canvas.toDataURL();
+    }
+
+    async function updateMergePreview() {
+      if (mergeFiles.length === 0) { previewList.innerHTML = '<p class="text-gray-400 text-center">No files selected</p>'; mergeBtn.disabled = true; return; }
+      previewList.innerHTML = '';
+      for (let i = 0; i < mergeFiles.length; i++) {
+        const f = mergeFiles[i];
+        const thumb = await generateMergeThumbnail(f, i);
+        previewList.innerHTML += `
+          <div class="flex items-center gap-3 p-2 bg-white rounded-lg shadow-sm">
+            <img src="${thumb}" class="w-12 h-16 object-cover rounded border">
+            <div class="flex-1"><p class="font-medium">${f.name}</p><p class="text-xs text-gray-500">${(f.size/1024).toFixed(1)} KB</p></div>
+            <button data-index="${i}" class="remove-merge-file text-red-500 hover:text-red-700"><i class="fas fa-trash-alt"></i></button>
+          </div>
+        `;
+      }
+      mergeBtn.disabled = false;
+      document.querySelectorAll('.remove-merge-file').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = parseInt(btn.dataset.index);
+          mergeFiles.splice(idx, 1);
+          updateMergePreview();
+        });
+      });
+    }
+
+    mergeDrop.addEventListener('click', () => mergeInput.click());
+    mergeDrop.addEventListener('dragover', e => { e.preventDefault(); mergeDrop.classList.add('drop-active'); });
+    mergeDrop.addEventListener('dragleave', () => mergeDrop.classList.remove('drop-active'));
+    mergeDrop.addEventListener('drop', async e => {
+      e.preventDefault(); mergeDrop.classList.remove('drop-active');
+      const files = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf');
+      if (mergeFiles.length + files.length > 10) alert('Max 10 files');
+      else { mergeFiles.push(...files); await updateMergePreview(); }
+    });
+    mergeInput.addEventListener('change', async e => {
+      const files = Array.from(e.target.files);
+      if (mergeFiles.length + files.length > 10) alert('Max 10 files');
+      else { mergeFiles.push(...files); await updateMergePreview(); }
+      mergeInput.value = '';
+    });
+
+    mergeBtn.addEventListener('click', async () => {
+      if (mergeFiles.length < 2) { alert('Select at least 2 PDFs to merge'); return; }
+      mergeBtn.disabled = true; mergeBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Merging...';
+      try {
+        const mergedPdf = await PDFLib.PDFDocument.create();
+        for (const file of mergeFiles) {
+          const bytes = await file.arrayBuffer();
+          const pdf = await PDFLib.PDFDocument.load(bytes);
+          const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+          pages.forEach(p => mergedPdf.addPage(p));
+        }
+        const mergedBytes = await mergedPdf.save();
+        const blob = new Blob([mergedBytes], {type: 'application/pdf'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'merged.pdf'; a.click(); URL.revokeObjectURL(url);
+      } catch(e) { alert('Merge failed: '+e.message); }
+      finally { mergeBtn.disabled = false; mergeBtn.innerHTML = '<i class="fas fa-object-group"></i> Merge & Download'; }
+    });
+  })();
+
+  // ========== 5) SPLIT PDF (with preview) ==========
+  (function() {
+    const splitDrop = document.getElementById('splitDropzone');
+    const splitInput = document.getElementById('splitInput');
+    const splitRange = document.getElementById('splitRange');
+    const splitBtn = document.getElementById('splitBtn');
+    const splitResult = document.getElementById('splitResult');
+    const splitPreviewDiv = document.getElementById('splitPreview');
+    const splitFileNameSpan = document.getElementById('splitFileName');
+    const splitFileSizeSpan = document.getElementById('splitFileSize');
+    const splitPageCountSpan = document.getElementById('splitPageCount');
+    const splitThumbnailCanvas = document.getElementById('splitThumbnail');
+    let splitPdfBuffer = null;
+    let splitPdfDoc = null;
+
+    async function generateThumbnail(pdfDoc, pageNum) {
+      const page = await pdfDoc.getPage(pageNum);
+      const viewport = page.getViewport({ scale: 0.2 });
+      splitThumbnailCanvas.width = viewport.width;
+      splitThumbnailCanvas.height = viewport.height;
+      const ctx = splitThumbnailCanvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+    }
+
+    async function loadSplitFile(file) {
+      splitPdfBuffer = await file.arrayBuffer();
+      const loadingTask = pdfjsLib.getDocument({ data: splitPdfBuffer });
+      splitPdfDoc = await loadingTask.promise;
+      const pageCount = splitPdfDoc.numPages;
+      splitFileNameSpan.innerText = file.name;
+      splitFileSizeSpan.innerText = (file.size / 1024).toFixed(1) + ' KB';
+      splitPageCountSpan.innerText = `${pageCount} page${pageCount !== 1 ? 's' : ''}`;
+      splitPreviewDiv.classList.remove('hidden');
+      await generateThumbnail(splitPdfDoc, 1);
+      splitResult.innerHTML = `<span class="text-green-600">Ready to split – ${pageCount} pages</span>`;
+    }
+
+    splitDrop.addEventListener('click', () => splitInput.click());
+    splitDrop.addEventListener('dragover', e => { e.preventDefault(); splitDrop.classList.add('drop-active'); });
+    splitDrop.addEventListener('dragleave', () => splitDrop.classList.remove('drop-active'));
+    splitDrop.addEventListener('drop', async e => {
+      e.preventDefault(); splitDrop.classList.remove('drop-active');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type === 'application/pdf') await loadSplitFile(file);
+      else alert('Please drop a PDF file');
+    });
+    splitInput.addEventListener('change', async e => { if (e.target.files.length) await loadSplitFile(e.target.files[0]); });
+
+    splitBtn.addEventListener('click', async () => {
+      if (!splitPdfBuffer) { alert('Please select a PDF to split'); return; }
+      const rangeStr = splitRange.value.trim();
+      if (!rangeStr) { alert('Enter page range (e.g., 1-3,5,7-9)'); return; }
+      try {
+        const pdf = await PDFLib.PDFDocument.load(splitPdfBuffer);
+        const totalPages = pdf.getPageCount();
+        const pagesToExtract = parsePageRanges(rangeStr, totalPages);
+        if (pagesToExtract.length === 0) throw new Error('No valid pages');
+        const newPdf = await PDFLib.PDFDocument.create();
+        const copied = await newPdf.copyPages(pdf, pagesToExtract);
+        copied.forEach(p => newPdf.addPage(p));
+        const bytes = await newPdf.save();
+        const blob = new Blob([bytes], {type: 'application/pdf'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'extracted.pdf'; a.click(); URL.revokeObjectURL(url);
+        splitResult.innerHTML += `<div class="text-green-600 mt-1">✅ Extracted ${pagesToExtract.length} pages. Download started.</div>`;
+      } catch(e) { alert('Split error: '+e.message); }
+    });
+
+    function parsePageRanges(str, totalPages) {
+      const parts = str.split(',');
+      const selected = new Set();
+      for (let part of parts) {
+        part = part.trim();
+        if (part.includes('-')) {
+          let [start, end] = part.split('-').map(Number);
+          if (isNaN(start)) start = 1;
+          if (isNaN(end)) end = totalPages;
+          for (let i = start; i <= end; i++) if (i>=1 && i<=totalPages) selected.add(i-1);
+        } else {
+          let p = Number(part);
+          if (!isNaN(p) && p>=1 && p<=totalPages) selected.add(p-1);
+        }
+      }
+      return Array.from(selected).sort((a,b)=>a-b);
+    }
+  })();
+
+  // ========== 6) IMAGE TO PDF (preview list with thumbnails) ==========
+  (function() {
+    const img2pdfDrop = document.getElementById('img2pdfDropzone');
+    const img2pdfInput = document.getElementById('img2pdfInput');
+    const previewList = document.getElementById('img2pdfPreviewList');
+    const img2pdfBtn = document.getElementById('img2pdfBtn');
+    const img2pdfPageSize = document.getElementById('img2pdfPageSize');
+    let imageFiles = [];
+
+    function updateImagePreview() {
+      if (imageFiles.length === 0) { previewList.innerHTML = '<p class="text-gray-400 text-center">No images selected</p>'; img2pdfBtn.disabled = true; return; }
+      previewList.innerHTML = '';
+      imageFiles.forEach((f, idx) => {
+        const url = URL.createObjectURL(f);
+        previewList.innerHTML += `
+          <div class="flex items-center gap-3 p-2 bg-white rounded-lg shadow-sm">
+            <img src="${url}" class="w-12 h-12 object-cover rounded border" onload="URL.revokeObjectURL('${url}')">
+            <div class="flex-1"><p class="font-medium">${f.name}</p><p class="text-xs text-gray-500">${(f.size/1024).toFixed(1)} KB</p></div>
+            <button data-index="${idx}" class="remove-imgfile text-red-500 hover:text-red-700"><i class="fas fa-trash-alt"></i></button>
+          </div>
+        `;
+      });
+      img2pdfBtn.disabled = false;
+      document.querySelectorAll('.remove-imgfile').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = parseInt(btn.dataset.index);
+          imageFiles.splice(idx, 1);
+          updateImagePreview();
+        });
+      });
+    }
+
+    img2pdfDrop.addEventListener('click', () => img2pdfInput.click());
+    img2pdfDrop.addEventListener('dragover', e => { e.preventDefault(); img2pdfDrop.classList.add('drop-active'); });
+    img2pdfDrop.addEventListener('dragleave', () => img2pdfDrop.classList.remove('drop-active'));
+    img2pdfDrop.addEventListener('drop', e => {
+      e.preventDefault(); img2pdfDrop.classList.remove('drop-active');
+      const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+      imageFiles.push(...files); updateImagePreview();
+    });
+    img2pdfInput.addEventListener('change', e => {
+      const files = Array.from(e.target.files);
+      imageFiles.push(...files); updateImagePreview();
+      img2pdfInput.value = '';
+    });
+
+    img2pdfBtn.addEventListener('click', async () => {
+      if (imageFiles.length === 0) { alert('Select at least one image'); return; }
+      img2pdfBtn.disabled = true; img2pdfBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating PDF...';
+      try {
+        const pdf = await PDFLib.PDFDocument.create();
+        for (const file of imageFiles) {
+          const imgBytes = await file.arrayBuffer();
+          let image;
+          if (file.type === 'image/jpeg') image = await pdf.embedJpg(imgBytes);
+          else if (file.type === 'image/png') image = await pdf.embedPng(imgBytes);
+          else if (file.type === 'image/webp') {
+            const blob = new Blob([imgBytes], {type: 'image/webp'});
+            const url = URL.createObjectURL(blob);
+            const bitmap = await createImageBitmap(blob);
+            const canvas = document.createElement('canvas');
+            canvas.width = bitmap.width; canvas.height = bitmap.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(bitmap, 0, 0);
+            const pngBlob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+            const pngBytes = await pngBlob.arrayBuffer();
+            image = await pdf.embedPng(pngBytes);
+            URL.revokeObjectURL(url);
+          } else continue;
+          const { width, height } = image;
+          let pageWidth, pageHeight;
+          if (img2pdfPageSize.value === 'A4') { pageWidth = 595; pageHeight = 842; }
+          else if (img2pdfPageSize.value === 'Letter') { pageWidth = 612; pageHeight = 792; }
+          else { pageWidth = width; pageHeight = height; }
+          const page = pdf.addPage([pageWidth, pageHeight]);
+          const scale = Math.min(pageWidth/width, pageHeight/height);
+          const scaledW = width * scale;
+          const scaledH = height * scale;
+          const x = (pageWidth - scaledW) / 2;
+          const y = (pageHeight - scaledH) / 2;
+          page.drawImage(image, { x, y, width: scaledW, height: scaledH });
+        }
+        const pdfBytes = await pdf.save();
+        const blob = new Blob([pdfBytes], {type: 'application/pdf'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'images.pdf'; a.click(); URL.revokeObjectURL(url);
+      } catch(e) { alert('Image to PDF failed: '+e.message); }
+      finally { img2pdfBtn.disabled = false; img2pdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Convert to PDF'; }
+    });
+  })();
+
+  // ========== TAB SWITCHING ==========
+  const sections = {
+    pdf: document.getElementById('pdfSection'),
+    compress: document.getElementById('imageCompressSection'),
+    convert: document.getElementById('imageConvertSection'),
+    merge: document.getElementById('mergeSection'),
+    split: document.getElementById('splitSection'),
+    img2pdf: document.getElementById('img2pdfSection')
+  };
+  const tabs = {
+    pdf: document.getElementById('tabPdf'),
+    compress: document.getElementById('tabImageCompress'),
+    convert: document.getElementById('tabImageConvert'),
+    merge: document.getElementById('tabMerge'),
+    split: document.getElementById('tabSplit'),
+    img2pdf: document.getElementById('tabImg2Pdf')
+  };
+  function setActiveTab(tabId) {
+    Object.values(sections).forEach(s => s.classList.add('hidden'));
+    sections[tabId].classList.remove('hidden');
+    Object.values(tabs).forEach(t => t.classList.remove('tab-active'));
+    tabs[tabId].classList.add('tab-active');
   }
-  tabPdf.addEventListener('click',()=>setActiveTab('pdf'));
-  tabImgCompress.addEventListener('click',()=>setActiveTab('compress'));
-  tabImgConvert.addEventListener('click',()=>setActiveTab('convert'));
+  tabs.pdf.addEventListener('click', () => setActiveTab('pdf'));
+  tabs.compress.addEventListener('click', () => setActiveTab('compress'));
+  tabs.convert.addEventListener('click', () => setActiveTab('convert'));
+  tabs.merge.addEventListener('click', () => setActiveTab('merge'));
+  tabs.split.addEventListener('click', () => setActiveTab('split'));
+  tabs.img2pdf.addEventListener('click', () => setActiveTab('img2pdf'));
   setActiveTab('pdf');
 </script>
 </body>
