@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=1.0, minimum-scale=1.0">
-  <title>Media Toolbox – Purple & Black | Mobile Grid Tabs</title>
+  <title>CompresMedia – Free Online Tools</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -33,7 +33,7 @@
       color: var(--text);
     }
 
-    /* ----- Tab container: horizontal scroll on desktop, 2‑column grid on mobile ----- */
+    /* Tab container */
     #tabContainer {
       display: flex;
       flex-wrap: nowrap;
@@ -52,14 +52,10 @@
         gap: 0.5rem;
         overflow-x: hidden;
         overflow-y: auto;
-        max-height: 160px; /* show all 6 tabs in 3 rows */
+        max-height: 160px;
         padding-bottom: 0;
       }
-      #tabContainer::-webkit-scrollbar { display: none; }
-      .tab-btn {
-        width: 100%; /* fill the grid cell */
-        justify-content: center;
-      }
+      .tab-btn { width: 100%; justify-content: center; }
     }
     .tab-btn {
       white-space: nowrap;
@@ -107,9 +103,7 @@
     }
     .hyperos-dropzone:hover { border-color: var(--accent); background: rgba(255,255,255,0.06); }
     .drop-active { border-color: var(--accent); background: rgba(124,58,237,0.1); }
-    @keyframes dropPop {
-      0% { transform: scale(1.02); } 80% { transform: scale(0.98); } 100% { transform: scale(1); }
-    }
+    @keyframes dropPop { 0% { transform: scale(1.02); } 80% { transform: scale(0.98); } 100% { transform: scale(1); } }
     .drop-zone-bounce { animation: dropPop 0.4s ease; }
 
     .dropzone-blob {
@@ -118,11 +112,8 @@
       border-radius: 50%; top: -20px; right: -20px;
       animation: blobFloat 8s ease-in-out infinite alternate; pointer-events: none;
     }
-    @keyframes blobFloat {
-      0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-15px, 15px) scale(1.15); }
-    }
+    @keyframes blobFloat { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-15px, 15px) scale(1.15); } }
 
-    /* Progress shimmer */
     .progress-fill {
       background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 30%, #a78bfa 50%, var(--accent) 70%);
       background-size: 200% 100%;
@@ -133,7 +124,6 @@
     .bounce-for-celebration { animation: downloadBounce 0.6s ease infinite; }
     @keyframes downloadBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 
-    /* Buttons */
     .hyperos-btn-primary,
     .hyperos-btn-success,
     .hyperos-btn-danger,
@@ -153,25 +143,16 @@
     .hyperos-btn-clear:hover { background: rgba(255,255,255,0.12); }
 
     .control-panel {
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(16px);
-      border-radius: 1rem;
-      padding: 0.75rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      align-items: center;
+      background: rgba(255,255,255,0.05); backdrop-filter: blur(16px);
+      border-radius: 1rem; padding: 0.75rem;
+      display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center;
     }
     @media (max-width: 640px) { .control-panel { flex-direction: column; align-items: stretch; } }
 
-    /* Preview items – ensure truncation */
     .preview-item {
       display: flex; align-items: center; gap: 0.75rem;
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(16px);
-      border-radius: 1rem;
-      padding: 0.75rem;
-      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.06); backdrop-filter: blur(16px);
+      border-radius: 1rem; padding: 0.75rem; border: 1px solid rgba(255,255,255,0.06);
     }
     .preview-item img, .preview-item canvas { width: 80px; height: 110px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
     .preview-item i.fa-file-pdf { font-size: 2.8rem; width: 80px; text-align: center; color: #ef4444; }
@@ -179,19 +160,12 @@
 
     .result-item {
       display: flex; align-items: center; gap: 0.75rem;
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(16px);
-      border-radius: 1rem;
-      padding: 0.75rem;
-      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.06); backdrop-filter: blur(16px);
+      border-radius: 1rem; padding: 0.75rem; border: 1px solid rgba(255,255,255,0.06);
     }
     .result-item img, .result-item canvas { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; }
     .result-item i { font-size: 2.2rem; width: 64px; text-align: center; }
-
-    /* Truncation utility (already in Tailwind, but ensures) */
     .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-    /* Text colours */
     .text-gray-600, .text-gray-500, .text-gray-400 { color: var(--text-muted) !important; }
     .text-gray-700, .text-gray-800 { color: var(--text) !important; }
     .bg-white, .bg-gray-50, .bg-green-50, .bg-red-50 { background-color: rgba(255,255,255,0.06) !important; }
@@ -202,21 +176,34 @@
 
   <header class="w-full sticky top-0 z-50 bg-black/70 backdrop-blur-xl border-b border-white/10 py-2.5 px-3 md:px-6 flex items-center justify-between">
     <div class="flex items-center gap-2 min-w-0 flex-1">
-      <i class="fas fa-toolbox text-purple-500 text-xl md:text-2xl flex-shrink-0"></i>
-      <span class="text-lg md:text-xl font-bold text-white tracking-tight truncate">Media Toolbox</span>
+      <i class="fas fa-compress text-purple-500 text-xl md:text-2xl flex-shrink-0"></i>
+      <span class="text-lg md:text-xl font-bold text-white tracking-tight truncate">CompresMedia</span>
     </div>
     <div class="text-xs md:text-sm text-gray-400 flex-shrink-0 ml-2">100% private</div>
   </header>
 
   <main class="flex-1 w-full max-w-4xl mx-auto px-3 md:px-6 py-4 md:py-8">
+    <!-- Hero section with benefits and details link -->
     <div class="text-center mb-6">
       <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-fuchsia-500">
-        All Media Tools
+        CompresMedia
       </h1>
       <p class="text-gray-400 text-sm md:text-base mt-1">Batch processing · Up to 10 files · Original filenames</p>
-    </div>
+      
+      <!-- Benefits badges -->
+      <div class="flex flex-wrap justify-center gap-2 mt-3 text-xs font-medium">
+        <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+          <i class="fas fa-check-circle mr-1"></i>100% Free to Use
+        </span>
+        <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+          <i class="fas fa-infinity mr-1"></i>100% Unlimited
+        </span>
+        <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+          <i class="fas fa-shield-alt mr-1"></i>100% Privacy
+        </span>
+      </div>
 
-    <!-- Tabs: horizontal scroll on desktop, 2-col grid on mobile -->
+    <!-- Tabs -->
     <div id="tabContainer">
       <button id="tabPdf" class="tab-btn tab-active"><i class="fas fa-file-pdf"></i> PDF Compressor</button>
       <button id="tabImageCompress" class="tab-btn"><i class="fas fa-compress-alt"></i> Image Compressor</button>
@@ -382,7 +369,7 @@
   </main>
 
   <footer class="w-full bg-black/70 backdrop-blur-lg border-t border-white/10 py-3 px-4 text-center text-xs md:text-sm text-gray-500 mt-8">
-    <p>© 2025 Media Toolbox · All processing is local and private.</p>
+    <p>© 2025 CompresMedia · All processing is local and private.</p>
     <p class="text-xs mt-1 opacity-75">Created by Grafynx Visual</p>
   </footer>
 
@@ -605,7 +592,6 @@
             const blob = await new Promise(res => canvas.toBlob(res, mime, quality));
             const newSize = blob.size, saved = file.size - newSize, percent = (saved/file.size)*100;
             const url = URL.createObjectURL(blob);
-            // Download with original file name (unchanged)
             results.innerHTML += `<div class="result-item"><img src="${URL.createObjectURL(blob)}" alt="result"/><div class="flex-1 min-w-0"><p class="font-semibold text-sm truncate">${file.name}</p><p class="text-xs text-gray-400">${formatBytes(file.size)} → ${formatBytes(newSize)} (↓${percent.toFixed(1)}%) · ${w}×${h}</p></div><a href="${url}" download="${file.name}" class="hyperos-btn-success px-3 py-1.5 text-xs ml-auto flex-shrink-0"><i class="fas fa-download"></i></a></div>`;
             progressFill.style.width = '100%'; progressPercent.innerText = '100%';
             processed++;
